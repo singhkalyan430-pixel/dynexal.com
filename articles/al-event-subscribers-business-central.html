@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn AL Event Subscribers in Microsoft Dynamics 365 Business Central with practical examples covering EventSubscriber, table events, integration events, debugging and best practices.">
+  <meta name="author" content="Dynexal">
+  <link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+  <link rel="canonical" href="https://dynexal.com/articles/al-event-subscribers-business-central.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://dynexal.com/articles/al-event-subscribers-business-central.html">
+  <meta property="og:title" content="AL Event Subscribers in Business Central: Complete Guide | Dynexal">
+  <meta property="og:description" content="A practical guide to AL Event Subscribers, EventSubscriber syntax, table trigger events, integration events, debugging and best practices in Business Central.">
+  <meta property="og:site_name" content="Dynexal">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="AL Event Subscribers in Business Central: Complete Guide | Dynexal">
+  <meta name="twitter:description" content="Learn EventSubscriber in AL with practical Business Central examples and real-world patterns.">
+  <title>AL Event Subscribers in Business Central: Complete Guide | Dynexal</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "AL Event Subscribers in Business Central: Complete Guide",
+    "description": "A practical guide to AL Event Subscribers, EventSubscriber syntax, table trigger events, integration events, debugging and best practices in Business Central.",
+    "author": {"@type": "Organization", "name": "Dynexal"},
+    "publisher": {"@type": "Organization", "name": "Dynexal"},
+    "mainEntityOfPage": {"@type": "WebPage", "@id": "https://dynexal.com/articles/al-event-subscribers-business-central.html"},
+    "url": "https://dynexal.com/articles/al-event-subscribers-business-central.html",
+    "inLanguage": "en"
+  }
+  </script>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d68b32;background:#fff8ec;padding:16px 20px;margin:24px 0}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../index.html#tutorials">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">AL DEVELOPMENT</span>
+<h1>AL Event Subscribers in Business Central: Complete Guide</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 12 min read</p>
+<p class="intro">Event subscribers are one of the most important extensibility patterns in Microsoft Dynamics 365 Business Central. They let you react to application events without modifying the original Microsoft or partner code. In this practical guide, you will learn how EventSubscriber works, how to subscribe to table and integration events, how to debug subscribers, and how to design maintainable event-driven AL solutions.</p>
+<div class="hero-note"><strong>What you will learn:</strong> events and publishers, EventSubscriber syntax, table trigger events, integration events, subscriber parameters, multiple subscribers, debugging, common mistakes and best practices.</div>
+
+<h2>What is an event in Business Central?</h2>
+<p>An event represents something that happens in the application. A publisher exposes an event, and a subscriber listens for that event and runs custom logic when the event is raised. Business Central supports business, integration, internal, global and trigger events. Events help separate custom functionality from application business logic and can reduce the need to modify standard application code. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-events-in-al">Microsoft Learn: Events in AL</a></p>
+
+<h2>What is an Event Subscriber?</h2>
+<p>An event subscriber is an AL method that subscribes to a specific published event. The subscriber method is normally placed inside a codeunit and decorated with the <code>EventSubscriber</code> attribute. The runtime calls the subscriber when the corresponding event is raised.</p>
+<p>Microsoft documents the attribute with six arguments:</p>
+<ol>
+  <li><code>ObjectType</code> — the type of object that publishes the event.</li>
+  <li><code>ObjectId</code> — the object that contains the event.</li>
+  <li><code>EventName</code> — the event publisher or trigger event name.</li>
+  <li><code>ElementName</code> — the field name for applicable database trigger events.</li>
+  <li><code>SkipOnMissingLicense</code> — controls behavior when the required license is missing.</li>
+  <li><code>SkipOnMissingPermission</code> — controls behavior when required permission is missing.</li>
+</ol>
+<p>See the current <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/attributes/devenv-eventsubscriber-attribute">EventSubscriber attribute reference</a> for the complete syntax.</p>
+
+<h2>Basic EventSubscriber syntax</h2>
+<pre><code>[EventSubscriber(ObjectType::Table, Database::Customer,
+                 'OnAfterInsertEvent', '', false, false)]
+local procedure AfterCustomerInsert(var Rec: Record Customer; RunTrigger: Boolean)
+begin
+    // Custom logic runs after a Customer record is inserted.
+end;</code></pre>
+<p>This subscriber listens to the Customer table's <code>OnAfterInsertEvent</code>. The table trigger event is raised by the Business Central runtime after a record is inserted. For this event, the subscriber receives the record and the <code>RunTrigger</code> Boolean parameter. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/triggers-auto/events/table/devenv-onafterinsertevent-table-trigger">Microsoft Learn: OnAfterInsertEvent</a></p>
+
+<h2>Why use event subscribers?</h2>
+<ul>
+  <li>Extend standard Business Central behavior without changing base application code.</li>
+  <li>Keep custom logic separate from Microsoft application logic.</li>
+  <li>React to business or technical events such as inserts, validation and posting.</li>
+  <li>Build integrations and notifications around existing application behavior.</li>
+  <li>Make extensions easier to upgrade and maintain.</li>
+</ul>
+<p>Events are especially useful when the requirement is to add behavior around an existing process rather than replace the entire process.</p>
+
+<h2>Table trigger events</h2>
+<p>Table trigger events are predefined runtime events. Common examples include:</p>
+<ul>
+  <li><code>OnBeforeInsertEvent</code></li>
+  <li><code>OnAfterInsertEvent</code></li>
+  <li><code>OnBeforeModifyEvent</code></li>
+  <li><code>OnAfterModifyEvent</code></li>
+  <li><code>OnBeforeDeleteEvent</code></li>
+  <li><code>OnAfterDeleteEvent</code></li>
+  <li><code>OnBeforeValidateEvent</code></li>
+  <li><code>OnAfterValidateEvent</code></li>
+</ul>
+
+<h3>Example: run logic after a Customer is inserted</h3>
+<pre><code>codeunit 50120 "Dynexal Customer Events"
+{
+    [EventSubscriber(ObjectType::Table, Database::Customer,
+                     'OnAfterInsertEvent', '', false, false)]
+    local procedure CustomerAfterInsert(var Rec: Record Customer; RunTrigger: Boolean)
+    begin
+        Message('Customer %1 was created.', Rec."No.");
+    end;
+}</code></pre>
+<p>This is useful for learning the pattern, but production code should avoid unnecessary user messages inside automatic business processes.</p>
+
+<h2>Example: subscribe to a field validation event</h2>
+<p>You can subscribe to a specific field's validation event by providing the field name as the fourth argument.</p>
+<pre><code>codeunit 50121 "Dynexal Validation Events"
+{
+    [EventSubscriber(ObjectType::Table, Database::Customer,
+                     'OnAfterValidateEvent', 'Name', false, false)]
+    local procedure CustomerNameValidated(var Rec: Record Customer; var xRec: Record Customer; CurrFieldNo: Integer)
+    begin
+        // Add custom validation-related logic here.
+    end;
+}</code></pre>
+<p>The exact subscriber signature depends on the event being subscribed to. The safest approach in VS Code is to use IntelliSense or the event picker to insert the correct signature for your Business Central version.</p>
+
+<h2>Integration events</h2>
+<p>Integration events are published by application code using the <code>IntegrationEvent</code> attribute. They are useful when you own the publisher code and want other parts of the solution to react to a business or technical point without tightly coupling the publisher to subscribers.</p>
+<pre><code>codeunit 50122 "Dynexal Order Publisher"
+{
+    [IntegrationEvent(false, false)]
+    procedure OnOrderProcessed(OrderNo: Code[20])
+    begin
+    end;
+
+    procedure ProcessOrder(OrderNo: Code[20])
+    begin
+        // Main processing logic.
+        OnOrderProcessed(OrderNo);
+    end;
+}</code></pre>
+<p>A subscriber can then listen to the publisher:</p>
+<pre><code>codeunit 50123 "Dynexal Order Subscriber"
+{
+    [EventSubscriber(ObjectType::Codeunit,
+                     Codeunit::"Dynexal Order Publisher",
+                     'OnOrderProcessed', '', false, false)]
+    local procedure HandleOrderProcessed(OrderNo: Code[20])
+    begin
+        // React to the event.
+    end;
+}</code></pre>
+<p>Microsoft recommends passing the information subscribers need as event parameters rather than relying on global variable access. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/attributes/devenv-integrationevent-attribute">IntegrationEvent attribute reference</a></p>
+
+<h2>Business events vs integration events</h2>
+<p>Both are event publisher patterns, but they serve different purposes. Business events communicate meaningful business occurrences, while integration events are commonly used as extensibility points within application logic. The choice should reflect what the event represents and who needs to consume it.</p>
+<p>For extensibility guidance and event quality considerations, see Microsoft's <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/types-of-events-for-extensibility">types of events for extensibility</a>.</p>
+
+<h2>Multiple subscribers</h2>
+<p>More than one subscriber can listen to the same event. When an event is raised, subscriber methods are run one at a time, but you should not design your solution assuming a particular subscriber execution order. Microsoft explicitly notes that subscriber order cannot be specified.</p>
+<div class="warning"><strong>Important:</strong> avoid creating dependencies such as “Subscriber B must always run after Subscriber A.” If ordering is essential, redesign the process so the required sequence is explicit in the publisher or orchestration logic.</div>
+
+<h2>How to find events in VS Code</h2>
+<p>You do not need to memorize every event name. The AL development environment provides tools for discovering events.</p>
+<ol>
+  <li>Open your AL project in Visual Studio Code.</li>
+  <li>Place the cursor inside a codeunit.</li>
+  <li>Use the event discovery tools or IntelliSense to find the required event.</li>
+  <li>You can also use <code>Shift + Alt + E</code> to open the event list in the AL editor.</li>
+  <li>Select an event to generate the subscriber pattern and then adjust the method name and logic.</li>
+</ol>
+<p>Microsoft also documents the AL Explorer as a way to discover events and other extension points. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-al-explorer">AL Explorer</a></p>
+
+<h2>EventSubscriberInstance</h2>
+<p>The <code>EventSubscriberInstance</code> property controls how subscriber functions in a codeunit are bound to the events they subscribe to. <code>StaticAutomatic</code> is the default, while <code>Manual</code> can be used when subscriptions are bound through <code>BINDSUBSCRIPTION</code>.</p>
+<pre><code>codeunit 50124 "Dynexal Manual Subscriber"
+{
+    EventSubscriberInstance = Manual;
+
+    [EventSubscriber(ObjectType::Codeunit,
+                     Codeunit::"Dynexal Order Publisher",
+                     'OnOrderProcessed', '', false, false)]
+    local procedure HandleOrderProcessed(OrderNo: Code[20])
+    begin
+        // Subscriber logic.
+    end;
+}</code></pre>
+<p>For most beginner and standard extension scenarios, the default automatic behavior is sufficient. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/properties/devenv-eventsubscriberinstance-property">EventSubscriberInstance reference</a></p>
+
+<h2>Debugging Event Subscribers</h2>
+<p>When a subscriber does not appear to run, check the following:</p>
+<ol>
+  <li>Confirm that the subscriber codeunit compiles and is published.</li>
+  <li>Verify the object type, object name/ID and event name.</li>
+  <li>Check the field name for validation events.</li>
+  <li>Compare the subscriber parameter list with the selected event signature.</li>
+  <li>Set a breakpoint inside the subscriber method.</li>
+  <li>Perform the action that should raise the event.</li>
+  <li>Check whether an error occurs before the event is reached.</li>
+  <li>For permission/license-related behavior, review the last two EventSubscriber arguments.</li>
+</ol>
+<div class="tip"><strong>Developer tip:</strong> use the AL event picker instead of manually guessing an event signature. This reduces errors caused by incorrect event names, object references or parameters.</div>
+
+<h2>Common EventSubscriber mistakes</h2>
+<ul>
+  <li>Putting <code>EventSubscriber</code> on a method outside a codeunit.</li>
+  <li>Using the wrong object type or object name.</li>
+  <li>Using <code>Table::Customer</code> instead of the documented <code>Database::Customer</code> form for a table trigger event.</li>
+  <li>Forgetting the field name for a field-specific validation event.</li>
+  <li>Using the wrong method parameters for the selected event.</li>
+  <li>Assuming subscribers execute in a guaranteed order.</li>
+  <li>Putting heavy processing into very frequently raised events without considering performance.</li>
+  <li>Using events to work around a requirement that would be clearer as explicit application logic.</li>
+</ul>
+
+<h2>Best practices for event-driven AL</h2>
+<ul>
+  <li>Use events to extend behavior without modifying standard application code.</li>
+  <li>Give subscriber procedures descriptive names such as <code>CustomerAfterInsert</code> or <code>SalesLineAfterValidate</code>.</li>
+  <li>Keep subscribers small and delegate larger business processes to dedicated codeunits.</li>
+  <li>Pass required data through event parameters instead of depending on global state.</li>
+  <li>Avoid expensive processing in events that fire very frequently.</li>
+  <li>Do not depend on an execution order among multiple subscribers.</li>
+  <li>Use breakpoints and event discovery tools while developing and troubleshooting.</li>
+  <li>Document important custom events and why they exist.</li>
+</ul>
+
+<h2>Real-world example: customer integration</h2>
+<p>Imagine an extension that needs to send selected customer information to an external application after a customer is created. A clean architecture can separate the responsibilities:</p>
+<pre><code>Customer table event
+        ↓
+Event Subscriber codeunit
+        ↓
+Customer Integration codeunit
+        ↓
+HTTPClient / API logic
+        ↓
+External application</code></pre>
+<p>The subscriber should detect the event and delegate the integration work. The API and authentication logic should remain in a dedicated integration layer. This makes the solution easier to test, reuse and change later.</p>
+
+<h2>Event Subscriber vs Page Extension trigger</h2>
+<p>A page extension is useful when the requirement is specifically about a page's user interface. An event subscriber is often better when the behavior should react to application activity regardless of which page or process caused it.</p>
+<p>For example, if custom logic must run whenever a customer record is inserted from different processes, a table event is usually more appropriate than putting the logic only in the Customer Card page.</p>
+
+<h2>Quick checklist</h2>
+<ul>
+  <li>Do I have the correct event?</li>
+  <li>Is the subscriber inside a codeunit?</li>
+  <li>Did I use the correct EventSubscriber arguments?</li>
+  <li>Does the method signature match the event?</li>
+  <li>Can the logic be delegated to another codeunit?</li>
+  <li>Could this event fire very frequently?</li>
+  <li>Am I relying on subscriber execution order?</li>
+  <li>Have I tested the subscriber with a breakpoint?</li>
+</ul>
+
+<h2>Frequently Asked Questions</h2>
+<h3>Can EventSubscriber be used outside a codeunit?</h3>
+<p>No. The EventSubscriber attribute is applied to methods inside codeunits.</p>
+<h3>Can multiple subscribers listen to one event?</h3>
+<p>Yes. Multiple subscriber methods can subscribe to the same event, and their execution order should not be assumed.</p>
+<h3>What is the difference between a publisher and a subscriber?</h3>
+<p>The publisher exposes or raises the event. The subscriber listens for that event and contains the custom response logic.</p>
+<h3>Should I use events for everything?</h3>
+<p>No. Events are an extensibility mechanism. Use them when decoupling or reacting to application behavior provides a clear benefit. Direct, explicit business logic can be simpler when there is no extensibility requirement.</p>
+<h3>How do I find the correct EventSubscriber syntax?</h3>
+<p>Use the AL event discovery tools, IntelliSense or the event picker in Visual Studio Code. These tools help generate the correct event name and method signature for your environment.</p>
+
+<h2>What should you learn next?</h2>
+<div class="article-links">
+  <p><a href="codeunits-business-central.html">Codeunits in Business Central</a> — learn where reusable business logic and subscriber methods live.</p>
+  <p><a href="business-central-api-integration.html">Business Central API Integration</a> — connect Business Central with external systems.</p>
+  <p><a href="shopify-business-central-integration.html">Shopify and Business Central Integration</a> — explore a real-world e-commerce integration architecture.</p>
+  <p><a href="page-extensions-business-central.html">Page Extensions in Business Central</a> — extend standard pages with fields, actions and layout changes.</p>
+  <p><a href="al-tables-business-central.html">AL Tables in Business Central</a> — understand the data model behind your AL solutions.</p>
+</div>
+
+<div class="article-footer"><a class="back" href="../tutorials.html">← Explore all Dynexal tutorials</a></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script>
+</body>
+</html>
