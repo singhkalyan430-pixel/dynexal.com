@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn codeunits in Microsoft Dynamics 365 Business Central with practical AL examples covering procedures, business logic, OnRun, calling codeunits, and best practices.">
+  <meta name="author" content="Dynexal">
+  <link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+  <link rel="canonical" href="https://dynexal.com/articles/codeunits-business-central.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://dynexal.com/articles/codeunits-business-central.html">
+  <meta property="og:title" content="Codeunits in Business Central: Complete Beginner Guide | Dynexal">
+  <meta property="og:description" content="A practical guide to AL codeunits in Business Central, including procedures, OnRun, reusable business logic, calling codeunits and common mistakes.">
+  <meta property="og:site_name" content="Dynexal">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Codeunits in Business Central: Complete Beginner Guide | Dynexal">
+  <meta name="twitter:description" content="Learn how to create and use AL codeunits with practical Business Central examples.">
+  <title>Codeunits in Business Central: Complete Beginner Guide | Dynexal</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Codeunits in Business Central: Complete Beginner Guide",
+    "description": "A practical guide to AL codeunits in Business Central, including procedures, OnRun, reusable business logic, calling codeunits and common mistakes.",
+    "author": {"@type": "Organization", "name": "Dynexal"},
+    "publisher": {"@type": "Organization", "name": "Dynexal"},
+    "mainEntityOfPage": {"@type": "WebPage", "@id": "https://dynexal.com/articles/codeunits-business-central.html"},
+    "url": "https://dynexal.com/articles/codeunits-business-central.html",
+    "inLanguage": "en"
+  }
+  </script>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../index.html#tutorials">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">AL DEVELOPMENT</span>
+<h1>Codeunits in Business Central: Complete Beginner Guide</h1>
+<p class="meta">Dynexal • Beginner Guide • 10 min read</p>
+<p class="intro">Codeunits are one of the main places where reusable business logic lives in Microsoft Dynamics 365 Business Central. In this guide, you will learn how codeunits work, how to create procedures, how to call them, and when to use events.</p>
+<div class="hero-note"><strong>What you will learn:</strong> codeunit structure, procedures, the OnRun trigger, calling codeunits, reusable business logic, event subscribers and common beginner mistakes.</div>
+
+<h2>What is a codeunit?</h2>
+<p>A codeunit is an AL object used to contain reusable business logic. Instead of putting the same logic directly inside several pages or reports, you can move it into a codeunit and call it wherever the functionality is needed. Microsoft describes codeunits as containers for AL code that can be used by many application objects. citeturn0search0</p>
+
+<h2>Create a simple codeunit</h2>
+<p>A basic codeunit can expose a procedure that performs a small piece of reusable logic:</p>
+<pre><code>codeunit 50110 "Dynexal Customer Management"
+{
+    procedure ShowCustomerMessage(CustomerName: Text)
+    begin
+        Message('Customer: %1', CustomerName);
+    end;
+}</code></pre>
+<p>The object ID should be unique in your extension, while the codeunit name should clearly describe its responsibility. Microsoft also recommends meaningful object naming and readable file structure for AL code. citeturn0search2</p>
+
+<h2>What is a procedure?</h2>
+<p>A procedure is a method that contains a reusable block of AL code. A procedure can receive parameters, perform validation or calculations, work with records, and return a value when required.</p>
+<pre><code>procedure CalculateDiscount(Amount: Decimal; Percentage: Decimal): Decimal
+begin
+    exit(Amount * Percentage / 100);
+end;</code></pre>
+<p>You can keep helper procedures <code>local</code> when they should only be used inside the same object. Public procedures can be called by other objects when the access rules of the extension allow it.</p>
+
+<h2>Using the OnRun trigger</h2>
+<p>A codeunit can have an <code>OnRun()</code> trigger. It runs when the codeunit itself is run. This is different from simply calling one of its procedures. citeturn0search9</p>
+<pre><code>codeunit 50111 "Dynexal Processing"
+{
+    trigger OnRun()
+    begin
+        Message('Dynexal processing started.');
+    end;
+}</code></pre>
+
+<h2>Calling a codeunit from another object</h2>
+<p>One of the most useful patterns is to keep business logic in a codeunit and call it from a page action or another AL object.</p>
+<pre><code>codeunit 50112 "Dynexal Order Management"
+{
+    procedure ProcessOrder(OrderNo: Code[20])
+    begin
+        Message('Processing order %1', OrderNo);
+    end;
+}</code></pre>
+<p>From another object, you can create a codeunit variable and call the procedure:</p>
+<pre><code>var
+    OrderManagement: Codeunit "Dynexal Order Management";
+begin
+    OrderManagement.ProcessOrder('SO-1001');</code></pre>
+<p>Business Central also supports running a codeunit directly with <code>Codeunit.Run</code>. The exact form depends on whether the codeunit is associated with a table and whether a record is passed. citeturn0search10</p>
+
+<h2>Codeunits and page actions</h2>
+<p>A common real-world pattern is to keep a page action small and delegate the actual business logic to a codeunit:</p>
+<pre><code>action(ProcessOrder)
+{
+    ApplicationArea = All;
+    Caption = 'Process Order';
+
+    trigger OnAction()
+    var
+        OrderManagement: Codeunit "Dynexal Order Management";
+    begin
+        OrderManagement.ProcessOrder(Rec."No.");
+    end;
+}</code></pre>
+<div class="tip"><strong>Best practice:</strong> avoid putting large business processes directly inside <code>OnAction()</code>. Keep the page responsible for the user interaction and let a codeunit handle reusable business logic.</div>
+
+<h2>Codeunits and events</h2>
+<p>Codeunits are also central to event-driven Business Central development. Event subscribers are methods placed inside codeunits and decorated with the <code>EventSubscriber</code> attribute. Microsoft documents event subscribers as a way to subscribe to published events and react when those events occur. citeturn0search5turn0search15</p>
+<pre><code>codeunit 50113 "Dynexal Event Subscriber"
+{
+    [EventSubscriber(ObjectType::Table, Database::Customer, 'OnAfterInsertEvent', '', false, false)]
+    local procedure AfterCustomerInsert(var Rec: Record Customer)
+    begin
+        // Add custom logic here.
+    end;
+}</code></pre>
+
+<h2>Common beginner mistakes</h2>
+<ol>
+  <li>Putting every piece of logic into page triggers instead of creating reusable procedures.</li>
+  <li>Creating one very large codeunit with unrelated responsibilities.</li>
+  <li>Using unclear names such as <code>Codeunit1</code> or <code>MyCode</code>.</li>
+  <li>Making helper procedures public when they only need to be used internally.</li>
+  <li>Putting UI-specific logic and reusable business logic into the same procedure.</li>
+  <li>Ignoring events when an extensibility-friendly solution would be better.</li>
+</ol>
+
+<h2>How to design better codeunits</h2>
+<ul>
+  <li>Give each codeunit a clear responsibility.</li>
+  <li>Use meaningful names for codeunits, procedures and parameters.</li>
+  <li>Keep procedures focused on one logical task.</li>
+  <li>Reuse codeunits from pages, reports and other application objects where appropriate.</li>
+  <li>Use events and subscribers when you need loosely coupled extensibility.</li>
+  <li>Keep code readable and easy to test.</li>
+</ul>
+
+<h2>What should you learn next?</h2>
+<div class="article-links">
+  <p><a href="al-tables-business-central.html">AL Tables in Business Central</a> — understand the data model that your business logic works with.</p>
+  <p><a href="creating-list-and-card-pages-al.html">Creating List and Card Pages in AL</a> — connect your data model to a user interface.</p>
+  <p><a href="page-extensions-business-central.html">Page Extensions in Business Central</a> — add actions and fields to standard pages.</p>
+  <p><a href="getting-started-with-al.html">Getting Started with AL Development</a> — follow the complete beginner learning path.</p>
+</div>
+
+<div class="article-footer"><a class="back" href="../tutorials.html">← Explore all Dynexal tutorials</a></div>
+</main><footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script>
+</body></html>
