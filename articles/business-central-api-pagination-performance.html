@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn Business Central API pagination and performance with practical examples for nextLink, $top, filters, $select, server-driven paging, retries, throttling and efficient integrations.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-api-pagination-performance.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-api-pagination-performance.html">
+<meta property="og:title" content="Business Central API Pagination & Performance: Complete Guide">
+<meta property="og:description" content="Practical guide to Business Central API pagination, nextLink, OData server-driven paging, filters, performance and reliable integration patterns.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central API Pagination & Performance: Complete Guide">
+<meta name="twitter:description" content="Learn how to handle large Business Central API datasets efficiently with pagination, filters, nextLink and performance best practices.">
+<title>Business Central API Pagination &amp; Performance: Complete Guide | Dynexal</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article-page{padding:70px 20px 100px}.article-wrap{max-width:900px;margin:auto}.article-meta{color:#65748a;font-size:14px;margin-bottom:18px}.article-page h1{font-size:52px;line-height:1.12;margin:10px 0 20px}.article-intro{font-size:20px;line-height:1.75;color:#65748a;margin-bottom:38px}.article-page h2{font-size:31px;margin:48px 0 16px}.article-page h3{font-size:23px;margin:30px 0 12px}.article-page p,.article-page li{font-size:17px;line-height:1.8;color:#34445a}.article-page ul,.article-page ol{padding-left:25px}.article-page li{margin:8px 0}.code{background:#0b1220;color:#e8eef8;border-radius:14px;padding:22px;overflow:auto;margin:18px 0;font-family:Consolas,Monaco,monospace;font-size:14px;line-height:1.7}.note{background:#eef4ff;border-left:4px solid #426ee5;padding:18px 20px;border-radius:10px;margin:22px 0}.warn{background:#fff7e8;border-left:4px solid #e39b2e;padding:18px 20px;border-radius:10px;margin:22px 0}.article-page a{color:#315fc9}.related{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:25px}.related a{display:block;background:#f6f8fb;border:1px solid #e2e7ef;padding:18px;border-radius:12px;text-decoration:none;font-weight:800}.table-wrap{overflow:auto;margin:20px 0}.article-page table{width:100%;border-collapse:collapse}.article-page th,.article-page td{border:1px solid #dfe5ee;padding:13px;text-align:left}.article-page th{background:#f4f7fb}@media(max-width:700px){.article-page h1{font-size:38px}.related{grid-template-columns:1fr}}
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"Business Central API Pagination & Performance: Complete Guide",
+  "description":"Learn Business Central API pagination and performance with practical examples for nextLink, filters, server-driven paging, retries and efficient integrations.",
+  "author":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},
+  "publisher":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-api-pagination-performance.html"},
+  "url":"https://dynexal.com/articles/business-central-api-pagination-performance.html",
+  "isPartOf":{"@type":"WebSite","name":"Dynexal","url":"https://dynexal.com/"}
+}
+</script>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article-page"><article class="article-wrap">
+<div class="article-meta">INTEGRATION · BUSINESS CENTRAL API · PERFORMANCE</div>
+<h1>Business Central API Pagination &amp; Performance: Complete Guide</h1>
+<p class="article-intro">When a Business Central integration grows from a few records to thousands or millions, simply calling an API endpoint repeatedly is not enough. You need efficient filtering, controlled result sizes, pagination, retry handling and a performance-focused API design. This guide explains practical patterns for building reliable Business Central integrations.</p>
+
+<h2>1. What Is API Pagination?</h2>
+<p>Pagination means retrieving a large dataset in smaller pages instead of trying to download every record in a single response.</p>
+<p>For example, an integration may need to read 50,000 customers. Instead of treating the entire dataset as one response, the client processes the available pages one after another.</p>
+<div class="note"><strong>Key idea:</strong> pagination protects both the Business Central service and the consuming application from unnecessarily large responses, slow processing and memory pressure.</div>
+
+<h2>2. Why Pagination Matters in Business Central</h2>
+<ul>
+<li>Large responses take longer to transfer and process.</li>
+<li>Large requests can increase memory usage.</li>
+<li>Long-running calls are more likely to hit timeouts.</li>
+<li>External systems may have their own response-size or execution limits.</li>
+<li>Large integrations need predictable retry and recovery behavior.</li>
+</ul>
+<p>Microsoft recommends performance-oriented API and OData patterns such as limiting data, using filters, selecting only required columns and using server-driven paging where appropriate.</p>
+
+<h2>3. Business Central API Endpoint Example</h2>
+<p>A standard Business Central API endpoint can look like this:</p>
+<div class="code">https://api.businesscentral.dynamics.com/v2.0/PRODUCTION/api/v2.0/companies({companyId})/customers</div>
+<p>You can then apply query options when supported by the endpoint. For example:</p>
+<div class="code">https://api.businesscentral.dynamics.com/v2.0/PRODUCTION/api/v2.0/companies({companyId})/customers?$select=id,number,displayName</div>
+<p>Reducing the number of fields returned is one of the simplest ways to reduce payload size.</p>
+
+<h2>4. Use $top Carefully</h2>
+<p>The <code>$top</code> query option can limit the number of records returned by a request.</p>
+<div class="code">GET .../customers?$top=100</div>
+<p>This is useful when you only need a limited number of records, such as a dashboard or a preview. It should not be treated as a complete pagination strategy for large integrations.</p>
+<div class="warn"><strong>Important:</strong> do not build a large Business Central OData integration around repeated <code>$skip</code> + <code>$top</code> calls. Microsoft recommends server-driven paging rather than client-driven paging with <code>$top</code> and <code>$skip</code> for OData performance scenarios.</div>
+
+<h2>5. Server-Driven Paging and @odata.nextLink</h2>
+<p>With server-driven paging, Business Central determines how much data is returned in a page. When more data remains, the response can contain an <code>@odata.nextLink</code> value.</p>
+<p>The client should follow that link to retrieve the next page rather than trying to construct its own paging token.</p>
+<div class="code">{
+  "@odata.context": "...",
+  "value": [
+    { "id": "...", "number": "C00010" },
+    { "id": "...", "number": "C00011" }
+  ],
+  "@odata.nextLink": "https://api.businesscentral.dynamics.com/..."
+}</div>
+<p>The exact response shape depends on the endpoint, but the important pattern is the same: process the current page, check for the next link, call it, and continue until there is no next link.</p>
+
+<h2>6. Pagination Flow</h2>
+<ol>
+<li>Send the initial GET request.</li>
+<li>Process the records returned in the current page.</li>
+<li>Check whether a next-page link is present.</li>
+<li>If it exists, call the supplied next link.</li>
+<li>Process the next page.</li>
+<li>Repeat until there is no next link.</li>
+</ol>
+<p>A simplified client-side algorithm looks like this:</p>
+<div class="code">nextUrl = initialUrl
+
+while nextUrl is not empty:
+    response = GET(nextUrl)
+    process(response.value)
+    nextUrl = response.@odata.nextLink</div>
+<div class="note"><strong>Best practice:</strong> treat a server-provided next link as opaque. Do not manually modify its paging token or assume that page sizes will always be identical.</div>
+
+<h2>7. Use $filter Before Pagination</h2>
+<p>Pagination is useful, but filtering is often even more important. If the integration only needs recently changed records, do not download the entire table.</p>
+<p>For example, a suitable API filter can reduce the dataset before pagination begins:</p>
+<div class="code">?$filter=lastModifiedDateTime ge 2026-09-01T00:00:00Z</div>
+<p>In real integrations, combine business requirements with the fields and filter capabilities exposed by the endpoint.</p>
+
+<h2>8. Use $select to Reduce Payload Size</h2>
+<p>If an integration only needs five fields, there is little value in transferring dozens of fields.</p>
+<div class="code">?$select=id,number,displayName,email,phoneNumber</div>
+<p>Smaller responses generally mean less network traffic, less JSON parsing and less memory usage in the consuming application.</p>
+
+<h2>9. Be Careful with $expand</h2>
+<p><code>$expand</code> is useful when related data is required, but expanding large related datasets can make an API call expensive.</p>
+<p>A safer pattern is to combine an expansion with a restrictive filter or limit the data you actually need.</p>
+<div class="code">?$select=id,number,displayName&amp;$expand=contacts($select=id,displayName)</div>
+<p>Always test the actual response size and execution time instead of assuming that an apparently small query will be fast.</p>
+
+<h2>10. API Pagination vs OData Paging</h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Approach</th><th>Typical use</th><th>Important point</th></tr></thead>
+<tbody>
+<tr><td>Business Central REST APIs</td><td>Application integrations</td><td>Use the API stack and efficient query options; handle paged list responses correctly.</td></tr>
+<tr><td>OData web services</td><td>Data access, reporting and compatible clients</td><td>Prefer server-driven paging for large result sets.</td></tr>
+<tr><td>$top</td><td>Small result limits</td><td>Useful for limiting a request, not a substitute for robust server-driven paging.</td></tr>
+<tr><td>$skip + $top</td><td>Common generic REST pattern</td><td>Do not use it as the main client-driven paging approach for Business Central OData.</td></tr>
+</tbody>
+</table></div>
+
+<h2>11. Performance Best Practices</h2>
+<ul>
+<li>Prefer Business Central API pages and API queries for integration scenarios.</li>
+<li>Use the highest supported API version available rather than beta API versions.</li>
+<li>Return only the columns the consumer actually needs.</li>
+<li>Use filters to reduce the dataset before transferring it.</li>
+<li>Use server-driven paging for large OData datasets.</li>
+<li>Be cautious with expensive <code>$expand</code> operations.</li>
+<li>Avoid heavy calculations and unnecessary logic in endpoints.</li>
+<li>Measure query performance before and after changes.</li>
+<li>Design the client to tolerate transient failures and throttling.</li>
+<li>Do not assume every page has the same number of records.</li>
+</ul>
+
+<h2>12. Handling 429, 503 and 504 Responses</h2>
+<p>Large integrations can encounter service throttling or temporary service conditions. Your client should be prepared for HTTP status codes such as <strong>429 Too Many Requests</strong>, <strong>503 Service Temporarily Unavailable</strong> and <strong>504 Gateway Timeout</strong>.</p>
+<p>A robust retry strategy can use a cool-off period and exponential backoff rather than immediately repeating the same request.</p>
+<div class="code">Attempt 1 → wait briefly
+Attempt 2 → wait longer
+Attempt 3 → wait longer again
+If still failing → log the failure and move the item to a retry/dead-letter process</div>
+<p>The exact retry policy should be based on the integration's business requirements and operational limits.</p>
+
+<h2>13. Example: Sync Customers Efficiently</h2>
+<p>Imagine an external e-commerce application needs to synchronize customers from Business Central.</p>
+<p>A poor design might download every customer and every available field on every run.</p>
+<p>A better design is:</p>
+<ol>
+<li>Use the Business Central API.</li>
+<li>Request only required fields with <code>$select</code>.</li>
+<li>Filter for records that need synchronization.</li>
+<li>Process the response page by page.</li>
+<li>Follow the server-provided next link when present.</li>
+<li>Save a synchronization checkpoint.</li>
+<li>Retry transient failures with backoff.</li>
+<li>Log failures that cannot be recovered automatically.</li>
+</ol>
+
+<h2>14. Pagination in an AL Integration</h2>
+<p>When AL uses <code>HttpClient</code> to call an external service, the same design principles apply. Keep the HTTP request, JSON parsing and pagination logic separate where practical.</p>
+<div class="code">HttpClient.Get(RequestUrl, Response);
+
+if Response.IsSuccessStatusCode() then begin
+    Response.Content().ReadAs(ResponseText);
+    // Parse JSON
+    // Process current page
+    // Read next link
+end else begin
+    // Handle HTTP error
+end;</div>
+<p>For calls from interactive AL sessions, remember that an outgoing HTTP call blocks AL execution until the call completes. Long-running integrations are usually better designed around background processing rather than making a user wait for a large synchronization job.</p>
+
+<h2>15. Common Pagination Mistakes</h2>
+<h3>Mistake 1: Downloading everything in one request</h3>
+<p>This increases response size, memory usage and timeout risk.</p>
+<h3>Mistake 2: Ignoring the next link</h3>
+<p>If the service provides another page, processing only the first response means your integration silently misses records.</p>
+<h3>Mistake 3: Manually modifying a paging URL</h3>
+<p>Server-generated paging links should be treated as opaque. Follow the supplied link instead of guessing its token format.</p>
+<h3>Mistake 4: Requesting every field</h3>
+<p>Use <code>$select</code> when the endpoint supports it and only return data the consumer needs.</p>
+<h3>Mistake 5: Retrying immediately</h3>
+<p>Repeated immediate retries can make throttling worse. Use controlled backoff and logging.</p>
+
+<h2>16. How to Test API Performance</h2>
+<p>Use Postman, browser developer tools or another HTTP client to compare different versions of a query.</p>
+<p>Measure:</p>
+<ul>
+<li>Response time</li>
+<li>Response size</li>
+<li>Number of records returned</li>
+<li>Number of API calls</li>
+<li>Error and retry rate</li>
+<li>Total synchronization time</li>
+</ul>
+<p>Do not optimize blindly. Establish a baseline, make one meaningful change, and measure the result again.</p>
+
+<h2>17. Pagination Checklist</h2>
+<ul>
+<li>☑ Use API pages or API queries for integration scenarios.</li>
+<li>☑ Filter data before transferring large datasets.</li>
+<li>☑ Select only required fields.</li>
+<li>☑ Process responses page by page.</li>
+<li>☑ Follow <code>@odata.nextLink</code> when returned.</li>
+<li>☑ Avoid client-driven <code>$skip</code> + <code>$top</code> paging for Business Central OData.</li>
+<li>☑ Handle 429, 503 and 504 responses.</li>
+<li>☑ Use controlled retries and backoff.</li>
+<li>☑ Measure actual performance.</li>
+<li>☑ Log failures and synchronization checkpoints.</li>
+</ul>
+
+<h2>FAQ</h2>
+<h3>Does pagination improve Business Central API performance?</h3>
+<p>It can improve reliability and resource usage by keeping individual responses manageable. It should be combined with filtering, selecting required fields and sensible endpoint design.</p>
+<h3>Should I always use $top?</h3>
+<p>No. Use <code>$top</code> when you intentionally need to limit a result set. For large OData datasets, use the server-driven paging pattern rather than building a large paging system around <code>$skip</code> and <code>$top</code>.</p>
+<h3>What should I do when @odata.nextLink is returned?</h3>
+<p>Process the current page, then request the supplied next link and continue until no next link is returned.</p>
+<h3>What is the best way to make a Business Central API integration fast?</h3>
+<p>Start with the right endpoint, reduce the dataset with filters, select only required fields, avoid unnecessary expansions, use efficient paging and measure actual performance.</p>
+
+<h2>Related Dynexal Tutorials</h2>
+<div class="related">
+<a href="business-central-api-integration.html">Business Central API Integration →</a>
+<a href="business-central-api-query.html">Business Central API Query →</a>
+<a href="business-central-api-filters-odata.html">API Filters &amp; OData →</a>
+<a href="httpclient-business-central-al.html">HttpClient in Business Central AL →</a>
+<a href="json-handling-business-central-al.html">JSON Handling in AL →</a>
+<a href="oauth-2-authentication-business-central-al.html">OAuth 2.0 Authentication →</a>
+<a href="business-central-webhooks.html">Business Central Webhooks →</a>
+<a href="al-error-handling-business-central.html">AL Error Handling →</a>
+</div>
+</article></main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
