@@ -1,234 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Learn Business Central webhooks with practical examples covering subscriptions, validation handshakes, notifications, renewals, custom APIs, security and troubleshooting.">
-<meta name="author" content="Dynexal">
-<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
-<link rel="canonical" href="https://dynexal.com/articles/business-central-webhooks.html">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://dynexal.com/articles/business-central-webhooks.html">
-<meta property="og:title" content="Business Central Webhooks: Complete Practical Guide | Dynexal">
-<meta property="og:description" content="A practical guide to Business Central webhooks, subscriptions, validation, notifications, renewals, custom APIs and integration patterns.">
-<meta property="og:site_name" content="Dynexal">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Business Central Webhooks: Complete Practical Guide | Dynexal">
-<meta name="twitter:description" content="Learn how Business Central webhooks work and how to build reliable event-driven integrations.">
-<title>Business Central Webhooks: Complete Practical Guide | Dynexal</title>
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org",
-  "@type":"TechArticle",
-  "headline":"Business Central Webhooks: Complete Practical Guide",
-  "description":"A practical guide to Business Central webhooks, subscriptions, validation, notifications, renewals, custom APIs and integration patterns.",
-  "author":{"@type":"Organization","name":"Dynexal"},
-  "publisher":{"@type":"Organization","name":"Dynexal"},
-  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-webhooks.html"},
-  "url":"https://dynexal.com/articles/business-central-webhooks.html",
-  "inLanguage":"en"
-}
-</script>
-<link rel="stylesheet" href="../styles.css">
-<style>
-.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d68b32;background:#fff8ec;padding:16px 20px;margin:24px 0;color:#5d4b2a}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre code{font-size:12px}}
-</style>
-</head>
-<body>
-<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
-<main class="article">
-<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">INTEGRATION</span>
-<h1>Business Central Webhooks: Complete Practical Guide</h1>
-<p class="meta">Dynexal • Beginner to Intermediate • 14 min read</p>
-<p class="intro">Webhooks let an external application receive notifications when a Business Central entity changes. Instead of repeatedly polling an API, your integration can subscribe to a resource and react when Business Central sends a notification.</p>
-<div class="hero-note"><strong>What you will learn:</strong> webhook architecture, subscriptions, validation handshakes, notification payloads, clientState, renewals, custom APIs, retries, security, testing and production integration patterns.</div>
-
-<h2>What is a webhook?</h2>
-<p>A webhook is a server-to-server notification pattern. An external application provides a public HTTPS <code>notificationUrl</code>, creates a subscription for a Business Central resource, and then receives notifications when the subscribed entity changes.</p>
-<p>This is different from polling. With polling, your application repeatedly asks Business Central whether anything changed. With a webhook, Business Central calls your endpoint when a change notification is available.</p>
-<div class="tip"><strong>Simple idea:</strong> API polling asks, “Did anything change?” A webhook lets Business Central tell you, “Something changed.”</div>
-
-<h2>Why use Business Central webhooks?</h2>
-<ul>
-<li>Reduce unnecessary repeated API requests.</li>
-<li>React to changes with lower integration latency.</li>
-<li>Build event-driven integrations between Business Central and external systems.</li>
-<li>Keep e-commerce, CRM, warehouse and middleware systems more synchronized.</li>
-<li>Use standard APIs or supported custom API resources as webhook sources.</li>
-</ul>
-
-<h2>Webhook architecture</h2>
-<p>A typical Business Central webhook flow looks like this:</p>
-<ol>
-<li>Your application exposes an HTTPS notification endpoint.</li>
-<li>Your application calls the Business Central subscriptions endpoint.</li>
-<li>Business Central sends a validation request containing a <code>validationToken</code>.</li>
-<li>Your endpoint returns the token with HTTP <code>200 OK</code>.</li>
-<li>The subscription becomes active.</li>
-<li>When the subscribed entity changes, Business Central sends a notification to your endpoint.</li>
-<li>Your application processes the notification and, when needed, calls the Business Central API to retrieve the current record.</li>
-</ol>
-<p>The validation handshake is mandatory when creating and renewing subscriptions. The subscriber must return the validation token in the response body with status code 200. citehttps://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-connect-apps-delta</p>
-
-<h2>Create a webhook subscription</h2>
-<p>For the standard Business Central API, the subscription endpoint is based on the Business Central API URL. A simplified request looks like this:</p>
-<pre><code>POST https://{businesscentralPrefix}/api/v2.0/subscriptions
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="description" content="Learn Business Central webhooks with practical examples covering subscriptions, validation handshakes, notifications, renewals, custom APIs, security and troubleshooting."><meta name="author" content="Dynexal"><link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg"><link rel="canonical" href="https://dynexal.com/articles/business-central-webhooks.html"><meta property="og:type" content="article"><meta property="og:url" content="https://dynexal.com/articles/business-central-webhooks.html"><meta property="og:title" content="Business Central Webhooks: Complete Practical Guide | Dynexal"><meta property="og:description" content="A practical guide to Business Central webhooks, subscriptions, validation, notifications, renewals, custom APIs and integration patterns."><meta property="og:site_name" content="Dynexal"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Business Central Webhooks: Complete Practical Guide | Dynexal"><meta name="twitter:description" content="Learn how Business Central webhooks work and how to build reliable event-driven integrations."><title>Business Central Webhooks: Complete Practical Guide | Dynexal</title><link rel="stylesheet" href="../styles.css"></head><body><header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header><main class="article" style="max-width:850px;margin:0 auto;padding:75px 20px 90px"><a href="../tutorials.html">← Back to Tutorials</a><span style="display:block;margin-top:35px">INTEGRATION</span><h1>Business Central Webhooks: Complete Practical Guide</h1><p>Dynexal • Beginner to Intermediate • 12 min read</p><p style="font-size:20px;line-height:1.7">Webhooks let an external application receive notifications when a supported Business Central entity changes. Instead of repeatedly polling an API, your integration can subscribe to a resource and react when Business Central sends a notification.</p><h2>What is a webhook?</h2><p>A webhook is a server-to-server notification pattern. An external application provides a public HTTPS <code>notificationUrl</code>, creates a subscription for a Business Central resource, and receives notifications when that resource changes.</p><h2>Why use Business Central webhooks?</h2><ul><li>Reduce unnecessary repeated API requests.</li><li>React to changes with lower integration latency.</li><li>Build event-driven integrations with CRM, e-commerce, warehouse and middleware systems.</li><li>Use a notification as a trigger and retrieve current data through the Business Central API.</li></ul><h2>Webhook flow</h2><ol><li>Expose an HTTPS notification endpoint.</li><li>Create a Business Central webhook subscription.</li><li>Business Central sends a validation request containing <code>validationToken</code>.</li><li>Return the token with HTTP <code>200 OK</code>.</li><li>The subscription becomes active.</li><li>Business Central sends notifications when the subscribed resource changes.</li><li>Validate, queue and process the notification.</li></ol><h2>Create a subscription</h2><pre><code>POST https://{businesscentralPrefix}/api/v2.0/subscriptions
 Content-Type: application/json
 
 {
   "notificationUrl": "https://example.com/api/business-central/webhook",
   "resource": "/api/v2.0/companies({companyId})/customers",
   "clientState": "your-shared-state-value"
-}</code></pre>
-<p>The current Microsoft documentation uses the v2.0 subscriptions API and shows <code>notificationUrl</code>, <code>resource</code> and optional <code>clientState</code> in the request body. citehttps://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/api-reference/v2.0/api/dynamics_subscriptions_create</p>
-
-<h2>The validation handshake</h2>
-<p>When Business Central creates or renews a subscription, it first validates that your notification endpoint can receive webhook calls. Business Central sends a request to your notification URL with a <code>validationToken</code> query parameter.</p>
-<p>Your endpoint must return that token in the response body and use HTTP status <code>200 OK</code>.</p>
-<pre><code>HTTP/1.1 200 OK
+}</code></pre><p>The request identifies the notification endpoint, the Business Central resource and an optional client state value.</p><h2>The validation handshake</h2><p>When Business Central creates or renews a subscription, it validates that your endpoint can receive webhook calls. The request includes a <code>validationToken</code> query parameter.</p><pre><code>HTTP/1.1 200 OK
 Content-Type: text/plain
 
-{validationToken}</code></pre>
-<div class="warning"><strong>Common mistake:</strong> returning JSON such as <code>{"token":"..."}</code> when the handshake expects the validation token in the response body. Implement the handshake exactly as required by the Business Central webhook contract.</div>
-
-<h2>Example webhook endpoint</h2>
-<p>The following pseudocode shows the important logic. The exact implementation depends on your server technology.</p>
-<pre><code>POST /api/business-central/webhook?validationToken=abc123
-
-if validationToken exists:
+{validationToken}</code></pre><p><strong>Important:</strong> return the exact validation token in the response body with HTTP 200. Do not wrap it in unrelated JSON.</p><h2>Example endpoint logic</h2><pre><code>if validationToken exists:
     return 200 OK
     body = validationToken
 
 otherwise:
-    read notification body
+    read notification
     verify clientState
-    queue notification for processing
-    return 200 OK</code></pre>
-<p>For production systems, keep the HTTP endpoint fast. Receive and validate the request, place work on a durable queue when appropriate, and process business logic asynchronously.</p>
+    queue notification
+    return 200 OK</code></pre><p>Keep the webhook endpoint fast. For production systems, validate the request, place important work on a durable queue and process business logic asynchronously.</p><h2>What does a notification do?</h2><p>A notification tells the subscriber that a subscribed resource changed. Treat it as a trigger rather than assuming it contains every current field value.</p><p>A common pattern is: <strong>webhook → validate → Business Central API → retrieve current record → process integration</strong>.</p><h2>Using clientState</h2><p><code>clientState</code> is delivered with notifications when supplied during subscription creation or renewal. It can be used as an opaque value or shared secret that the subscriber checks before processing.</p><p>Never publish real production secrets in source code, tutorials, repositories or client-side JavaScript. Use secure configuration or a secret store.</p><h2>Subscriptions expire</h2><p>Business Central webhook subscriptions are temporary. Microsoft documents a three-day expiration period when a subscription is not renewed. Renewal uses <code>PATCH</code> and also requires the validation handshake.</p><pre><code>PATCH https://{businesscentralPrefix}/api/v2.0/subscriptions({subscriptionId})</code></pre><p>Store the subscription ID and <code>expirationDateTime</code> and renew before expiration.</p><h2>Get and delete subscriptions</h2><pre><code>GET https://{businesscentralPrefix}/api/v2.0/subscriptions
 
-<h2>What does a webhook notification contain?</h2>
-<p>A notification identifies the resource that changed and includes information needed by the subscriber to decide what to do next. The notification can contain a <code>clientState</code> value when one was supplied during subscription creation or renewal.</p>
-<p>Do not assume that the webhook payload is a complete replacement for reading the resource. A common integration pattern is to use the notification as a trigger and then call the relevant Business Central API endpoint to retrieve the current entity.</p>
-
-<h2>Using clientState for verification</h2>
-<p><code>clientState</code> can be used as an opaque value or shared secret that the subscriber checks when receiving notifications. Microsoft documents clientState as a value delivered with notifications and suitable for helping the subscriber verify messages or manage state. citehttps://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-connect-apps-delta</p>
-<pre><code>Expected clientState:
-BC-DYNEXAL-SECRET-123
-
-Received notification:
-clientState = BC-DYNEXAL-SECRET-123
-
-Result:
-Process notification</code></pre>
-<div class="warning"><strong>Security note:</strong> never hard-code real production secrets into source code or publish them in tutorials, repositories or client-side JavaScript. Use a secure secret store or environment configuration in a real application.</div>
-
-<h2>Webhook subscriptions expire</h2>
-<p>Business Central webhook subscriptions are not permanent. Microsoft documents that subscriptions expire after three days if they are not renewed. Renewal is performed with a <code>PATCH</code> request to the subscription resource, and renewal also requires the validation handshake. citehttps://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-connect-apps-delta</p>
-<pre><code>PATCH https://{businesscentralPrefix}/api/v2.0/subscriptions({subscriptionId})
-Content-Type: application/json
-
-{
-  "notificationUrl": "https://example.com/api/business-central/webhook"
-}</code></pre>
-<p>The subscription response includes an <code>expirationDateTime</code> property. Your integration should store the subscription ID and expiration time and renew it before it expires.</p>
-
-<h2>Get existing subscriptions</h2>
-<p>You can retrieve subscription information through the Business Central subscriptions resource. Current v2.0 documentation supports GET, POST, PATCH and DELETE operations for subscription management. citehttps://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/api-reference/v2.0/resources/dynamics_subscriptions</p>
-<pre><code>GET https://{businesscentralPrefix}/api/v2.0/subscriptions</code></pre>
-<p>Use the returned subscription information to monitor active subscriptions and their expiration dates.</p>
-
-<h2>Delete a webhook subscription</h2>
-<p>When an integration is removed or a resource no longer needs monitoring, delete the subscription instead of leaving unused subscriptions active.</p>
-<pre><code>DELETE https://{businesscentralPrefix}/api/v2.0/subscriptions({subscriptionId})</code></pre>
-<p>Subscription management includes creating, reading, updating and deleting subscriptions. citehttps://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/api-reference/v2.0/resources/dynamics_subscriptions</p>
-
-<h2>Webhooks with custom API pages</h2>
-<p>Custom API pages can also be used with Business Central webhooks. When subscribing to a custom API, the subscription URL and resource path must use the same <code>APIPublisher</code>, <code>APIGroup</code> and <code>APIVersion</code> values defined by the custom API.</p>
-<pre><code>api/{publisher}/{group}/{version}/subscriptions</code></pre>
-<p>For example, if a custom API uses publisher <code>dynexal</code>, group <code>integration</code> and version <code>v1.0</code>, the subscription route follows that API namespace.</p>
-<p>This makes webhooks particularly useful when a standard API does not expose exactly the business entity your integration needs. citehttps://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-connect-apps-delta</p>
-
-<h2>Webhook notifications are not the same as AL events</h2>
-<p>AL events such as <code>IntegrationEvent</code> and <code>EventSubscriber</code> are primarily an internal Business Central extension mechanism. Webhooks are an external integration mechanism that sends HTTP notifications to another application.</p>
-<table style="width:100%;border-collapse:collapse;margin:24px 0;color:#46546a;font-size:16px"><tr><th style="text-align:left;border-bottom:1px solid #d9e0ea;padding:10px">Feature</th><th style="text-align:left;border-bottom:1px solid #d9e0ea;padding:10px">AL Events</th><th style="text-align:left;border-bottom:1px solid #d9e0ea;padding:10px">Webhooks</th></tr><tr><td style="padding:10px;border-bottom:1px solid #e7ebf0">Main purpose</td><td style="padding:10px;border-bottom:1px solid #e7ebf0">Internal extension logic</td><td style="padding:10px;border-bottom:1px solid #e7ebf0">External notifications</td></tr><tr><td style="padding:10px;border-bottom:1px solid #e7ebf0">Typical consumer</td><td style="padding:10px;border-bottom:1px solid #e7ebf0">AL subscriber code</td><td style="padding:10px;border-bottom:1px solid #e7ebf0">External HTTP service</td></tr><tr><td style="padding:10px">Transport</td><td style="padding:10px">AL runtime</td><td style="padding:10px">HTTPS</td></tr></table>
-
-<h2>Webhooks vs polling</h2>
-<p>Polling can be simpler for a first prototype, but frequent polling can create unnecessary API traffic and still leaves a delay between changes and detection. Webhooks are better suited when you want Business Central to notify your application when supported resources change.</p>
-<p>A practical architecture can combine both approaches: use webhooks for fast change detection and a scheduled reconciliation process to recover from outages or missed processing.</p>
-
-<h2>Handling duplicate notifications</h2>
-<p>Production integrations should be designed to tolerate repeated or delayed notifications. Do not assume that one HTTP request always maps to exactly one business operation.</p>
-<ul>
-<li>Persist a notification or resource identifier when appropriate.</li>
-<li>Make downstream processing idempotent.</li>
-<li>Use queues for durable processing.</li>
-<li>Log failures and retry safely.</li>
-<li>Periodically reconcile important data with the source system.</li>
-</ul>
-
-<h2>Retry and endpoint availability</h2>
-<p>Your webhook endpoint should be reliable and reachable over HTTPS. Microsoft documents retry behavior when Business Central cannot reach the subscriber. The documented retry-related responses include 408, 429 and 5xx responses; other response codes can cause retries not to continue and can lead to the subscription being deleted. citehttps://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/api-reference/v1.0/dynamics_subscriptions</p>
-<p>Because of this, avoid returning arbitrary error codes when a temporary failure occurs. Handle transient failures deliberately and monitor your endpoint.</p>
-
-<h2>Real-world e-commerce example</h2>
-<p>Imagine a Shopify-to-Business-Central integration with an external middleware service:</p>
-<ol>
-<li>Business Central customer data changes.</li>
-<li>The webhook sends a notification to the middleware.</li>
-<li>The middleware validates the notification.</li>
-<li>The middleware retrieves the latest customer through the Business Central API.</li>
-<li>The middleware transforms the data for the external system.</li>
-<li>The middleware updates the external platform.</li>
-<li>The middleware records the processing result for audit and troubleshooting.</li>
-</ol>
-<p>The webhook acts as the trigger; the API provides the current resource data; the middleware handles transformation and business workflow.</p>
-
-<h2>Testing a webhook integration</h2>
-<ol>
-<li>Expose a temporary HTTPS endpoint in a controlled development environment.</li>
-<li>Create the Business Central subscription.</li>
-<li>Confirm that the validation handshake succeeds.</li>
-<li>Change a supported entity in Business Central.</li>
-<li>Check that the notification reaches your endpoint.</li>
-<li>Verify the clientState value if you use one.</li>
-<li>Retrieve the current resource through the API.</li>
-<li>Test temporary endpoint failures and retry behavior.</li>
-<li>Test subscription renewal before expiration.</li>
-<li>Test deletion and recreation of a subscription.</li>
-</ol>
-
-<h2>Common webhook problems</h2>
-<h3>1. Subscription creation fails</h3>
-<p>Check the subscription URL, authentication, resource path and notification URL. Also verify that your endpoint correctly handles the validation handshake.</p>
-<h3>2. Validation token is not accepted</h3>
-<p>Make sure the endpoint returns the validation token in the response body with HTTP 200 and does not wrap it in an unrelated JSON structure.</p>
-<h3>3. Notifications are not arriving</h3>
-<p>Check that the subscription is active, the resource is supported, the endpoint is publicly reachable over HTTPS, and the subscription has not expired.</p>
-<h3>4. Subscription suddenly stops working</h3>
-<p>Check <code>expirationDateTime</code> and your renewal process. A subscription that is not renewed can expire after three days.</p>
-<h3>5. Your integration processes the same change twice</h3>
-<p>Design processing to be idempotent and keep an appropriate processing record or key.</p>
-<h3>6. Your endpoint becomes overloaded</h3>
-<p>Return quickly, queue work, apply back-pressure and avoid performing long-running business logic directly in the webhook request.</p>
-
-<h2>Production best practices</h2>
-<ul>
-<li>Use HTTPS for notification endpoints.</li>
-<li>Validate the Business Central webhook handshake correctly.</li>
-<li>Use <code>clientState</code> as part of your notification verification strategy.</li>
-<li>Store subscription IDs and expiration timestamps securely.</li>
-<li>Renew subscriptions before expiration.</li>
-<li>Make processing idempotent.</li>
-<li>Use durable queues for important integrations.</li>
-<li>Log subscription creation, renewal, notification receipt and processing failures.</li>
-<li>Use least-privilege authentication for API access.</li>
-<li>Keep webhook endpoints fast and resilient.</li>
-<li>Add reconciliation jobs for critical data flows.</li>
-<li>Never expose secrets in browser code or public repositories.</li>
-</ul>
-
-<h2>Recommended architecture</h2>
-<pre><code>Business Central
+DELETE https://{businesscentralPrefix}/api/v2.0/subscriptions({subscriptionId})</code></pre><p>Subscription management supports reading, creating, updating and deleting subscriptions.</p><h2>Webhooks with custom API pages</h2><p>Custom API pages can also be webhook-enabled. The subscription URL and resource path use the same <code>APIPublisher</code>, <code>APIGroup</code> and <code>APIVersion</code> values as the custom API.</p><pre><code>api/{publisher}/{group}/{version}/subscriptions</code></pre><h2>Webhooks vs AL events</h2><p>AL events such as <code>IntegrationEvent</code> and <code>EventSubscriber</code> are mainly an internal Business Central extension mechanism. Webhooks are an external HTTP integration mechanism.</p><h2>Webhooks vs polling</h2><p>Polling can be useful for simple prototypes, but frequent polling creates repeated API traffic and detection delay. Webhooks are better when you want Business Central to notify an external system about supported resource changes.</p><p>A robust architecture can combine both: webhooks provide fast change detection while a scheduled reconciliation job recovers from outages or missed processing.</p><h2>Handling duplicate notifications</h2><ul><li>Make downstream operations idempotent.</li><li>Use a durable queue.</li><li>Log failures and retry safely.</li><li>Run periodic reconciliation for critical data.</li></ul><h2>Retry and endpoint availability</h2><p>Your notification endpoint should be publicly reachable over HTTPS and return appropriate HTTP responses. Business Central documents retry behavior for temporary subscriber failures, including 408, 429 and 5xx responses. Monitor the endpoint and avoid returning arbitrary errors for transient problems.</p><h2>Real-world e-commerce example</h2><ol><li>A Business Central customer or order changes.</li><li>Business Central sends a webhook notification to middleware.</li><li>The middleware validates the request.</li><li>The middleware retrieves the latest record through the Business Central API.</li><li>The middleware transforms the data.</li><li>The external e-commerce or CRM system is updated.</li><li>The processing result is logged.</li></ol><h2>Testing checklist</h2><ol><li>Expose a controlled HTTPS endpoint.</li><li>Create the subscription.</li><li>Confirm the validation handshake.</li><li>Change a supported entity.</li><li>Confirm the notification arrives.</li><li>Verify clientState if used.</li><li>Retrieve the current entity through the API.</li><li>Test temporary failures.</li><li>Test renewal before expiration.</li><li>Test deletion and recreation.</li></ol><h2>Common problems</h2><h3>Subscription creation fails</h3><p>Check the API URL, authentication, resource path, notification URL and validation handshake.</p><h3>No notifications arrive</h3><p>Check that the subscription is active, the resource is supported, the endpoint is reachable over HTTPS and the subscription has not expired.</p><h3>Subscription stops after a few days</h3><p>Check <code>expirationDateTime</code> and implement automatic renewal.</p><h3>Same change is processed twice</h3><p>Make processing idempotent and maintain a suitable processing record.</p><h2>Production best practices</h2><ul><li>Use HTTPS.</li><li>Implement the validation handshake exactly.</li><li>Validate clientState where appropriate.</li><li>Store subscription IDs and expiration timestamps.</li><li>Renew subscriptions before expiration.</li><li>Use idempotent processing and durable queues.</li><li>Log subscription lifecycle and processing failures.</li><li>Use least-privilege authentication for API access.</li><li>Add monitoring and reconciliation for critical flows.</li><li>Never expose production secrets in public code.</li></ul><h2>Recommended architecture</h2><pre><code>Business Central
       |
       | Webhook notification
       v
@@ -241,31 +31,8 @@ Validation + clientState check
 Durable Queue
       |
       v
-Worker / Integration Service
+Integration Worker
       |
       +----> Business Central API
-      |
-      +----> External CRM / E-commerce / Warehouse
-      |
-      +----> Logs + Monitoring</code></pre>
-<p>This separation keeps the notification endpoint lightweight while allowing the worker to perform API calls, transformations and retries safely.</p>
-
-<h2>Frequently asked questions</h2>
-<h3>Do Business Central webhooks replace APIs?</h3>
-<p>No. Webhooks notify your application that something changed. Your application can then use the Business Central API to retrieve or modify the resource.</p>
-<h3>Do webhooks work with custom APIs?</h3>
-<p>Yes. Business Central supports webhook subscriptions for custom API pages when the custom API and subscription paths are configured correctly.</p>
-<h3>How long does a webhook subscription last?</h3>
-<p>Microsoft documents a three-day expiration period when a subscription is not renewed. Your integration should renew it before expiration.</p>
-<h3>Can I use webhooks with customers and sales orders?</h3>
-<p>Supported Business Central API resources can be subscribed to. Always verify the current supported-resource list for your Business Central version and API surface.</p>
-<h3>Should I process the whole business operation inside the webhook request?</h3>
-<p>Usually no. For reliable production integrations, acknowledge the notification quickly and process longer work asynchronously.</p>
-
-<div class="article-links"><strong>Related Dynexal tutorials:</strong><br><a href="business-central-api-integration.html">Business Central API Integration</a> · <a href="business-central-custom-api-page.html">Custom API Page</a> · <a href="httpclient-business-central-al.html">HttpClient in Business Central AL</a> · <a href="json-handling-business-central-al.html">JSON Handling in Business Central AL</a> · <a href="oauth-2-authentication-business-central-al.html">OAuth 2.0 Authentication</a> · <a href="al-event-subscribers-business-central.html">AL Event Subscribers</a></div>
-
-<div class="article-footer"><p><strong>Final takeaway:</strong> Business Central webhooks are a powerful building block for event-driven integrations. Use the webhook as the change signal, the API as the source of current resource data, and a reliable integration service or queue for processing, retries, security and monitoring.</p><p><a href="../tutorials.html">← Back to all Business Central tutorials</a></p></div>
-</main>
-<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script>
-</body>
-</html>
+      +----> CRM / E-commerce / Warehouse
+      +----> Logs + Monitoring</code></pre><h2>FAQ</h2><h3>Do webhooks replace APIs?</h3><p>No. Webhooks notify your application that something changed. The API can then retrieve or modify the resource.</p><h3>Do webhooks work with custom APIs?</h3><p>Yes. Supported custom API pages can be used with webhook subscriptions when the API namespace and subscription route are configured correctly.</p><h3>How long does a subscription last?</h3><p>Business Central documents a three-day expiration period when a subscription is not renewed.</p><h3>Should I run long business logic directly in the webhook request?</h3><p>Usually no. Acknowledge quickly and process longer work asynchronously.</p><div style="margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px"><strong>Related Dynexal tutorials:</strong><br><a href="business-central-api-integration.html">Business Central API Integration</a> · <a href="business-central-custom-api-page.html">Custom API Page</a> · <a href="httpclient-business-central-al.html">HttpClient</a> · <a href="json-handling-business-central-al.html">JSON Handling</a> · <a href="oauth-2-authentication-business-central-al.html">OAuth 2.0 Authentication</a> · <a href="al-event-subscribers-business-central.html">AL Event Subscribers</a></div></main><footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script></body></html>
