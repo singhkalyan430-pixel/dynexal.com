@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn how to create List and Card pages in Microsoft Dynamics 365 Business Central using AL, with practical examples and page extension concepts.">
+  <meta name="author" content="Dynexal"><title>Creating List and Card Pages in AL | Dynexal</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ol,.article ul{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article"><a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">AL DEVELOPMENT</span><h1>Creating List and Card Pages in AL</h1><p class="meta">Dynexal • Beginner Guide • 10 min read</p><p class="intro">Tables store your Business Central data, but pages are what users interact with. In this guide, you'll learn the difference between List and Card pages and how to build both with AL.</p>
+<div class="hero-note"><strong>What you will build:</strong> a simple Customer-style table experience with a List page for multiple records and a Card page for viewing one record at a time.</div>
+<h2>1. List Page vs. Card Page</h2><p>A <strong>List</strong> page is designed to show multiple records in rows. It is useful for browsing, searching and selecting records. A <strong>Card</strong> page focuses on one record and is commonly used for detailed editing.</p>
+<h2>2. Create a simple List page</h2><p>Assuming you already have a table named <code>Dynexal Customer</code>, a basic List page can be created like this:</p>
+<pre><code>page 50101 "Dynexal Customer List"
+{
+    PageType = List;
+    SourceTable = "Dynexal Customer";
+    ApplicationArea = All;
+    UsageCategory = Lists;
+
+    layout
+    {
+        area(Content)
+        {
+            repeater(General)
+            {
+                field("No."; Rec."No.")
+                {
+                    ApplicationArea = All;
+                }
+                field(Name; Rec.Name)
+                {
+                    ApplicationArea = All;
+                }
+                field(City; Rec.City)
+                {
+                    ApplicationArea = All;
+                }
+            }
+        }
+    }
+}</code></pre>
+<h2>3. Understand the important properties</h2><ul><li><code>PageType = List</code> tells Business Central that the page displays multiple records.</li><li><code>SourceTable</code> connects the page to its underlying table.</li><li><code>UsageCategory = Lists</code> helps make the page discoverable from search and navigation.</li><li><code>repeater</code> defines the columns users see in the list.</li><li><code>ApplicationArea = All</code> makes the controls available for all application areas in this example.</li></ul>
+<h2>4. Create a Card page</h2><p>Now create a Card page for the same table. The user can open one customer and see its fields in a form-like layout.</p>
+<pre><code>page 50102 "Dynexal Customer Card"
+{
+    PageType = Card;
+    SourceTable = "Dynexal Customer";
+    ApplicationArea = All;
+
+    layout
+    {
+        area(Content)
+        {
+            group(General)
+            {
+                field("No."; Rec."No.")
+                {
+                    ApplicationArea = All;
+                }
+                field(Name; Rec.Name)
+                {
+                    ApplicationArea = All;
+                }
+                field(City; Rec.City)
+                {
+                    ApplicationArea = All;
+                }
+            }
+        }
+    }
+}</code></pre>
+<h2>5. List + Card is a common Business Central pattern</h2><p>A typical solution uses a List page to browse records and a Card page to create or edit a selected record. This pattern appears throughout Business Central because it gives users both overview and detail views.</p>
+<h2>6. Add an action to open the Card</h2><p>As your solution grows, actions can be added to pages to navigate to related functionality. For example, a list page can provide an action that opens a selected record's Card page.</p>
+<pre><code>actions
+{
+    area(Processing)
+    {
+        action(OpenCard)
+        {
+            ApplicationArea = All;
+            Caption = 'Open Card';
+            RunObject = page "Dynexal Customer Card";
+            RunPageLink = "No." = field("No.");
+        }
+    }
+}</code></pre>
+<h2>7. Common beginner mistakes</h2><ul><li>Using a field name that does not exist in the source table.</li><li>Forgetting <code>SourceTable</code> when the page should display table data.</li><li>Using the wrong page type for the user experience.</li><li>Forgetting <code>ApplicationArea</code> on controls in examples where it is required.</li><li>Trying to build a complex page before understanding the basic List → Card flow.</li></ul>
+<h2>8. What to learn next</h2><p>Once you are comfortable with List and Card pages, move to <strong>Page Extensions</strong>, actions, FactBoxes, subpages and document pages. These concepts will help you build realistic Business Central solutions.</p>
+<div class="article-footer"><a class="back" href="../tutorials.html">← Explore more Dynexal tutorials</a></div></main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script>
+</body></html>
