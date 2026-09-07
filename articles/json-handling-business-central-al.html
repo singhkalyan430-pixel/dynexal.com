@@ -9,8 +9,7 @@
 <meta property="og:type" content="article"><meta property="og:url" content="https://dynexal.com/articles/json-handling-business-central-al.html"><meta property="og:title" content="JSON Handling in Business Central AL: Complete Guide | Dynexal"><meta property="og:description" content="A practical guide to JSON objects, arrays, tokens, values, parsing, building JSON and API integration in Business Central AL."><meta property="og:site_name" content="Dynexal">
 <meta name="twitter:card" content="summary"><meta name="twitter:title" content="JSON Handling in Business Central AL: Complete Guide | Dynexal"><meta name="twitter:description" content="Learn JSON handling in Business Central AL with practical examples for REST APIs and integrations.">
 <title>JSON Handling in Business Central AL: Complete Guide | Dynexal</title>
-<script type="application/ld+json">{
-"@context":"https://schema.org","@type":"TechArticle","headline":"JSON Handling in Business Central AL: Complete Guide","description":"A practical guide to JSON objects, arrays, tokens, values, parsing, building JSON and API integration in Business Central AL.","author":{"@type":"Organization","name":"Dynexal"},"publisher":{"@type":"Organization","name":"Dynexal"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/json-handling-business-central-al.html"},"url":"https://dynexal.com/articles/json-handling-business-central-al.html","inLanguage":"en"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"JSON Handling in Business Central AL: Complete Guide","description":"A practical guide to JSON objects, arrays, tokens, values, parsing, building JSON and API integration in Business Central AL.","author":{"@type":"Organization","name":"Dynexal"},"publisher":{"@type":"Organization","name":"Dynexal"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/json-handling-business-central-al.html"},"url":"https://dynexal.com/articles/json-handling-business-central-al.html","inLanguage":"en"}</script>
 <link rel="stylesheet" href="../styles.css">
 <style>
 .article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d38b2c;background:#fff8eb;padding:16px 20px;margin:24px 0;color:#5b4a2d}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
@@ -24,7 +23,6 @@
 <p class="meta">Dynexal • Beginner to Intermediate • 15 min read</p>
 <p class="intro">JSON is one of the most common formats used when Business Central exchanges data with REST APIs, websites, e-commerce platforms and middleware. In AL, the JSON data types give you a structured way to read, create, update and navigate JSON without treating the payload as plain text.</p>
 <div class="hero-note"><strong>What you will learn:</strong> JsonObject, JsonArray, JsonToken, JsonValue, parsing JSON, reading nested data, creating JSON requests, looping arrays, JPath selection, error handling and real-world API patterns.</div>
-
 <h2>What is JSON?</h2>
 <p>JSON (JavaScript Object Notation) is a lightweight data format built from objects, arrays and primitive values. A typical API response might look like this:</p>
 <pre><code>{
@@ -37,19 +35,12 @@
   ]
 }</code></pre>
 <p>The object contains properties such as <code>id</code> and <code>name</code>, while <code>orders</code> contains an array of objects. Understanding this structure is the key to working with JSON in AL.</p>
-
 <h2>JSON data types in AL</h2>
-<p>Business Central provides four core JSON data types: <code>JsonObject</code>, <code>JsonArray</code>, <code>JsonToken</code> and <code>JsonValue</code>. Microsoft documents these as the main AL types for working with well-formed JSON data. citeturn0search0turn0search2</p>
-<ul>
-<li><strong>JsonObject:</strong> represents a JSON object containing key/value properties.</li>
-<li><strong>JsonArray:</strong> represents an ordered JSON array.</li>
-<li><strong>JsonToken:</strong> can represent any JSON value and is useful when the exact type is not known yet.</li>
-<li><strong>JsonValue:</strong> represents a fundamental JSON value such as text, number, Boolean or null.</li>
-</ul>
+<p>Business Central provides four core JSON data types: <code>JsonObject</code>, <code>JsonArray</code>, <code>JsonToken</code> and <code>JsonValue</code>. These are the main AL types for working with well-formed JSON data.</p>
+<ul><li><strong>JsonObject:</strong> represents a JSON object containing key/value properties.</li><li><strong>JsonArray:</strong> represents an ordered JSON array.</li><li><strong>JsonToken:</strong> can represent any JSON value and is useful when the exact type is not known yet.</li><li><strong>JsonValue:</strong> represents a fundamental JSON value such as text, number, Boolean or null.</li></ul>
 <div class="tip"><strong>Easy way to remember:</strong> Object = properties, Array = collection, Token = any JSON node, Value = primitive value.</div>
-
 <h2>Reading JSON into a JsonObject</h2>
-<p>If the root of the response is a JSON object, <code>JsonObject.ReadFrom(Text)</code> can parse the text into a JsonObject. Microsoft documents that the method returns an optional Boolean result and can fail when the JSON is malformed. citeturn1search1</p>
+<p>If the root of the response is a JSON object, <code>JsonObject.ReadFrom(Text)</code> can parse the text into a JsonObject. The method also has an optional Boolean result and can fail when the JSON is malformed.</p>
 <pre><code>procedure ReadCustomerJson(JsonText: Text)
 var
     CustomerJson: JsonObject;
@@ -60,9 +51,8 @@ begin
     Message(CustomerJson.GetText('name'));
 end;</code></pre>
 <p>Using the Boolean result is useful when JSON comes from an external system because a malformed response should be handled deliberately instead of causing an unexpected runtime error.</p>
-
 <h2>Reading simple properties</h2>
-<p>For known text properties, <code>JsonObject.GetText</code> can retrieve the value directly. Microsoft documents this method for retrieving a property as Text, with an optional default behavior when the property is missing. citeturn1search15</p>
+<p>For known text properties, <code>JsonObject.GetText</code> can retrieve the value directly.</p>
 <pre><code>CustomerName := CustomerJson.GetText('name');</code></pre>
 <p>For more control, use <code>Get</code> with a JsonToken:</p>
 <pre><code>var
@@ -71,8 +61,7 @@ begin
     if CustomerJson.Get('name', Token) then
         Message(Token.AsValue().AsText());
 end;</code></pre>
-<p><code>JsonObject.Get</code> retrieves a property into a JsonToken and returns a Boolean when the property exists. citeturn1search12</p>
-
+<p><code>JsonObject.Get</code> retrieves a property into a JsonToken and can return a Boolean when the property exists.</p>
 <h2>JsonToken and JsonValue</h2>
 <p>A JsonToken is especially useful when an API can return different JSON shapes or when a property may contain an object, array or primitive value. You can convert a token into a more specific type when you know its structure.</p>
 <pre><code>var
@@ -84,10 +73,9 @@ begin
     Value := Token.AsValue();
     CustomerName := Value.AsText();
 end;</code></pre>
-<p>Microsoft documents <code>JsonToken.AsObject()</code> for converting a token into JsonObject and JsonValue methods such as <code>AsText</code>, <code>AsDecimal</code> and <code>AsBoolean</code> for converting primitive JSON values. citeturn0search3turn1search4turn1search0</p>
-
+<p><code>JsonToken.AsObject()</code> converts a token into JsonObject, while <code>JsonToken.AsValue()</code> converts it into JsonValue. JsonValue provides conversion methods such as <code>AsText</code>, <code>AsDecimal</code> and <code>AsBoolean</code>.</p>
 <h2>Reading JSON arrays</h2>
-<p>When a response contains an array, use JsonArray. Array indexes in AL are zero-based, so the first element is index 0. citeturn0search8</p>
+<p>When a response contains an array, use JsonArray. Array indexes in AL are zero-based, so the first element is index 0.</p>
 <pre><code>var
     Orders: JsonArray;
     OrderToken: JsonToken;
@@ -103,9 +91,8 @@ begin
     end;
 end;</code></pre>
 <p>This pattern is common when an API returns a collection of customers, orders, products, inventory records or other entities.</p>
-
 <h2>Creating JSON in AL</h2>
-<p>JSON is not only for reading API responses. You will often need to create a request body for a POST or PUT/PATCH operation. JsonObject supports adding properties, including text, Boolean, JsonObject and JsonArray values. citeturn1search3turn0search7</p>
+<p>JSON is not only for reading API responses. You will often need to create a request body for a POST or PATCH operation. JsonObject supports adding properties including text, Boolean, JsonObject and JsonArray values.</p>
 <pre><code>var
     RequestJson: JsonObject;
     RequestBody: Text;
@@ -117,7 +104,6 @@ begin
     RequestJson.WriteTo(RequestBody);
 end;</code></pre>
 <p>The resulting text can then be placed into an HttpContent object and sent with HttpClient.</p>
-
 <h2>Creating a JSON array</h2>
 <p>You can create a JsonArray and add JSON objects to it. This is useful when an external API expects multiple lines in one request.</p>
 <pre><code>var
@@ -138,7 +124,6 @@ begin
     RequestJson.Add('lines', Lines);
     RequestJson.WriteTo(RequestBody);
 end;</code></pre>
-
 <h2>Working with nested JSON</h2>
 <p>Nested objects can be read by getting a JsonToken and converting it to JsonObject.</p>
 <pre><code>var
@@ -146,14 +131,15 @@ end;</code></pre>
     Address: JsonObject;
 begin
     if CustomerJson.Get('address', AddressToken) then begin
-        Address := AddressToken.AsObject();
-        Message(Address.GetText('city'));
+        if AddressToken.IsObject() then begin
+            Address := AddressToken.AsObject();
+            Message(Address.GetText('city'));
+        end;
     end;
 end;</code></pre>
 <p>This is safer than assuming every response always contains every nested property. External APIs can change or omit optional fields.</p>
-
 <h2>Using JPath with SelectToken</h2>
-<p>For deeper or conditional JSON navigation, AL supports JPath through <code>SelectToken</code>. Microsoft documents this method for selecting a JsonToken using a JPath expression. citeturn0search5turn0search6</p>
+<p>For deeper or conditional JSON navigation, AL supports JPath through <code>SelectToken</code>. This method selects a JsonToken using a JPath expression.</p>
 <pre><code>var
     SalaryToken: JsonToken;
     Query: Text;
@@ -164,9 +150,8 @@ begin
         Message('%1', SalaryToken.AsValue().AsDecimal());
 end;</code></pre>
 <p>Use JPath when direct <code>Get</code> calls become difficult to maintain, especially with deeply nested responses.</p>
-
-<h2>JSON with HttpClient</h2>
-<p>JSON and HttpClient are frequently used together in Business Central integrations. The HTTP types provide the transport layer, while JSON types help you interpret the request and response bodies. Microsoft groups HttpClient, HttpContent, HttpHeaders, HttpRequestMessage, HttpResponseMessage and the JSON types in its HTTP/JSON API overview. citeturn0search2</p>
+<h2>Using JSON with HttpClient</h2>
+<p>JSON and HttpClient are frequently used together in Business Central integrations. The HTTP types provide the transport layer, while JSON types help you interpret the request and response bodies.</p>
 <pre><code>procedure CallExternalApi()
 var
     Client: HttpClient;
@@ -191,7 +176,6 @@ begin
     Message('Customer: %1', ResponseJson.GetText('name'));
 end;</code></pre>
 <div class="warning"><strong>Production note:</strong> the example URL is intentionally illustrative. In a real integration, validate the endpoint, authentication, permissions, response status and JSON contract before processing business data.</div>
-
 <h2>Handling optional and missing properties</h2>
 <p>A common integration problem is assuming that every field exists. APIs may omit optional properties or return null values. Use Boolean-returning methods where appropriate and check the token/value before converting it.</p>
 <pre><code>var
@@ -205,33 +189,14 @@ begin
     end;
 end;</code></pre>
 <p>For simple text properties, you can also use the optional default behavior of methods such as <code>GetText</code> when that matches your integration requirements.</p>
-
 <h2>Common JSON errors in Business Central</h2>
-<h3>Malformed JSON</h3>
-<p>If <code>ReadFrom</code> cannot parse the payload, inspect the raw response. Common causes include missing quotes, invalid commas, truncated responses or HTML error pages returned instead of JSON.</p>
-<h3>Property not found</h3>
-<p>Calling a getter for a property that does not exist can fail. Use the Boolean form of <code>Get</code> when a property is optional.</p>
-<h3>Wrong JSON type</h3>
-<p>A property that you expect to be text might actually be a number, Boolean, object or null. Check the API contract before calling conversion methods such as <code>AsText</code> or <code>AsDecimal</code>.</p>
-<h3>Array index errors</h3>
-<p>JsonArray is zero-based. Check <code>Count()</code> before accessing an index and do not assume that a response always contains at least one item.</p>
-<h3>Unexpected API response</h3>
-<p>Always check the HTTP status code before parsing a response. A 401, 403, 404 or 500 response may contain a completely different JSON structure from the successful response.</p>
-
+<h3>Malformed JSON</h3><p>If <code>ReadFrom</code> cannot parse the payload, inspect the raw response. Common causes include missing quotes, invalid commas, truncated responses or HTML error pages returned instead of JSON.</p>
+<h3>Property not found</h3><p>Calling a getter for a property that does not exist can fail. Use the Boolean form of <code>Get</code> when a property is optional.</p>
+<h3>Wrong JSON type</h3><p>A property that you expect to be text might actually be a number, Boolean, object or null. Check the API contract before calling conversion methods such as <code>AsText</code> or <code>AsDecimal</code>.</p>
+<h3>Array index errors</h3><p>JsonArray is zero-based. Check <code>Count()</code> before accessing an index and do not assume that a response always contains at least one item.</p>
+<h3>Unexpected API response</h3><p>Always check the HTTP status code before parsing a response. A 401, 403, 404 or 500 response may contain a completely different JSON structure from the successful response.</p>
 <h2>JSON best practices for AL developers</h2>
-<ul>
-<li>Validate HTTP status codes before parsing response bodies.</li>
-<li>Use JsonObject and JsonArray instead of manually concatenating large JSON strings.</li>
-<li>Use Boolean-returning methods when a property may be missing or the payload may be invalid.</li>
-<li>Keep external API contracts documented and version-aware.</li>
-<li>Do not log access tokens, passwords, API keys or other secrets.</li>
-<li>Keep JSON parsing separate from core business logic where practical.</li>
-<li>Use reusable procedures or codeunits for repeated integration patterns.</li>
-<li>Test empty arrays, missing properties, null values, malformed JSON and unexpected HTTP status codes.</li>
-<li>Use JPath selectively for complex nested data rather than making every simple lookup complicated.</li>
-<li>Keep sample payloads and automated tests for important integrations.</li>
-</ul>
-
+<ul><li>Validate HTTP status codes before parsing response bodies.</li><li>Use JsonObject and JsonArray instead of manually concatenating large JSON strings.</li><li>Use Boolean-returning methods when a property may be missing or the payload may be invalid.</li><li>Keep external API contracts documented and version-aware.</li><li>Do not log access tokens, passwords, API keys or other secrets.</li><li>Keep JSON parsing separate from core business logic where practical.</li><li>Use reusable procedures or codeunits for repeated integration patterns.</li><li>Test empty arrays, missing properties, null values, malformed JSON and unexpected HTTP status codes.</li><li>Use JPath selectively for complex nested data rather than making every simple lookup complicated.</li><li>Keep sample payloads and automated tests for important integrations.</li></ul>
 <h2>Real-world Business Central JSON flow</h2>
 <pre><code>External API
     |
@@ -250,15 +215,8 @@ AL Business Logic
     v
 Business Central Tables</code></pre>
 <p>This separation makes integration code easier to understand: HTTP handles communication, JSON types handle structure, and AL business logic decides what the data means for Business Central.</p>
-
 <h2>What should you learn next?</h2>
-<div class="article-links">
-<p><a href="httpclient-business-central-al.html">HttpClient in Business Central AL</a> — learn how to call external REST APIs.</p>
-<p><a href="business-central-api-integration.html">Business Central API Integration</a> — understand API pages, endpoints, CRUD and authentication concepts.</p>
-<p><a href="codeunits-business-central.html">Codeunits in Business Central</a> — organize reusable integration and business logic.</p>
-<p><a href="al-event-subscribers-business-central.html">AL Event Subscribers</a> — react to Business Central events without modifying base application code.</p>
-<p><a href="shopify-business-central-integration.html">Shopify and Business Central Integration</a> — see how JSON, APIs and synchronization fit into an e-commerce integration.</p>
-</div>
+<div class="article-links"><p><a href="httpclient-business-central-al.html">HttpClient in Business Central AL</a> — learn how to call external REST APIs.</p><p><a href="business-central-api-integration.html">Business Central API Integration</a> — understand API pages, endpoints, CRUD and authentication concepts.</p><p><a href="codeunits-business-central.html">Codeunits in Business Central</a> — organize reusable integration and business logic.</p><p><a href="al-event-subscribers-business-central.html">AL Event Subscribers</a> — react to Business Central events without modifying base application code.</p><p><a href="shopify-business-central-integration.html">Shopify and Business Central Integration</a> — see how JSON, APIs and synchronization fit into an e-commerce integration.</p></div>
 <div class="article-footer"><a class="back" href="../tutorials.html">← Explore all Dynexal tutorials</a></div>
 </main>
 <footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer>
