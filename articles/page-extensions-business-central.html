@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn page extensions in Microsoft Dynamics 365 Business Central with practical AL examples, fields, actions and common mistakes.">
+<title>Page Extensions in Business Central | Dynexal</title><link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:30px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+</style></head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav"><a href="../index.html#tutorials">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">AL DEVELOPMENT</span>
+<h1>Page Extensions in Business Central — Complete Practical Guide</h1><p class="meta">Dynexal • Intermediate Guide • 10 min read</p>
+<p class="intro">Page extensions are one of the most useful AL development tools. They let you add fields, actions and other UI changes to an existing Business Central page without modifying the base application.</p>
+<div class="hero-note"><strong>In this guide:</strong> pageextension syntax, adding fields, adding actions, choosing the right anchor, practical examples and common mistakes.</div>
+
+<h2>What is a page extension?</h2>
+<p>A <code>pageextension</code> object extends an existing page. For example, if the standard Customer Card already provides most of the functionality you need, you can add your own field or action through an extension.</p>
+
+<h2>Basic page extension syntax</h2>
+<pre><code>pageextension 50100 MyCustomerCardExt extends "Customer Card"
+{
+    layout
+    {
+        addlast(General)
+        {
+            field("My Field"; Rec."No.")
+            {
+                ApplicationArea = All;
+            }
+        }
+    }
+}</code></pre>
+<p>The object ID must be unique in your extension. The page name after <code>extends</code> identifies the existing page you want to customize.</p>
+
+<h2>Adding a field</h2>
+<p>You can place a field into an existing page area by using layout modification keywords such as <code>addfirst</code>, <code>addlast</code>, <code>addbefore</code> and <code>addafter</code>.</p>
+<pre><code>layout
+{
+    addlast(General)
+    {
+        field("Customer No. Copy"; Rec."No.")
+        {
+            ApplicationArea = All;
+            ToolTip = 'Shows the customer number.';
+        }
+    }
+}</code></pre>
+<div class="tip"><strong>Tip:</strong> Prefer a clear ToolTip and place the field near related information. Good page extensions improve the user experience instead of simply adding more fields.</div>
+
+<h2>Adding an action</h2>
+<p>Actions let users run functionality directly from a page. A common pattern is to add an action and call a codeunit or page.</p>
+<pre><code>actions
+{
+    addlast(Processing)
+    {
+        action("My Action")
+        {
+            ApplicationArea = All;
+            Caption = 'My Action';
+            ToolTip = 'Runs a custom Business Central action.';
+
+            trigger OnAction()
+            begin
+                Message('Dynexal action executed.');
+            end;
+        }
+    }
+}</code></pre>
+
+<h2>Using a page extension in a real project</h2>
+<p>Imagine an e-commerce integration where you want to show an external order ID on the Sales Order page. The clean approach is to add the field through a table extension and then expose it through a page extension.</p>
+<pre><code>pageextension 50101 EcomSalesOrderExt extends "Sales Order"
+{
+    layout
+    {
+        addlast(General)
+        {
+            field("External Order ID"; Rec."External Order ID")
+            {
+                ApplicationArea = All;
+                ToolTip = 'Shows the order ID from the external e-commerce system.';
+            }
+        }
+    }
+}</code></pre>
+<p>This separates the data model from the user interface: the table extension owns the field, while the page extension controls where users see it.</p>
+
+<h2>Common mistakes</h2>
+<ul>
+<li>Using an anchor name that does not exist on the target page.</li>
+<li>Forgetting <code>ApplicationArea</code> when it is required by the page setup.</li>
+<li>Trying to add a field that does not exist on the page's source table.</li>
+<li>Using the wrong page name in the <code>extends</code> declaration.</li>
+<li>Putting too much business logic directly inside <code>OnAction()</code> instead of moving reusable logic to a codeunit.</li>
+<li>Not testing the extension after a Business Central application update.</li>
+</ul>
+
+<h2>Page extension vs. modifying the standard page</h2>
+<p>In modern Business Central development, extensions are the normal way to customize the application. Keeping your custom logic and UI changes in your own extension makes the solution easier to maintain and upgrade.</p>
+
+<h2>What should you learn next?</h2>
+<ol><li>Table extensions and fields.</li><li>Page extensions and actions.</li><li>Codeunits and events.</li><li>Reports and RDLC layouts.</li><li>APIs and external integrations.</li><li>Testing, debugging and deployment.</li></ol>
+
+<div class="article-footer"><a class="back" href="../tutorials.html">← Explore all Dynexal tutorials</a></div>
+</main><script src="../script.js"></script></body></html>
