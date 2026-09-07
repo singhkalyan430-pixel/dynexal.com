@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn how to build RDLC reports in Microsoft Dynamics 365 Business Central with AL datasets, dataitems, columns, Report Builder, layouts, filters, troubleshooting and best practices.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/rdlc-reports-business-central.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/rdlc-reports-business-central.html">
+<meta property="og:title" content="RDLC Reports in Business Central: Complete Beginner Guide | Dynexal">
+<meta property="og:description" content="A practical Business Central RDLC reporting guide covering AL datasets, dataitems, columns, Report Builder, layouts, filters and common mistakes.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RDLC Reports in Business Central: Complete Beginner Guide | Dynexal">
+<meta name="twitter:description" content="Learn Business Central RDLC reports with practical AL examples and Report Builder workflows.">
+<title>RDLC Reports in Business Central: Complete Beginner Guide | Dynexal</title>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"RDLC Reports in Business Central: Complete Beginner Guide",
+  "description":"A practical Business Central RDLC reporting guide covering AL datasets, dataitems, columns, Report Builder, layouts, filters and common mistakes.",
+  "author":{"@type":"Organization","name":"Dynexal"},
+  "publisher":{"@type":"Organization","name":"Dynexal"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/rdlc-reports-business-central.html"},
+  "url":"https://dynexal.com/articles/rdlc-reports-business-central.html",
+  "inLanguage":"en"
+}
+</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #e5a23b;background:#fff9ed;padding:16px 20px;margin:24px 0;color:#5d4b2a}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../index.html#tutorials">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">REPORTING</span>
+<h1>RDLC Reports in Business Central: Complete Beginner Guide</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 12 min read</p>
+<p class="intro">RDLC reports are a powerful way to create structured, print-ready and pixel-precise reports in Microsoft Dynamics 365 Business Central. This guide explains the complete flow from an AL report dataset to an RDLC layout in Report Builder.</p>
+<div class="hero-note"><strong>What you will learn:</strong> report objects, datasets, dataitems, columns, request filters, RDLC layouts, Report Builder, grouping, expressions, testing, troubleshooting and practical best practices.</div>
+
+<h2>What is an RDLC report?</h2>
+<p>In Business Central, a report has two important layers: the <strong>dataset</strong>, which defines the data available to the report, and the <strong>layout</strong>, which controls how that data is presented. RDLC is a report-definition layout technology used when you need detailed control over positioning, formatting, grouping and print output.</p>
+<p>Business Central also supports Word and Excel layouts. RDLC is especially useful when you need a pixel-perfect document or complex visual formatting.</p>
+
+<h2>How a Business Central RDLC report works</h2>
+<ol>
+<li>Create an AL <code>report</code> object.</li>
+<li>Define the report dataset with dataitems and columns.</li>
+<li>Add request filters when users need to filter the report.</li>
+<li>Generate or create the report layout.</li>
+<li>Open the layout in Microsoft Report Builder or an RDLC designer.</li>
+<li>Place dataset fields into the report and format them.</li>
+<li>Publish, run and test the report in Business Central.</li>
+</ol>
+<div class="tip"><strong>Remember:</strong> AL decides <em>what data</em> the report receives. The RDLC layout decides <em>how that data looks</em>.</div>
+
+<h2>Create your first AL report</h2>
+<p>Start with a simple customer list. The report object below defines a Customer dataitem and exposes fields as dataset columns.</p>
+<pre><code>report 50120 "Dynexal Customer List"
+{
+    Caption = 'Dynexal Customer List';
+    UsageCategory = ReportsAndAnalysis;
+    ApplicationArea = All;
+
+    dataset
+    {
+        dataitem(Customer; Customer)
+        {
+            RequestFilterFields = "No.", "Customer Posting Group";
+
+            column(CustomerNo; "No.")
+            {
+            }
+
+            column(CustomerName; Name)
+            {
+            }
+
+            column(City; City)
+            {
+            }
+
+            column(CountryRegionCode; "Country/Region Code")
+            {
+            }
+        }
+    }
+}</code></pre>
+<p>Here, <code>Customer</code> is the dataitem. Each <code>column</code> exposes a value to the report layout. <code>RequestFilterFields</code> makes selected fields available as filters on the request page.</p>
+
+<h2>Understanding dataitems and columns</h2>
+<p>A dataitem is the main source of records for a report. You can use tables as dataitems and create nested dataitems when you need parent-child data. Columns expose individual values from those records to the report dataset.</p>
+<pre><code>dataset
+{
+    dataitem(Customer; Customer)
+    {
+        column(CustomerNo; "No.") { }
+        column(CustomerName; Name) { }
+
+        dataitem(Contact; Contact)
+        {
+            column(ContactName; Name) { }
+        }
+    }
+}</code></pre>
+<p>For beginners, start with one dataitem and a small number of columns. Add nested dataitems only when the report actually needs related records.</p>
+
+<h2>Request filters in reports</h2>
+<p>Users often need to choose which records should appear. <code>RequestFilterFields</code> is a simple way to expose filters on the report request page.</p>
+<pre><code>dataitem(Customer; Customer)
+{
+    RequestFilterFields = "No.", Name, "Customer Posting Group";
+
+    column(CustomerNo; "No.") { }
+    column(CustomerName; Name) { }
+}</code></pre>
+<p>When the report runs, Business Central can show these fields on the request page so the user can narrow the dataset before the layout is rendered.</p>
+
+<h2>RDLC layout: where the visual design happens</h2>
+<p>Once your AL dataset is ready, the layout controls the visual output. You can arrange fields, add labels, format numbers and dates, create headers and footers, add images, and build groups.</p>
+<p>Microsoft SQL Server Report Builder can be used to design RDLC layouts. Business Central can export layouts with an <code>.rdlc</code> extension; Report Builder works with <code>.rdl</code>, so an exported layout may need to be renamed from <code>.rdlc</code> to <code>.rdl</code> before editing.</p>
+<div class="warning"><strong>Important:</strong> keep the dataset and layout in sync. If you rename or remove a dataset column, the corresponding field reference in the RDLC layout can stop working.</div>
+
+<h2>Understanding the RDLC dataset</h2>
+<p>When you open an RDLC layout in Report Builder, the report dataset contains the fields exposed by your AL report. For the sample above, you would expect fields such as <code>CustomerNo</code>, <code>CustomerName</code>, <code>City</code> and <code>CountryRegionCode</code>.</p>
+<p>A common beginner mistake is to look for the original table field name instead of the AL dataset column name. The layout works with the dataset exposed by the report object.</p>
+
+<h2>Add a title and report header</h2>
+<p>A professional report normally contains a clear title, company information and useful filter or date information. In Report Builder, you can add textboxes to the report header and use expressions for dynamic values.</p>
+<pre><code>=Globals!ExecutionTime</code></pre>
+<p>You can format the execution time as a date or date-time depending on the report requirement. Keep headers simple and avoid adding too many decorative elements that make printed reports difficult to scan.</p>
+
+<h2>Formatting numbers, dates and currency</h2>
+<p>RDLC expressions can control how values are displayed. For example, a numeric value can be formatted using a standard numeric format:</p>
+<pre><code>=Format(Fields!Amount.Value, "N2")</code></pre>
+<p>For production reports, be careful with culture, currency and decimal formatting. When a value needs business-specific formatting, consider whether the transformation belongs in AL or in the report layout.</p>
+
+<h2>Grouping records in RDLC</h2>
+<p>Grouping is useful when a report needs sections such as customers with their related transactions, salespeople with their sales, or items grouped by category.</p>
+<p>A typical design is:</p>
+<ul>
+<li>Define the required parent and child data in the AL dataset.</li>
+<li>Create a group in the RDLC tablix.</li>
+<li>Choose the dataset field used for grouping.</li>
+<li>Place group-level values in the group header.</li>
+<li>Place detail values in the detail row.</li>
+</ul>
+<p>For large reports, keep grouping purposeful. Complex nested groups can make layouts difficult to maintain and may increase rendering time.</p>
+
+<h2>Adding totals</h2>
+<p>RDLC supports aggregate expressions such as <code>Sum</code>. For example:</p>
+<pre><code>=Sum(Fields!Amount.Value)</code></pre>
+<p>The scope of an aggregate matters. A total at a group level can produce a different result from a report-level total, so always test totals with multiple groups and filtered data.</p>
+
+<h2>Using report extensions</h2>
+<p>If you need to modify an existing Microsoft or partner report, creating a completely new report is not always necessary. A <code>reportextension</code> can be used to extend an existing report, for example by adding dataset columns or extending supported report behavior.</p>
+<pre><code>reportextension 50121 "Dynexal Customer Report Ext" extends "Customer - List"
+{
+    dataset
+    {
+        add(Customer)
+        {
+            column(DynexalCity; City)
+            {
+            }
+        }
+    }
+}</code></pre>
+<p>The exact extension points depend on the report and Business Central version. Before using a report extension, inspect the base report dataset and confirm that the required dataitem can be extended.</p>
+
+<h2>Testing your RDLC report</h2>
+<p>Use a small and predictable dataset during development. A good testing sequence is:</p>
+<ol>
+<li>Publish the extension successfully.</li>
+<li>Open the report from Business Central.</li>
+<li>Run it without filters to check the basic layout.</li>
+<li>Apply one filter and verify that the dataset changes correctly.</li>
+<li>Test multiple records and multiple groups.</li>
+<li>Check page breaks, headers, footers and totals.</li>
+<li>Export to PDF and inspect the actual printed output.</li>
+</ol>
+<div class="tip"><strong>Developer habit:</strong> always test the PDF output, not only the report preview. Page width, margins, text wrapping and page breaks can behave differently than expected.</div>
+
+<h2>Common RDLC problems and fixes</h2>
+<h3>1. The report opens but shows no data</h3>
+<p>First verify that the AL dataset actually returns records. Then check that the RDLC fields match the current dataset column names.</p>
+<h3>2. A field shows an error in Report Builder</h3>
+<p>The field may have been renamed or removed from the AL dataset. Refresh the report dataset in the layout designer and confirm the field reference.</p>
+<h3>3. The report is cut off on the right side</h3>
+<p>Check the report body width, page width and left/right margins. The body should fit inside the printable page area.</p>
+<h3>4. Extra blank pages appear</h3>
+<p>This is often caused by the report body being slightly wider than the printable area. Review the body width and hidden objects as well as horizontal spacing.</p>
+<h3>5. Totals are incorrect</h3>
+<p>Check the aggregate scope and whether the dataset contains duplicate rows because of nested dataitems.</p>
+<h3>6. The layout works but values are missing</h3>
+<p>Confirm that the value is exposed as a dataset column in AL. A table field is not automatically available to RDLC unless it is part of the report dataset.</p>
+
+<h2>RDLC best practices</h2>
+<ul>
+<li>Keep the AL dataset focused on the data the report actually needs.</li>
+<li>Use clear, stable dataset column names.</li>
+<li>Keep page width and margins under control from the beginning.</li>
+<li>Use consistent fonts, spacing and alignment.</li>
+<li>Test filtered, empty and large datasets.</li>
+<li>Keep business logic in AL or codeunits rather than hiding complex logic inside RDLC expressions.</li>
+<li>Prefer reusable report patterns instead of copying large layouts unnecessarily.</li>
+<li>For document reports, evaluate whether Word layout is a better fit before choosing RDLC.</li>
+</ul>
+
+<h2>RDLC vs Word vs Excel layouts</h2>
+<table style="width:100%;border-collapse:collapse;margin:24px 0;color:#46546a;font-size:16px"><tr><th style="text-align:left;padding:12px;border-bottom:1px solid #dfe5ee">Layout</th><th style="text-align:left;padding:12px;border-bottom:1px solid #dfe5ee">Best for</th></tr><tr><td style="padding:12px;border-bottom:1px solid #e8edf3"><strong>RDLC</strong></td><td style="padding:12px;border-bottom:1px solid #e8edf3">Pixel-perfect documents, complex print layouts and advanced formatting</td></tr><tr><td style="padding:12px;border-bottom:1px solid #e8edf3"><strong>Word</strong></td><td style="padding:12px;border-bottom:1px solid #e8edf3">Document-style layouts that are easier for business users to maintain</td></tr><tr><td style="padding:12px;border-bottom:1px solid #e8edf3"><strong>Excel</strong></td><td style="padding:12px;border-bottom:1px solid #e8edf3">Analysis, tables, formulas, charts and spreadsheet-based reporting</td></tr></table>
+
+<h2>What should you learn next?</h2>
+<div class="article-links">
+<p><a href="codeunits-business-central.html">Codeunits in Business Central</a> — move reusable business logic into clean AL codeunits.</p>
+<p><a href="al-tables-business-central.html">AL Tables in Business Central</a> — understand the data model behind your reports.</p>
+<p><a href="creating-list-and-card-pages-al.html">Creating List and Card Pages in AL</a> — build the pages users interact with before running reports.</p>
+<p><a href="page-extensions-business-central.html">Page Extensions in Business Central</a> — add fields and actions to standard pages.</p>
+<p><a href="getting-started-with-al.html">Getting Started with AL Development</a> — follow the beginner AL learning path.</p>
+</div>
+
+<div class="article-footer"><a class="back" href="../tutorials.html">← Explore all Dynexal tutorials</a></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
