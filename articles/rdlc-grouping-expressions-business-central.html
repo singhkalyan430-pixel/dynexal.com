@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn RDLC grouping and expressions in Microsoft Dynamics 365 Business Central with practical Report Builder examples for groups, totals, IIF, formatting, scope, page breaks and troubleshooting.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/rdlc-grouping-expressions-business-central.html">
+<meta property="og:type" content="article"><meta property="og:url" content="https://dynexal.com/articles/rdlc-grouping-expressions-business-central.html"><meta property="og:title" content="Business Central RDLC Grouping & Expressions: Complete Guide | Dynexal"><meta property="og:description" content="Practical RDLC grouping, totals, expressions, IIF, formatting, scope and troubleshooting for Business Central reports."><meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="Business Central RDLC Grouping & Expressions: Complete Guide | Dynexal"><meta name="twitter:description" content="Learn RDLC groups and expressions with practical Business Central Report Builder examples.">
+<title>Business Central RDLC Grouping & Expressions: Complete Guide | Dynexal</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Business Central RDLC Grouping & Expressions: Complete Guide","description":"Practical RDLC grouping, totals, expressions, IIF, formatting, scope and troubleshooting for Business Central reports.","author":{"@type":"Organization","name":"Dynexal"},"publisher":{"@type":"Organization","name":"Dynexal"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/rdlc-grouping-expressions-business-central.html"},"url":"https://dynexal.com/articles/rdlc-grouping-expressions-business-central.html","inLanguage":"en"}</script>
+<link rel="stylesheet" href="../styles.css">
+<style>.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d68b32;background:#fff8ec;padding:16px 20px;margin:24px 0}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre code{font-size:12px}}</style>
+</head>
+<body><header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article"><a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">REPORTING</span>
+<h1>Business Central RDLC Grouping & Expressions: Complete Guide</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 14 min read</p>
+<p class="intro">Grouping and expressions are two of the most useful RDLC skills for building professional Microsoft Dynamics 365 Business Central reports. In this practical guide, you will learn how to create groups, calculate totals, use expressions such as <code>Sum()</code> and <code>IIF()</code>, control expression scope, format values, add group headers and footers, and troubleshoot common Report Builder problems.</p>
+<div class="hero-note"><strong>What you will learn:</strong> row groups, parent and child groups, group totals, expressions, IIF, formatting, scope, page breaks, conditional formatting, duplicate rows and troubleshooting.</div>
+
+<h2>What are RDLC groups?</h2>
+<p>An RDLC group organizes rows in a tablix according to a field or expression. For example, a sales report can group sales lines by salesperson, customer, posting date or item category. Grouping is performed in the RDLC layout; the AL report dataset supplies the fields that the layout can use.</p>
+<p>Business Central reports have a dataset and a visual layout. Microsoft describes RDLC as a layout type intended for advanced, pixel-precise reporting scenarios. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/ui-rdlc-report-layouts">Microsoft Learn: Working with RDLC Layouts</a></p>
+
+<h2>Simple example: group sales by customer</h2>
+<p>Suppose your dataset exposes <code>CustomerNo</code>, <code>CustomerName</code>, <code>DocumentNo</code> and <code>Amount</code>. In Report Builder, add a parent row group based on <code>CustomerNo</code>.</p>
+<ol><li>Open the RDLC layout in Report Builder.</li><li>Select the tablix containing your detail rows.</li><li>In Row Groups, choose <strong>Add Group → Parent Group</strong>.</li><li>Select <code>CustomerNo</code> as the group expression.</li><li>Choose whether to add a group header.</li><li>Place customer information in the group header and transaction fields in the detail row.</li></ol>
+<pre><code>=Fields!CustomerNo.Value</code></pre>
+<p>The expression above identifies the current customer's value for the group.</p>
+
+<h2>Group header vs detail row</h2>
+<p>A group header is a good place for values that should appear once per group, such as Customer No. and Customer Name. The detail row should contain values that repeat for each transaction or line.</p>
+<pre><code>Group Header
+Customer: =Fields!CustomerName.Value
+
+Detail
+Document: =Fields!DocumentNo.Value
+Amount:   =Fields!Amount.Value</code></pre>
+<div class="tip"><strong>Tip:</strong> if a customer name is repeated on every transaction row, move it into the group header when the report design calls for a cleaner grouped layout.</div>
+
+<h2>Group totals with Sum()</h2>
+<p>The most common RDLC aggregate is <code>Sum()</code>. A group footer can show the total for the current group:</p>
+<pre><code>=Sum(Fields!Amount.Value)</code></pre>
+<p>When the textbox is inside a group footer, the aggregate normally evaluates over the rows in that group. You can also explicitly specify scope when you need to control which group or dataset the aggregate uses.</p>
+
+<h2>Understanding aggregate scope</h2>
+<p>Scope is one of the most important RDLC concepts. An aggregate can be evaluated against the current group, a parent group or the entire dataset depending on where it is placed and which scope is specified.</p>
+<pre><code>=Sum(Fields!Amount.Value, "CustomerGroup")</code></pre>
+<p>Here, <code>CustomerGroup</code> represents the name of the relevant RDLC group. The exact group name comes from your layout. If totals appear too large or repeat unexpectedly, inspect the aggregate scope first.</p>
+<div class="warning"><strong>Common mistake:</strong> using a dataset-wide aggregate when you actually need a group total. Always verify the scope of totals with at least two groups and several detail records.</div>
+
+<h2>Grand total</h2>
+<p>A report-level total can be created with an aggregate over the dataset:</p>
+<pre><code>=Sum(Fields!Amount.Value, "DataSet_Result")</code></pre>
+<p>The dataset name depends on your RDLC layout. Do not copy the example name blindly—select the correct dataset/group scope from your report.</p>
+
+<h2>Conditional expressions with IIF()</h2>
+<p><code>IIF()</code> is useful when a report needs to display different text or formatting based on a condition.</p>
+<pre><code>=IIF(Fields!Amount.Value &gt; 10000, "High Value", "Standard")</code></pre>
+<p>For example, you can display a label based on an amount, status or quantity. Keep conditions readable; move complicated business rules into AL when they become difficult to maintain in the layout.</p>
+
+<h2>Conditional formatting</h2>
+<p>Expressions can also be used in properties such as font color, background color or visibility. For example, a value can be highlighted when an amount exceeds a threshold.</p>
+<pre><code>=IIF(Fields!Amount.Value &gt; 10000, "Red", "Black")</code></pre>
+<p>For production reports, use conditional formatting sparingly. A consistent visual hierarchy is usually more useful than highlighting every value.</p>
+
+<h2>Formatting numbers and dates</h2>
+<p>RDLC provides standard formatting functions. For a two-decimal numeric display:</p>
+<pre><code>=Format(Fields!Amount.Value, "N2")</code></pre>
+<p>For a date:</p>
+<pre><code>=Format(Fields!PostingDate.Value, "dd-MMM-yyyy")</code></pre>
+<p>Be mindful of localization and currency requirements. If the report must respect company or user-specific formatting, verify the output in the actual Business Central environment.</p>
+
+<h2>Parent and child groups</h2>
+<p>Nested groups are useful for reports such as:</p>
+<ul><li>Salesperson → Customer → Document</li><li>Category → Item → Transaction</li><li>Year → Month → Day</li></ul>
+<p>Create the outer group first, then add a child group beneath it. Each level can have its own header, footer and aggregate calculations.</p>
+<pre><code>Salesperson Group
+  Customer Group
+    Detail Rows</code></pre>
+<p>Keep nesting limited to what the reader actually needs. Deep group hierarchies are harder to troubleshoot and can make pagination complicated.</p>
+
+<h2>Group footer and subtotal pattern</h2>
+<p>A clean invoice or sales report often follows this pattern:</p>
+<pre><code>Customer Header
+    Document / Line Details
+Customer Footer
+    Customer Total
+
+Next Customer...
+
+Report Footer
+    Grand Total</code></pre>
+<p>This structure makes it easier for users to understand where each subtotal ends and where the final report total begins.</p>
+
+<h2>Page breaks for groups</h2>
+<p>If each customer or document must start on a new page, configure the relevant group's page-break settings in Report Builder. Test the output with both short and long groups because page breaks can interact with headers, footers and keep-together settings.</p>
+<p>Avoid forcing a page break after every small group unless the business requirement really needs it; otherwise the PDF can contain many pages with large amounts of unused space.</p>
+
+<h2>Visibility and drill-down</h2>
+<p>Group rows can be hidden and shown through visibility expressions or interactive drill-down patterns. This is useful when a report should initially show summaries and let users expand details.</p>
+<pre><code>=IIF(Fields!Status.Value = "Closed", True, False)</code></pre>
+<p>Use hidden rows carefully and test exported PDFs because interactive behavior is most useful in supported report viewing scenarios and may not provide the same experience in every output format.</p>
+
+<h2>Why totals can be duplicated</h2>
+<p>A frequent Business Central RDLC problem is an unexpectedly high total. The cause is often the AL dataset rather than the RDLC expression.</p>
+<p>For example, if a parent record is repeated because of nested dataitems, an expression such as <code>Sum()</code> may add the same parent amount multiple times.</p>
+<ol><li>Inspect the AL dataset.</li><li>Check the number of rows returned.</li><li>Look for nested dataitems that repeat parent values.</li><li>Confirm whether the value being summed belongs to the detail row or parent row.</li><li>Only then change the RDLC expression.</li></ol>
+<div class="tip"><strong>Key lesson:</strong> an RDLC total can only be correct if the underlying dataset has the correct row structure.</div>
+
+<h2>RDLC expressions vs AL logic</h2>
+<p>Use simple presentation logic in RDLC: formatting, labels, visibility and straightforward calculations. Use AL for important business rules, data preparation and reusable logic.</p>
+<p>This separation makes reports easier to test and reduces the risk of hiding critical business behavior inside a layout file.</p>
+
+<h2>Testing a grouped RDLC report</h2>
+<ol><li>Test one group with a few detail records.</li><li>Test at least two groups.</li><li>Test a group with many detail rows.</li><li>Test filters that return no records.</li><li>Verify every subtotal.</li><li>Verify the grand total independently.</li><li>Export to PDF and check page breaks and widths.</li><li>Test the report with realistic production-sized data.</li></ol>
+
+<h2>Common RDLC errors and fixes</h2>
+<h3>“The textbox expression is invalid”</h3><p>Check field names, parentheses, quotation marks and the selected dataset scope.</p>
+<h3>Total is too high</h3><p>Inspect dataset duplication and aggregate scope before changing the formula.</p>
+<h3>Group does not appear</h3><p>Confirm that the group was added to the correct tablix and that the group expression references a dataset field.</p>
+<h3>Blank page appears</h3><p>Check body width, page width, margins and objects extending beyond the printable area.</p>
+<h3>Field is missing</h3><p>Make sure the value is exposed as an AL report dataset column and refresh the dataset in the RDLC designer.</p>
+
+<h2>RDLC grouping best practices</h2>
+<ul><li>Design the AL dataset before building complicated groups.</li><li>Use meaningful dataset column names.</li><li>Keep group hierarchy as simple as possible.</li><li>Use explicit aggregate scope when it improves clarity.</li><li>Keep complex business rules in AL.</li><li>Test totals with multiple groups and filters.</li><li>Always inspect the exported PDF.</li><li>Keep the layout maintainable for the next developer.</li></ul>
+
+<h2>RDLC Grouping vs simple RDLC layout</h2>
+<p>A simple RDLC layout is enough when the report is a flat list. Grouping becomes valuable when users need subtotals, sections, summaries or hierarchical presentation. The goal is not to add groups everywhere; it is to make the report easier to read and reconcile.</p>
+
+<div class="article-links"><strong>Related Dynexal tutorials</strong><ul><li><a href="rdlc-reports-business-central.html">RDLC Reports in Business Central: Complete Beginner Guide</a></li><li><a href="al-error-handling-business-central.html">Business Central AL Error Handling: Error, TryFunction &amp; Logging</a></li><li><a href="business-central-api-integration.html">Business Central API Integration: Complete Beginner Guide</a></li><li><a href="enums-business-central-al.html">Enums in Business Central AL: Complete Beginner Guide</a></li></ul></div>
+
+<h2>Frequently Asked Questions</h2>
+<h3>Where are RDLC groups created?</h3><p>Groups are created in the tablix Row Groups or Column Groups areas in Report Builder.</p>
+<h3>Can I calculate a subtotal with Sum()?</h3><p>Yes. <code>Sum()</code> is commonly used for group and report totals, but the scope must match the required level.</p>
+<h3>Should business logic be written in RDLC?</h3><p>Prefer AL for important business rules. Keep RDLC expressions focused on presentation and simple calculations.</p>
+<h3>Why does my RDLC total duplicate?</h3><p>Check both aggregate scope and the AL dataset for duplicated parent rows caused by nested dataitems.</p>
+<h3>Which tool can edit RDLC layouts?</h3><p>Microsoft SQL Server Report Builder and the Microsoft RDLC Report Designer can be used for RDLC/RDL layouts. Microsoft notes that Report Builder works with <code>.rdl</code> files, while Business Central layouts can use <code>.rdlc</code>.</p>
+
+<div class="article-footer"><p><strong>Next step:</strong> Build a small grouped sales report, verify its dataset, then add one group subtotal and one grand total before moving to more advanced expressions.</p><p><a href="../tutorials.html">← Explore all Business Central tutorials</a></p></div>
+</main><footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script></body></html>
