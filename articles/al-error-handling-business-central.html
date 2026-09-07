@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn error handling in Microsoft Dynamics 365 Business Central AL with practical examples of Error, ErrorInfo, TryFunction, Codeunit.Run, GetLastErrorText, logging and debugging.">
+  <meta name="author" content="Dynexal">
+  <link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+  <link rel="canonical" href="https://dynexal.com/articles/al-error-handling-business-central.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://dynexal.com/articles/al-error-handling-business-central.html">
+  <meta property="og:title" content="Business Central AL Error Handling: Error, TryFunction & Logging | Dynexal">
+  <meta property="og:description" content="A practical guide to AL error handling using Error, ErrorInfo, TryFunction, Codeunit.Run, GetLastErrorText, telemetry and debugging patterns.">
+  <meta property="og:site_name" content="Dynexal">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Business Central AL Error Handling: Error, TryFunction & Logging | Dynexal">
+  <meta name="twitter:description" content="Learn robust error handling patterns for Business Central AL development, APIs and integrations.">
+  <title>Business Central AL Error Handling: Error, TryFunction & Logging | Dynexal</title>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"TechArticle",
+    "headline":"Business Central AL Error Handling: Error, TryFunction & Logging",
+    "description":"A practical guide to AL error handling using Error, ErrorInfo, TryFunction, Codeunit.Run, GetLastErrorText, telemetry and debugging patterns.",
+    "author":{"@type":"Organization","name":"Dynexal"},
+    "publisher":{"@type":"Organization","name":"Dynexal"},
+    "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/al-error-handling-business-central.html"},
+    "url":"https://dynexal.com/articles/al-error-handling-business-central.html",
+    "inLanguage":"en"
+  }
+  </script>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d68b32;background:#fff8ec;padding:16px 20px;margin:24px 0}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">AL DEVELOPMENT</span>
+<h1>Business Central AL Error Handling: Error, TryFunction &amp; Logging</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 14 min read</p>
+<p class="intro">Errors are unavoidable in Business Central development, especially when you work with posting routines, APIs, external services, permissions and data validation. Good AL error handling should do more than stop execution: it should give users a clear next step, preserve useful diagnostic information and make production problems easier to investigate. In this practical guide, you will learn how to use <code>Error</code>, <code>ErrorInfo</code>, <code>TryFunction</code>, <code>Codeunit.Run</code>, <code>GetLastErrorText</code>, <code>GetLastErrorCallStack</code> and telemetry in maintainable AL solutions.</p>
+<div class="hero-note"><strong>What you will learn:</strong> AL error basics, ErrorInfo, TryFunction, Codeunit.Run, last-error methods, transaction considerations, API/integration error handling, telemetry, debugging, common mistakes and production best practices.</div>
+
+<h2>What is error handling in Business Central AL?</h2>
+<p>Error handling is the way an AL application detects an invalid or failed operation and decides what should happen next. A validation error may need to stop the current process and tell the user how to fix the data. An integration failure may need to capture the response, log diagnostic details and allow a background process to continue with other work.</p>
+<p>Business Central provides several approaches, including the <code>Error</code> method, <code>ErrorInfo</code>, <code>TryFunction</code>, the Boolean return value of <code>Codeunit.Run</code>, last-error methods and telemetry. Microsoft also recommends clear, actionable error messages because good messages reduce user friction and make troubleshooting easier. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-al-error-handling">Microsoft Learn: AL error handling</a></p>
+
+<h2>1. The Error method</h2>
+<p>The simplest way to stop execution and report a problem is the <code>Error</code> method. When it is raised, execution of the current AL flow stops and Business Central displays the error.</p>
+<pre><code>procedure ValidateQuantity(Quantity: Decimal)
+begin
+    if Quantity &lt;= 0 then
+        Error('Quantity must be greater than zero.');
+end;</code></pre>
+<p>For new production code, prefer labels rather than hard-coded user-facing strings so messages can be translated and maintained.</p>
+<pre><code>var
+    QuantityErr: Label 'Quantity must be greater than zero.';
+
+procedure ValidateQuantity(Quantity: Decimal)
+begin
+    if Quantity &lt;= 0 then
+        Error(QuantityErr);
+end;</code></pre>
+<div class="tip"><strong>Rule:</strong> use <code>Error</code> when the current operation cannot safely continue. Do not use errors as normal control flow for expected success/failure decisions when a Boolean result or another explicit design would be clearer.</div>
+
+<h2>2. ErrorInfo: better error messages</h2>
+<p><code>ErrorInfo</code> provides a structured way to describe an error. It can carry information such as a title, message, detailed message, error type, data classification and actionable navigation or fix actions. This allows an error to be more useful than a plain text string.</p>
+<pre><code>procedure ValidateCustomer(CustomerNo: Code[20])
+var
+    CustomerErr: ErrorInfo;
+begin
+    if CustomerNo = '' then begin
+        CustomerErr.Title('Customer is required');
+        CustomerErr.Message('Select a customer before continuing.');
+        CustomerErr.DetailedMessage('The current operation requires a valid Customer No.');
+        Error(CustomerErr);
+    end;
+end;</code></pre>
+<p>Business Central supports passing an <code>ErrorInfo</code> instance to <code>Error</code> or <code>Dialog.Error</code>. Microsoft documents ErrorInfo as a structure for grouping information about an error and supporting richer error experiences. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/dialog/dialog-error-errorinfo-method">ErrorInfo and Dialog.Error</a></p>
+
+<h3>When should you use ErrorInfo?</h3>
+<ul>
+  <li>When the user needs a clear title and actionable explanation.</li>
+  <li>When you need a detailed diagnostic message in addition to the short message.</li>
+  <li>When the error should include navigation or fix-it actions.</li>
+  <li>When the error needs additional metadata or custom dimensions.</li>
+</ul>
+
+<h2>3. TryFunction: catching AL errors</h2>
+<p>A method marked with the <code>TryFunction</code> attribute becomes a try method. When called as a Boolean expression, it returns <code>true</code> if the operation succeeds and <code>false</code> if an error occurs. The error is caught instead of immediately being shown to the user.</p>
+<pre><code>codeunit 50130 "Dynexal Try Function Demo"
+{
+    trigger OnRun()
+    begin
+        if TryValidateCustomer() then
+            Message('Validation succeeded.')
+        else
+            Message('Validation failed.');
+    end;
+
+    [TryFunction]
+    local procedure TryValidateCustomer()
+    begin
+        Error('Customer validation failed.');
+    end;
+}</code></pre>
+<p>Microsoft notes that the Boolean return value must actually be used for the call to behave as a try call. Simply calling a TryFunction method without consuming its return value does not make it a caught-error call. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-handling-errors-using-try-methods">Handling errors using try methods</a></p>
+
+<h2>4. Important TryFunction transaction behavior</h2>
+<p>TryFunction is often misunderstood as an automatic database rollback mechanism. You should not treat it that way. Current Microsoft documentation states that database changes made by a try method are <strong>not rolled back</strong>. For Business Central online, write transactions can be present in try methods, while on-premises behavior is controlled by the Business Central Server configuration. Because of this, database writes inside try methods require careful design.</p>
+<div class="warning"><strong>Important:</strong> do not assume that <code>TryFunction</code> means “all changes will be undone if something fails.” If a process needs reliable transaction boundaries, design those boundaries explicitly and understand where commits and writes occur.</div>
+<p>For most integration scenarios, a good pattern is to keep the try method focused on an operation whose success or failure you want to detect, capture the error information, and then handle the result outside the try method.</p>
+
+<h2>5. GetLastErrorText()</h2>
+<p>When a caught error occurs, <code>GetLastErrorText</code> can return the last error message. It is particularly useful after a failed <code>TryFunction</code> or <code>Codeunit.Run</code> call.</p>
+<pre><code>ClearLastError();
+
+if not TrySendRequest() then begin
+    ErrorText := GetLastErrorText(true);
+    Message('The operation failed: %1', ErrorText);
+end;</code></pre>
+<p>The Boolean parameter can be used to exclude customer content from the returned error text. Microsoft documents this parameter as a way to exclude sensitive data such as primary key values. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/system/system-getlasterrortext-boolean-method">GetLastErrorText</a></p>
+
+<h2>6. GetLastErrorCallStack()</h2>
+<p><code>GetLastErrorCallStack</code> returns the call stack associated with the last error. It is useful when you need to understand which procedures led to a failure.</p>
+<pre><code>ClearLastError();
+
+if not TryProcessOrder() then begin
+    ErrorText := GetLastErrorText(true);
+    ErrorCallStack := GetLastErrorCallStack();
+end;</code></pre>
+<p>For some error types, the returned call stack may not contain every call. Microsoft recommends using the debugger when you need the complete call stack for certain errors. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/system/system-getlasterrorcallstack-method">GetLastErrorCallStack</a></p>
+
+<h2>7. Codeunit.Run() with a Boolean result</h2>
+<p>Another established pattern is to execute a codeunit and inspect its Boolean return value.</p>
+<pre><code>ClearLastError();
+
+if not Codeunit.Run(Codeunit::"Dynexal Order Processor") then begin
+    ErrorText := GetLastErrorText(true);
+    Message('Order processing failed: %1', ErrorText);
+end;</code></pre>
+<p>If the Boolean result is omitted and the codeunit fails, the error is raised normally. If the result is used, you can handle the failure in code. Microsoft also documents important transaction behavior for <code>Codeunit.Run</code>: when the Boolean return value is used, the transaction contained in the codeunit is always committed. Design this pattern carefully when database writes are involved. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/codeunit/codeunit-run-string-table-method">Codeunit.Run</a></p>
+
+<h2>8. Error handling for REST APIs and HttpClient</h2>
+<p>Integration code should distinguish between an HTTP request failing at the transport level and the remote API returning an unsuccessful HTTP status code. A useful pattern is to check <code>HttpClient.Get</code> or <code>Send</code> first, then inspect the response status and content.</p>
+<pre><code>procedure CallExternalApi(Url: Text): Boolean
+var
+    Client: HttpClient;
+    Response: HttpResponseMessage;
+    ResponseText: Text;
+begin
+    if not Client.Get(Url, Response) then begin
+        Error('The external service could not be reached.');
+    end;
+
+    if not Response.IsSuccessStatusCode() then begin
+        Response.Content().ReadAs(ResponseText);
+        Error('External API returned status %1. Response: %2',
+              Response.HttpStatusCode(), ResponseText);
+    end;
+
+    exit(true);
+end;</code></pre>
+<div class="tip"><strong>Integration tip:</strong> do not expose secrets, access tokens or unnecessary customer data in error messages. Log only the diagnostic information that is appropriate for the environment.</div>
+<p>For a deeper look at HTTP requests, headers, content and responses, see <a href="https://dynexal.com/articles/httpclient-business-central-al.html">HttpClient in Business Central AL</a>.</p>
+
+<h2>9. Handling JSON/API errors</h2>
+<p>External APIs often return JSON error objects. Do not assume every response has the same schema. Check the HTTP status first and then safely parse the response body.</p>
+<pre><code>if not Response.IsSuccessStatusCode() then begin
+    Response.Content().ReadAs(ResponseText);
+    // Parse known error properties only when they exist.
+    Error('The API request failed with HTTP status %1.',
+          Response.HttpStatusCode());
+end;</code></pre>
+<p>For practical JSON parsing patterns using <code>JsonObject</code>, <code>JsonArray</code>, <code>JsonToken</code> and <code>JsonValue</code>, see <a href="https://dynexal.com/articles/json-handling-business-central-al.html">JSON Handling in Business Central AL</a>.</p>
+
+<h2>10. Collecting errors instead of stopping at the first one</h2>
+<p>Some processes need to validate many records and report several problems together instead of stopping at the first error. Business Central provides error collection features for scenarios such as bulk validation. This can be more user-friendly than raising one error, fixing it, rerunning the process and discovering the next problem.</p>
+<p>Choose error collection when the business process benefits from a consolidated validation result. For a single blocking condition, a normal <code>Error</code> or <code>ErrorInfo</code> may be simpler.</p>
+
+<h2>11. Logging errors with telemetry</h2>
+<p>Production applications need more than user-facing messages. Telemetry can help developers understand failures that happened after the user left the page or when a background process failed.</p>
+<p>Business Central exposes telemetry capabilities through the system telemetry framework. For example, the Feature Telemetry codeunit provides <code>LogError</code> overloads that can send error text, call-stack information and custom dimensions. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/application/system-application/codeunit/system.telemetry.feature-telemetry">Feature Telemetry</a></p>
+<pre><code>if not Success then begin
+    FeatureTelemetry.LogError(
+        '0000XYZ',
+        'Dynexal Integration',
+        'Customer synchronization',
+        GetLastErrorText(true),
+        GetLastErrorCallStack());
+end;</code></pre>
+<p>Telemetry should contain useful technical context but should not become a dumping ground for sensitive customer information. Use appropriate data classification and avoid logging secrets such as access tokens.</p>
+
+<h2>12. A practical error-handling pattern for integrations</h2>
+<p>A robust integration can separate the operation, result handling and diagnostics.</p>
+<pre><code>procedure SyncCustomer(CustomerNo: Code[20]): Boolean
+var
+    ErrorText: Text;
+    ErrorCallStack: Text;
+begin
+    ClearLastError();
+
+    if not TrySyncCustomer(CustomerNo) then begin
+        ErrorText := GetLastErrorText(true);
+        ErrorCallStack := GetLastErrorCallStack();
+
+        // Log technical details where appropriate.
+        FeatureTelemetry.LogError(
+            '0000CUST',
+            'Dynexal Customer Sync',
+            'Customer synchronization failed',
+            ErrorText,
+            ErrorCallStack);
+
+        exit(false);
+    end;
+
+    exit(true);
+end;
+
+[TryFunction]
+local procedure TrySyncCustomer(CustomerNo: Code[20])
+begin
+    // Call the external service and process the response.
+    // Raise Error when the operation cannot continue.
+end;</code></pre>
+<p>The exact architecture depends on whether the process is interactive, scheduled through a job queue, or part of a larger posting transaction. The important principle is to separate user-facing behavior from technical diagnostics.</p>
+
+<h2>13. Common error-handling mistakes</h2>
+<h3>Using Message instead of Error</h3>
+<p><code>Message</code> does not communicate a blocking failure in the same way as <code>Error</code>. If the process must stop because the data is invalid, use the appropriate error mechanism.</p>
+<h3>Showing raw technical errors to users</h3>
+<p>A raw HTTP response, SQL-style technical detail or call stack is usually not an appropriate user message. Give the user a concise explanation and keep technical diagnostics for logs or telemetry.</p>
+<h3>Assuming TryFunction rolls back everything</h3>
+<p>This is one of the most important mistakes. Current Microsoft documentation explicitly says database changes made by a try method are not rolled back. Design transaction behavior deliberately.</p>
+<h3>Calling a TryFunction without using its result</h3>
+<p>If the Boolean return value is not consumed, the call is not treated as a caught-error try call. Use the result in an <code>if</code> or assignment when you intend to catch the error.</p>
+<h3>Logging secrets</h3>
+<p>Never put passwords, OAuth access tokens, API keys or unnecessary personal/customer data into error messages or telemetry.</p>
+<h3>Ignoring the call stack</h3>
+<p>For production failures, error text alone may not identify the source. Capture a call stack when it adds useful diagnostic value.</p>
+
+<h2>14. Error handling best practices</h2>
+<ul>
+  <li>Use clear and actionable error messages.</li>
+  <li>Use labels for user-facing text.</li>
+  <li>Use <code>ErrorInfo</code> when a structured error experience is useful.</li>
+  <li>Use <code>TryFunction</code> when you genuinely need to catch an AL error and branch on success/failure.</li>
+  <li>Do not assume TryFunction automatically rolls back database changes.</li>
+  <li>Use <code>ClearLastError()</code> before capturing a new failure when appropriate.</li>
+  <li>Use <code>GetLastErrorText</code> and <code>GetLastErrorCallStack</code> for diagnostics.</li>
+  <li>Keep technical details out of normal user-facing messages.</li>
+  <li>Use telemetry for production diagnostics and background processes.</li>
+  <li>Never log secrets or unnecessary sensitive information.</li>
+  <li>Test both successful and failure paths.</li>
+  <li>Document integration-specific retry and failure behavior.</li>
+</ul>
+
+<h2>15. Error handling checklist for API integrations</h2>
+<ol>
+  <li>Validate required configuration before making the request.</li>
+  <li>Use secure authentication and never hard-code credentials.</li>
+  <li>Handle transport/request failures.</li>
+  <li>Check HTTP status codes.</li>
+  <li>Safely read and parse error responses.</li>
+  <li>Do not expose tokens or sensitive response data to users.</li>
+  <li>Capture useful diagnostic details.</li>
+  <li>Decide whether the operation should retry, skip, queue or stop.</li>
+  <li>Log failures in a way that can be investigated later.</li>
+  <li>Test timeout, authentication, validation, rate-limit and server-error scenarios.</li>
+</ol>
+
+<h2>16. Error handling vs debugging</h2>
+<p>Error handling decides what the application should do when something goes wrong. Debugging helps the developer discover why it went wrong. They work together but are not the same thing.</p>
+<p>During development, use breakpoints and the AL debugger to inspect variables and call stacks. In production, telemetry and structured diagnostics can help investigate failures that cannot be reproduced interactively.</p>
+
+<h2>FAQ</h2>
+<h3>Does TryFunction catch every possible error?</h3>
+<p>Try methods are designed to catch errors and exceptions that occur during AL execution. Their behavior has specific rules, so do not treat them as a universal replacement for all error-handling mechanisms. Review the current TryFunction documentation for your Business Central runtime.</p>
+<h3>Does TryFunction roll back database changes?</h3>
+<p>No. Current Microsoft documentation states that changes made by a try method are not rolled back. Transaction behavior should therefore be designed carefully.</p>
+<h3>When should I use Codeunit.Run?</h3>
+<p>Use it when a codeunit needs to be executed and you want to inspect its Boolean success/failure result. Be aware of the transaction semantics documented for the Boolean-returning form.</p>
+<h3>What is the difference between GetLastErrorText and GetLastErrorCallStack?</h3>
+<p><code>GetLastErrorText</code> gives the last error message, while <code>GetLastErrorCallStack</code> gives the call stack associated with the last error.</p>
+<h3>Should I show GetLastErrorText directly to users?</h3>
+<p>Not automatically. The returned text may contain technical or sensitive details. Prefer a clear user-facing message and keep diagnostic details in appropriate logs or telemetry.</p>
+
+<div class="article-links">
+<strong>Related Dynexal tutorials</strong>
+<ul>
+  <li><a href="https://dynexal.com/articles/codeunits-business-central.html">Codeunits in Business Central</a></li>
+  <li><a href="https://dynexal.com/articles/al-event-subscribers-business-central.html">AL Event Subscribers</a></li>
+  <li><a href="https://dynexal.com/articles/httpclient-business-central-al.html">HttpClient in Business Central AL</a></li>
+  <li><a href="https://dynexal.com/articles/json-handling-business-central-al.html">JSON Handling in Business Central AL</a></li>
+  <li><a href="https://dynexal.com/articles/oauth-2-authentication-business-central-al.html">OAuth 2.0 Authentication in Business Central AL</a></li>
+  <li><a href="https://dynexal.com/articles/business-central-api-integration.html">Business Central API Integration</a></li>
+</ul>
+</div>
+
+<div class="article-footer"><p><strong>Final takeaway:</strong> good AL error handling is about making failures understandable, controllable and diagnosable. Use <code>Error</code> and <code>ErrorInfo</code> for clear application errors, <code>TryFunction</code> or <code>Codeunit.Run</code> when you need controlled failure handling, and telemetry when production diagnostics matter. Always design transaction behavior deliberately.</p></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
