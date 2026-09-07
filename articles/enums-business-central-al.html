@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn Enums in Microsoft Dynamics 365 Business Central AL with practical examples covering enum values, enum fields, enumextension, comparisons, APIs, and best practices.">
+  <meta name="author" content="Dynexal">
+  <link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+  <link rel="canonical" href="https://dynexal.com/articles/enums-business-central-al.html">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://dynexal.com/articles/enums-business-central-al.html">
+  <meta property="og:title" content="Enums in Business Central AL: Complete Beginner Guide | Dynexal">
+  <meta property="og:description" content="A practical guide to AL Enums, enum values, enum fields, enumextension, comparisons, APIs and real-world Business Central patterns.">
+  <meta property="og:site_name" content="Dynexal">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Enums in Business Central AL: Complete Beginner Guide | Dynexal">
+  <meta name="twitter:description" content="Learn how to create, use and extend Enums in Business Central AL with practical examples.">
+  <title>Enums in Business Central AL: Complete Beginner Guide | Dynexal</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Enums in Business Central AL: Complete Beginner Guide",
+    "description": "A practical guide to AL Enums, enum values, enum fields, enumextension, comparisons, APIs and real-world Business Central patterns.",
+    "author": {"@type": "Organization", "name": "Dynexal"},
+    "publisher": {"@type": "Organization", "name": "Dynexal"},
+    "mainEntityOfPage": {"@type": "WebPage", "@id": "https://dynexal.com/articles/enums-business-central-al.html"},
+    "url": "https://dynexal.com/articles/enums-business-central-al.html",
+    "inLanguage": "en"
+  }
+  </script>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d68b32;background:#fff8ec;padding:16px 20px;margin:24px 0}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">AL DEVELOPMENT</span>
+<h1>Enums in Business Central AL: Complete Beginner Guide</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 12 min read</p>
+<p class="intro">Enums are a clean way to represent a fixed set of named values in Microsoft Dynamics 365 Business Central. They are commonly used for statuses, document types, categories, methods and other business choices. In this practical guide, you will learn how to create an Enum, use it in tables and AL code, extend an existing Enum with <code>enumextension</code>, compare values, work with Enum methods, and understand why Enums are generally preferred over legacy Options for modern AL development.</p>
+<div class="hero-note"><strong>What you will learn:</strong> Enum syntax, values and ordinals, table fields, variables and parameters, comparisons, <code>enumextension</code>, API scenarios, Enum methods, common mistakes and production best practices.</div>
+
+<h2>What is an Enum in Business Central?</h2>
+<p>An Enum is a data type made up of named constants. For example, an order status might contain <code>Open</code>, <code>Released</code>, <code>Shipped</code> and <code>Cancelled</code>. Instead of storing unexplained numbers or relying on strings, your AL code can work with meaningful named values.</p>
+<p>Microsoft documents Enums as types that can be used for table fields, variables and parameters. Enum values have an ID (ordinal value) and a name, and the values are displayed according to their declaration order. An Enum can be extended only when its <code>Extensible</code> property is set to <code>true</code>. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-extensible-enums">Microsoft Learn: Extensible Enums</a></p>
+
+<h2>Why use Enums instead of Options?</h2>
+<p>Older Business Central development often used the <code>Option</code> data type for a fixed list of choices. Modern AL development uses Enums for new designs because Enums support stronger typing and can be extended through extensions when designed as extensible.</p>
+<ul>
+  <li>Enums provide named values that are easier to understand in code.</li>
+  <li>Extensible Enums can be extended by another extension.</li>
+  <li>Enums work well with modern Business Central extensibility patterns.</li>
+  <li>Enums have their own type, making assignments and comparisons stricter than legacy Options.</li>
+  <li>Enums provide better metadata when used in API pages.</li>
+</ul>
+<div class="tip"><strong>Practical rule:</strong> when creating a new Business Central data model, prefer an Enum over an Option unless you have a specific compatibility reason to use an Option.</div>
+
+<h2>Creating your first Enum</h2>
+<p>The basic syntax starts with an object ID and Enum name. Each value has its own ordinal ID and name.</p>
+<pre><code>enum 50100 "Order Status"
+{
+    Extensible = true;
+
+    value(0; Open)
+    {
+        Caption = 'Open';
+    }
+    value(1; Released)
+    {
+        Caption = 'Released';
+    }
+    value(2; Shipped)
+    {
+        Caption = 'Shipped';
+    }
+    value(3; Cancelled)
+    {
+        Caption = 'Cancelled';
+    }
+}</code></pre>
+<p>Here, <code>50100</code> is the Enum object ID. The values have ordinal IDs <code>0</code> through <code>3</code>. The ordinal value must be unique within the Enum.</p>
+
+<h2>Understanding Extensible = true</h2>
+<p>Enums are not extensible by default. If you want another extension to add values, set <code>Extensible = true</code>. Microsoft specifically notes that only Enums with this property set to <code>true</code> can be extended. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/properties/devenv-extensible-property">Extensible property</a></p>
+<pre><code>enum 50101 "Payment Method"
+{
+    Extensible = true;
+
+    value(0; Cash) { }
+    value(1; Card) { }
+    value(2; BankTransfer) { }
+}</code></pre>
+<p>If the Enum is intentionally closed and should not be extended by other apps, leave it non-extensible. Extensibility should be a deliberate design decision.</p>
+
+<h2>Using an Enum as a table field</h2>
+<p>One of the most common uses is storing an Enum value in a table.</p>
+<pre><code>table 50110 "Dynexal Order"
+{
+    DataClassification = CustomerContent;
+
+    fields
+    {
+        field(1; "No."; Code[20])
+        {
+            DataClassification = CustomerContent;
+        }
+
+        field(2; Status; enum "Order Status")
+        {
+            DataClassification = CustomerContent;
+        }
+    }
+}</code></pre>
+<p>The field type is <code>enum "Order Status"</code>. The user sees the Enum values in the Business Central UI when the field is placed on a page.</p>
+
+<h2>Using an Enum as a variable</h2>
+<p>You can declare an Enum variable using the <code>enum</code> keyword followed by the Enum name.</p>
+<pre><code>var
+    Status: enum "Order Status";</code></pre>
+<p>Then assign a specific Enum member:</p>
+<pre><code>Status := "Order Status"::Released;</code></pre>
+<p>The <code>::</code> syntax identifies a specific member of the Enum.</p>
+
+<h2>Comparing Enum values</h2>
+<p>Enums are strongly typed, so compare values from the same Enum type rather than comparing unrelated values.</p>
+<pre><code>if Status = "Order Status"::Released then begin
+    // Continue processing the released order.
+end;</code></pre>
+<p>You can also use a <code>case</code> statement when different business logic is required for different values.</p>
+<pre><code>case Status of
+    "Order Status"::Open:
+        Message('Order is open.');
+    "Order Status"::Released:
+        Message('Order is released.');
+    "Order Status"::Shipped:
+        Message('Order has shipped.');
+    "Order Status"::Cancelled:
+        Message('Order was cancelled.');
+end;</code></pre>
+<div class="warning"><strong>Avoid magic numbers:</strong> do not write business logic that depends on an Enum's ordinal number when you can use the named member. <code>"Order Status"::Released</code> is much clearer than relying on a numeric value.</div>
+
+<h2>Enum parameters in procedures</h2>
+<p>Enums can be passed to procedures just like other AL data types.</p>
+<pre><code>procedure ProcessOrder(OrderStatus: enum "Order Status")
+begin
+    if OrderStatus = "Order Status"::Released then begin
+        // Process released orders.
+    end;
+end;</code></pre>
+<p>This makes a procedure's expected input type explicit and lets the compiler help catch incompatible assignments.</p>
+
+<h2>Extending an existing Enum with enumextension</h2>
+<p>One of the biggest advantages of an extensible Enum is that another extension can add values without modifying the original Enum object.</p>
+<pre><code>enumextension 50102 "Order Status Ext" extends "Order Status"
+{
+    value(50102; OnHold)
+    {
+        Caption = 'On Hold';
+    }
+}</code></pre>
+<p>The extension adds a new value named <code>OnHold</code>. The extension value uses its own unique ID. Microsoft documents this pattern as the standard way to extend an existing extensible Enum. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-extensible-enums">Extensible Enums</a></p>
+
+<h2>Enum values in APIs</h2>
+<p>Enums are particularly useful in Business Central API scenarios. Microsoft recommends using Enums instead of Options for fields exposed through API pages. With an Enum, the API metadata describes the Enum type and its available members rather than treating the value simply as an arbitrary string.</p>
+<pre><code>enum 50103 "Fuel Type"
+{
+    Extensible = true;
+
+    value(0; Petrol) { }
+    value(1; Diesel) { }
+    value(2; Electric) { }
+}
+
+table 50104 "Vehicle"
+{
+    fields
+    {
+        field(1; "No."; Code[20]) { }
+        field(2; "Fuel Type"; enum "Fuel Type") { }
+    }
+}</code></pre>
+<p>Microsoft's custom API guidance uses this type of Enum field and explains that Enum metadata exposes the available Enum members. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-develop-custom-api">Developing a custom API</a></p>
+
+<h2>Useful Enum methods</h2>
+<p>AL provides methods for working with Enum values. For example, <code>Enum.Names()</code> returns the names of the values as a <code>List of [Text]</code>. This can be useful when building generic UI or diagnostic logic.</p>
+<pre><code>var
+    Status: enum "Order Status";
+    Names: List of [Text];
+begin
+    Names := Status.Names();
+end;</code></pre>
+<p>Use generic Enum methods when you genuinely need dynamic handling. For normal business logic, explicit Enum members are usually easier to read and maintain. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/enum/enum-names--method">Enum.Names()</a></p>
+
+<h2>Real-world example: order processing</h2>
+<p>Imagine an e-commerce integration where an order moves through several stages. An Enum can represent the state without scattering strings such as <code>"pending"</code>, <code>"paid"</code> and <code>"shipped"</code> throughout the application.</p>
+<pre><code>enum 50105 "Ecom Order Status"
+{
+    Extensible = true;
+
+    value(0; Pending) { }
+    value(1; Paid) { }
+    value(2; Fulfilled) { }
+    value(3; Cancelled) { }
+}
+
+procedure CanShip(Status: enum "Ecom Order Status"): Boolean
+begin
+    exit(Status = "Ecom Order Status"::Paid);
+end;</code></pre>
+<p>The procedure now communicates the business rule directly: an order can be shipped only when its status is <code>Paid</code>. In a larger integration, the Enum can be stored in a table and shown on a List or Card page.</p>
+
+<h2>Enums with page fields</h2>
+<p>If a table contains an Enum field, a page can expose that field directly.</p>
+<pre><code>field(Status; Rec.Status)
+{
+    ApplicationArea = All;
+    ToolTip = 'Specifies the current order status.';
+}</code></pre>
+<p>Business Central renders the available Enum members for the user. This is one reason Enums are useful for controlled choices in business applications.</p>
+
+<h2>Enum design and extension best practices</h2>
+<ol>
+  <li><strong>Use meaningful names.</strong> Choose names that describe the business concept, not implementation details.</li>
+  <li><strong>Use extensibility deliberately.</strong> Set <code>Extensible = true</code> when partner or per-tenant extensions should be able to add values.</li>
+  <li><strong>Do not depend on ordinal numbers in business logic.</strong> Use named members.</li>
+  <li><strong>Keep captions user-friendly.</strong> The caption is what users see in the UI.</li>
+  <li><strong>Be careful when changing existing Enum designs.</strong> Enum values can be persisted in database fields and used by integrations.</li>
+  <li><strong>Use the correct object ID range.</strong> Microsoft notes that object ID uniqueness is validated during installation, and Marketplace apps must follow assigned ranges.</li>
+  <li><strong>Use file naming conventions.</strong> For example, an Enum file can follow the pattern <code>OrderStatus.Enum.al</code>, and an Enum extension can use <code>OrderStatus.EnumExt.al</code>.</li>
+</ol>
+<p>Microsoft's AL best-practices guidance recommends including the object type in file names, with <code>Enum</code> and <code>EnumExt</code> as the relevant abbreviations. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/compliance/apptest-bestpracticesforalcode">AL code best practices</a></p>
+
+<h2>Common Enum mistakes</h2>
+<h3>1. Forgetting Extensible = true</h3>
+<p>If another extension needs to add a value, the original Enum must be extensible.</p>
+<h3>2. Comparing different Enum types</h3>
+<p>Enums are strongly typed. Make sure both sides of a comparison belong to the intended Enum type.</p>
+<h3>3. Using numbers instead of names</h3>
+<p>Ordinal IDs are implementation details. Prefer readable members such as <code>Status::Released</code>.</p>
+<h3>4. Treating an Enum like free-form text</h3>
+<p>If the value represents a controlled business choice, use an Enum rather than letting arbitrary text values enter the process.</p>
+<h3>5. Making every Enum extensible</h3>
+<p>Extensibility is useful, but it should match the intended architecture. If a type is deliberately closed, do not expose it as an extension point without a reason.</p>
+
+<h2>Enum vs Option: quick comparison</h2>
+<ul>
+  <li><strong>Enum:</strong> modern, strongly typed, named values, can be extensible.</li>
+  <li><strong>Option:</strong> legacy pattern that you may still encounter in existing solutions.</li>
+  <li><strong>For new development:</strong> prefer Enum for controlled lists of values.</li>
+  <li><strong>For existing code:</strong> consider compatibility and dependencies before changing an Option to an Enum.</li>
+</ul>
+
+<h2>How to explore existing Enums</h2>
+<p>Visual Studio Code with the AL development tools includes AL Explorer, which provides an <strong>EXTENSIBLE ENUMS</strong> view. This can help you discover available extensible Enums and their extension points without searching through application source manually. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-al-explorer">Microsoft Learn: AL Explorer</a></p>
+
+<h2>Testing an Enum in Business Central</h2>
+<ol>
+  <li>Create the Enum and compile the project.</li>
+  <li>Add the Enum to a table field.</li>
+  <li>Expose the field on a test List or Card page.</li>
+  <li>Publish the extension and verify the available values in the UI.</li>
+  <li>Test each important business path, including any values added through an Enum extension.</li>
+  <li>If the Enum is exposed through an API, inspect the API metadata and test the expected values.</li>
+</ol>
+<div class="tip"><strong>Developer tip:</strong> test the business behavior associated with each Enum value, not just whether the dropdown displays correctly. An Enum often controls important posting, workflow or integration decisions.</div>
+
+<h2>Frequently asked questions</h2>
+<h3>Can an Enum be extended?</h3>
+<p>Yes. The base Enum must have <code>Extensible = true</code>, and another extension can use <code>enumextension</code> to add values.</p>
+<h3>Can I use an Enum in a table field?</h3>
+<p>Yes. A table field can use <code>enum "Your Enum Name"</code> as its data type.</p>
+<h3>Can I compare Enum values?</h3>
+<p>Yes. Use the Enum type and its named members, for example <code>Status = Status::Released</code> when the syntax is resolved to the appropriate Enum type.</p>
+<h3>Should I use Option or Enum?</h3>
+<p>For new AL development, Enum is generally the better choice for controlled sets of values. Options are primarily encountered in older or compatibility-focused solutions.</p>
+<h3>Can Enums be used with Business Central APIs?</h3>
+<p>Yes. Enums are supported in API data models, and Microsoft's custom API guidance recommends Enums instead of Options for API fields.</p>
+
+<div class="article-links"><strong>Continue learning:</strong><br><a href="../articles/al-tables-business-central.html">AL Tables</a> · <a href="../articles/creating-list-and-card-pages-al.html">List and Card Pages</a> · <a href="../articles/interfaces-business-central-al.html">Interfaces</a> · <a href="../articles/business-central-custom-api-page.html">Custom API Pages</a> · <a href="../articles/json-handling-business-central-al.html">JSON Handling</a> · <a href="../articles/al-event-subscribers-business-central.html">Event Subscribers</a></div>
+
+<div class="article-footer"><p><strong>Summary:</strong> Enums make Business Central AL code clearer, safer and easier to extend. Learn the basic Enum syntax first, then practice using Enum fields, comparisons and <code>enumextension</code>. Once you understand those patterns, Enums become a powerful foundation for clean Business Central data models and integrations.</p></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
