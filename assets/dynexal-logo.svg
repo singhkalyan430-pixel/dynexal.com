@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 120" role="img" aria-labelledby="title desc">
+<title id="title">Dynexal</title>
+<desc id="desc">Dynexal logo with a stylized D, orbit and code brackets.</desc>
+<defs>
+  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#12345b"/>
+    <stop offset="1" stop-color="#16d9e3"/>
+  </linearGradient>
+</defs>
+<g transform="translate(8 10)">
+  <path d="M48 8h32c28 0 50 18 50 45s-22 45-50 45H48V8Zm27 22v46h7c14 0 25-9 25-23S96 30 82 30h-7Z" fill="url(#g)"/>
+  <path d="M18 70c15 23 43 33 69 25 20-6 34-20 43-38" fill="none" stroke="#12cfe0" stroke-width="6" stroke-linecap="round"/>
+  <path d="M34 42c13-20 35-31 59-29 20 2 37 12 48 27" fill="none" stroke="#1b78d0" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="82" cy="53" r="17" fill="#0b2340" stroke="#16d9e3" stroke-width="3"/>
+  <circle cx="82" cy="53" r="5" fill="#16d9e3"/>
+  <path d="M82 38v8M82 60v8M67 53h8M89 53h8" stroke="#16d9e3" stroke-width="3" stroke-linecap="round"/>
+  <path d="m122 45 13 10-13 10M157 45l-13 10 13 10" fill="none" stroke="#1b78d0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<text x="185" y="73" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="58" font-weight="800" letter-spacing="-2" fill="#102a4a">Dyn<tspan fill="#10cfe0">ex</tspan>al</text>
+</svg>
