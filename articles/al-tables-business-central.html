@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn AL tables in Microsoft Dynamics 365 Business Central with practical examples, fields, keys, table extensions and common mistakes.">
+<title>AL Tables in Business Central: Complete Beginner Guide | Dynexal</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:850px;margin:auto;padding:70px 20px 90px}.back,.article a{color:#426ee5;font-weight:800}.section-label{display:block;margin-top:32px}.article h1{font-size:50px;line-height:1.08;letter-spacing:-1.8px;color:#172033;margin:14px 0}.meta{color:#718096;font-size:14px;margin-bottom:32px}.intro{font-size:20px;line-height:1.75;color:#4b5b70}.article h2{font-size:30px;margin-top:48px;color:#172033}.article p,.article li{font-size:17px;line-height:1.8;color:#46546a}.article code:not(pre code){background:#eef2f7;padding:3px 7px;border-radius:5px;color:#263b61}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:14px;line-height:1.75;white-space:pre}.note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px;border-radius:12px;margin:25px 0;color:#33445e}.article-footer{margin-top:60px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:600px){.article h1{font-size:37px}.article p,.article li{font-size:16px}.article pre{padding:17px}.article pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav"><a href="../index.html#home">Home</a><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">AL DEVELOPMENT</span>
+<h1>AL Tables in Business Central: Complete Beginner Guide</h1><p class="meta">Dynexal • Beginner Guide • 10 min read</p>
+<p class="intro">Tables are one of the most important building blocks in Business Central. They define how business data is stored and are the foundation for pages, reports, APIs and many other AL objects.</p>
+<div class="note"><strong>In this guide:</strong> table structure, fields, keys, a practical table example, table extensions and common mistakes.</div>
+<h2>What is a table in Business Central?</h2>
+<p>A Business Central table defines a set of fields that represent business data. For example, a custom application might need to store support tickets, project requests or external order references. The table provides the data structure that other objects can work with.</p>
+<h2>Create a simple AL table</h2>
+<p>Here is a small example of a custom table for storing project information:</p>
+<pre><code>table 50100 "Dynexal Project"
+{
+    DataClassification = CustomerContent;
+
+    fields
+    {
+        field(1; "Project No."; Code[20])
+        {
+            Caption = 'Project No.';
+        }
+        field(2; "Project Name"; Text[100])
+        {
+            Caption = 'Project Name';
+        }
+        field(3; "Status"; Option)
+        {
+            Caption = 'Status';
+            OptionMembers = Open,"In Progress",Completed;
+        }
+    }
+
+    keys
+    {
+        key(PK; "Project No.")
+        {
+            Clustered = true;
+        }
+    }
+}</code></pre>
+<h2>Understanding the main sections</h2>
+<ul><li><strong>table</strong> defines the object ID and name.</li><li><strong>DataClassification</strong> describes the classification of the stored data.</li><li><strong>fields</strong> contains the columns that store information.</li><li><strong>keys</strong> defines how records are uniquely identified and indexed.</li></ul>
+<h2>Fields: choosing the right data type</h2>
+<p>AL provides data types such as <code>Code</code>, <code>Text</code>, <code>Integer</code>, <code>Decimal</code>, <code>Date</code>, <code>Boolean</code>, <code>Enum</code> and more. Choose the type based on the business meaning of the value rather than simply how it looks on screen.</p>
+<h2>Primary keys</h2>
+<p>A primary key identifies a record. In the example above, <code>Project No.</code> is used as the primary key. A good key should uniquely identify a record and fit the business process.</p>
+<h2>Table extensions</h2>
+<p>When you need to add fields to an existing standard Business Central table, use a table extension instead of modifying the base table.</p>
+<pre><code>tableextension 50101 CustomerExt extends Customer
+{
+    fields
+    {
+        field(50100; "Dynexal Reference"; Code[30])
+        {
+            Caption = 'Dynexal Reference';
+            DataClassification = CustomerContent;
+        }
+    }
+}</code></pre>
+<h2>Common beginner mistakes</h2>
+<ol><li>Using a data type that does not match the business requirement.</li><li>Creating a key without considering how records will be searched.</li><li>Changing standard tables directly instead of using extensions.</li><li>Ignoring data classification for new fields.</li><li>Building a table without considering how pages, reports and integrations will consume the data.</li></ol>
+<h2>What should you learn next?</h2>
+<p>Once you understand tables, the natural next step is to build a <strong>List Page</strong> and <strong>Card Page</strong> over your table. Then learn page extensions, actions, validation, codeunits and events.</p>
+<div class="article-footer"><a href="../tutorials.html">← Explore more Dynexal tutorials</a></div>
+</main><footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script>
+</body></html>
