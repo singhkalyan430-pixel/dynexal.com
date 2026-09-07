@@ -1,1 +1,4 @@
 const menuBtn=document.querySelector('.menu-btn');const nav=document.querySelector('.nav');if(menuBtn){menuBtn.addEventListener('click',()=>{nav.style.display=nav.style.display==='flex'?'none':'flex';nav.style.position='absolute';nav.style.top='72px';nav.style.left='0';nav.style.right='0';nav.style.padding='20px';nav.style.background='#0b1220';nav.style.flexDirection='column';});}
+
+// Google Analytics 4
+(function(){const measurementId='G-M2JGL0B9K1';window.dataLayer=window.dataLayer||[];function gtag(){window.dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config',measurementId);const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+measurementId;document.head.appendChild(s);})();
