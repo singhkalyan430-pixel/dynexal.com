@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn how to use HttpClient in Microsoft Dynamics 365 Business Central AL for REST API integration with GET, POST, PUT, PATCH, DELETE, headers, JSON, authentication, error handling and practical examples.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/httpclient-business-central-al.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/httpclient-business-central-al.html">
+<meta property="og:title" content="HttpClient in Business Central AL: REST API Integration Guide | Dynexal">
+<meta property="og:description" content="A practical guide to HttpClient in Business Central AL covering REST API calls, HTTP methods, headers, JSON, authentication, errors and real-world integration patterns.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HttpClient in Business Central AL: REST API Integration Guide | Dynexal">
+<meta name="twitter:description" content="Learn Business Central HttpClient with practical AL examples for REST API integrations.">
+<title>HttpClient in Business Central AL: REST API Integration Guide | Dynexal</title>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"HttpClient in Business Central AL: REST API Integration Guide",
+  "description":"A practical guide to HttpClient in Business Central AL covering REST API calls, HTTP methods, headers, JSON, authentication, errors and real-world integration patterns.",
+  "author":{"@type":"Organization","name":"Dynexal"},
+  "publisher":{"@type":"Organization","name":"Dynexal"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/httpclient-business-central-al.html"},
+  "url":"https://dynexal.com/articles/httpclient-business-central-al.html",
+  "inLanguage":"en"
+}
+</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d38b2c;background:#fff8eb;padding:16px 20px;margin:24px 0;color:#5b4a2d}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">INTEGRATION</span>
+<h1>HttpClient in Business Central AL: REST API Integration Guide</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 15 min read</p>
+<p class="intro">When Business Central needs to communicate with an external REST API, the <code>HttpClient</code> data type is one of the most important AL tools to understand. You can use it to send GET, POST, PUT, PATCH and DELETE requests, add headers, send JSON payloads, read responses and build integrations with websites, e-commerce platforms, middleware and other services.</p>
+<div class="hero-note"><strong>What you will learn:</strong> HttpClient fundamentals, outbound HTTP permissions, GET and POST requests, HttpContent, HttpHeaders, HttpRequestMessage, HttpResponseMessage, JSON payloads, authentication concepts, error handling, timeout considerations and production integration best practices.</div>
+
+<h2>What is HttpClient in Business Central?</h2>
+<p><code>HttpClient</code> is the AL data type used to make outbound HTTP calls from a Business Central extension. Microsoft describes it as a wrapper around the .NET HttpClient class. It works together with related AL types such as <code>HttpRequestMessage</code>, <code>HttpResponseMessage</code>, <code>HttpContent</code> and <code>HttpHeaders</code>.</p>
+<p>This is useful whenever Business Central must consume an external service. Typical examples include sending sales orders to an e-commerce platform, reading shipping information from a courier API, checking a payment service, synchronizing inventory with another system, or calling an AI service.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-httpclient">Microsoft Learn: Call external services with HttpClient</a></p>
+
+<h2>HttpClient and the related AL data types</h2>
+<ul>
+<li><strong>HttpClient:</strong> sends HTTP requests and receives responses.</li>
+<li><strong>HttpRequestMessage:</strong> lets you build a request explicitly, including method, URI and headers.</li>
+<li><strong>HttpResponseMessage:</strong> represents the response returned by the external service.</li>
+<li><strong>HttpContent:</strong> represents request or response body content, such as JSON.</li>
+<li><strong>HttpHeaders:</strong> stores HTTP header names and values.</li>
+</ul>
+<p>Microsoft's HTTP and JSON API overview documents these data types as the core building blocks for service communication in AL.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-restapi-overview">Microsoft Learn: HTTP, JSON, TextBuilder and XML API overview</a></p>
+
+<h2>Important: allow outbound HttpClient requests</h2>
+<p>Outbound HTTP calls from an extension are blocked by default as a security measure. For an extension to make external calls, the <strong>Allow HttpClient Requests</strong> setting must be enabled for that app or extension in Business Central Extension Management.</p>
+<div class="warning"><strong>Why this matters:</strong> if your AL code is correct but Business Central reports that the request was blocked by the runtime, check the extension's configuration before changing the code.</div>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-httpclient">Microsoft Learn: HttpClient security and configuration</a></p>
+
+<h2>HTTP methods supported by HttpClient</h2>
+<p>Business Central's <code>HttpClient</code> supports the common HTTP methods used in REST integrations:</p>
+<ul>
+<li><strong>GET:</strong> retrieve data.</li>
+<li><strong>POST:</strong> send data or create a resource.</li>
+<li><strong>PUT:</strong> replace or create a resource according to the API contract.</li>
+<li><strong>PATCH:</strong> partially update an existing resource; in AL this is commonly done through <code>HttpClient.Send</code>.</li>
+<li><strong>DELETE:</strong> delete a resource when the external API permits it.</li>
+</ul>
+<p>Choosing the method is part of the API contract. Always follow the external service's documentation rather than assuming every endpoint behaves the same way.</p>
+
+<h2>Simple GET request in AL</h2>
+<p>The easiest way to start learning HttpClient is with a GET request. The following example reads a public test endpoint:</p>
+<pre><code>procedure GetTodo() ResponseText: Text
+var
+    Client: HttpClient;
+    Response: HttpResponseMessage;
+    IsSuccessful: Boolean;
+begin
+    IsSuccessful := Client.Get(
+        'https://jsonplaceholder.typicode.com/todos/3',
+        Response);
+
+    if not IsSuccessful then
+        Error('The HTTP request could not be sent.');
+
+    if not Response.IsSuccessStatusCode() then
+        Error(
+            'HTTP request failed. Status code: %1',
+            Response.HttpStatusCode());
+
+    Response.Content().ReadAs(ResponseText);
+end;</code></pre>
+<p>The important pattern is to check both the Boolean result of the request and the HTTP status code. A request can reach the remote service and still return an error such as 400, 401 or 500.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-get-method">Microsoft Learn: HttpClient.Get</a></p>
+
+<h2>Reading a JSON response</h2>
+<p>Most modern REST APIs return JSON. After reading the response into a text variable, you can parse it with AL's JSON data types.</p>
+<pre><code>procedure GetTodoTitle() Title: Text
+var
+    Client: HttpClient;
+    Response: HttpResponseMessage;
+    ResponseText: Text;
+    JsonObject: JsonObject;
+begin
+    if not Client.Get(
+        'https://jsonplaceholder.typicode.com/todos/3',
+        Response) then
+        Error('HTTP request failed.');
+
+    if not Response.IsSuccessStatusCode() then
+        Error('HTTP status code: %1', Response.HttpStatusCode());
+
+    Response.Content().ReadAs(ResponseText);
+
+    if not JsonObject.ReadFrom(ResponseText) then
+        Error('The API returned invalid JSON.');
+
+    JsonObject.Get('title', Title);
+end;</code></pre>
+<p>This pattern is useful for external APIs that return objects such as customers, products, shipment updates or payment responses.</p>
+<div class="tip"><strong>Tip:</strong> validate the response structure before assuming a property exists. External APIs can change their response or return an error object instead of the expected business payload.</div>
+
+<h2>Sending JSON with POST</h2>
+<p>For POST requests, the request body is usually placed in an <code>HttpContent</code> variable. You can create a JSON payload as text and then send it to the endpoint.</p>
+<pre><code>procedure CreateCustomer() ResponseText: Text
+var
+    Client: HttpClient;
+    Content: HttpContent;
+    Response: HttpResponseMessage;
+    JsonBody: Text;
+begin
+    JsonBody :=
+        '{"name":"Dynexal Demo Customer","city":"Noida"}';
+
+    Content.WriteFrom(JsonBody);
+
+    if not Client.Post(
+        'https://example.com/api/customers',
+        Content,
+        Response) then
+        Error('The POST request could not be sent.');
+
+    if not Response.IsSuccessStatusCode() then
+        Error(
+            'API returned HTTP %1',
+            Response.HttpStatusCode());
+
+    Response.Content().ReadAs(ResponseText);
+end;</code></pre>
+<p>In a real integration, replace the example URL and payload with the contract documented by the external service.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-post-method">Microsoft Learn: HttpClient.Post</a></p>
+
+<h2>Set the Content-Type header</h2>
+<p>When sending JSON, the external API commonly expects a <code>Content-Type: application/json</code> header. Content headers are accessed through <code>HttpContent.GetHeaders</code>.</p>
+<pre><code>procedure PrepareJsonContent(JsonBody: Text; var Content: HttpContent)
+var
+    ContentHeaders: HttpHeaders;
+begin
+    Content.WriteFrom(JsonBody);
+
+    Content.GetHeaders(ContentHeaders);
+
+    if ContentHeaders.Contains('Content-Type') then
+        ContentHeaders.Remove('Content-Type');
+
+    ContentHeaders.Add('Content-Type', 'application/json');
+end;</code></pre>
+<p>Removing an existing Content-Type before adding the required value avoids conflicts with the default content header. The exact headers required depend on the external API.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpcontent/httpcontent-getheaders-method">Microsoft Learn: HttpContent.GetHeaders</a></p>
+
+<h2>Adding Authorization and other request headers</h2>
+<p>Many REST services require headers such as <code>Authorization</code>, <code>Accept</code> or a service-specific API key. You can add default headers to the <code>HttpClient</code> or configure headers on an explicit <code>HttpRequestMessage</code>.</p>
+<pre><code>procedure AddHeaders(var Client: HttpClient)
+var
+    Headers: HttpHeaders;
+begin
+    Headers := Client.DefaultRequestHeaders();
+    Headers.Add('Accept', 'application/json');
+end;</code></pre>
+<p>For authentication, do not hard-code real production secrets in source code. Use an appropriate credential and secret-management approach for your Business Central solution and the authentication model required by the external API.</p>
+<p>Newer Business Central versions also support adding <code>SecretText</code> values to HTTP headers, which can help avoid exposing sensitive header values as ordinary text.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-defaultrequestheaders-method">Microsoft Learn: HttpClient.DefaultRequestHeaders</a></p>
+
+<h2>Using HttpRequestMessage for more control</h2>
+<p>Simple GET, POST, PUT and DELETE calls can use the corresponding <code>HttpClient</code> methods. For scenarios where you need to control the HTTP method or request structure more explicitly, use <code>HttpRequestMessage</code> with <code>HttpClient.Send</code>.</p>
+<pre><code>procedure SendCustomRequest() ResponseText: Text
+var
+    Client: HttpClient;
+    Request: HttpRequestMessage;
+    Response: HttpResponseMessage;
+    Headers: HttpHeaders;
+begin
+    Request.Method := 'PATCH';
+    Request.SetRequestUri(
+        'https://example.com/api/customers/1001');
+
+    Headers := Request.GetHeaders();
+    Headers.Add('Accept', 'application/json');
+
+    if not Client.Send(Request, Response) then
+        Error('The request could not be sent.');
+
+    if not Response.IsSuccessStatusCode() then
+        Error('HTTP status: %1', Response.HttpStatusCode());
+
+    Response.Content().ReadAs(ResponseText);
+end;</code></pre>
+<p>For PATCH requests, the request content would normally contain the fields being updated. The exact payload and headers depend on the external API.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-send-method">Microsoft Learn: HttpClient.Send</a></p>
+
+<h2>PUT and DELETE requests</h2>
+<p>PUT is commonly used when an API expects a complete replacement or upsert-style request. DELETE removes a resource when permitted.</p>
+<pre><code>// PUT
+if not Client.Put(ApiUrl, Content, Response) then
+    Error('PUT request could not be sent.');
+
+// DELETE
+if not Client.Delete(ApiUrl, Response) then
+    Error('DELETE request could not be sent.');</code></pre>
+<p>Always check <code>Response.IsSuccessStatusCode()</code> after the call and handle the status code according to the API contract.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-put-method">Microsoft Learn: HttpClient.Put</a> · <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-delete-method">Microsoft Learn: HttpClient.Delete</a></p>
+
+<h2>HTTP status codes you should handle</h2>
+<ul>
+<li><strong>200 OK:</strong> request succeeded.</li>
+<li><strong>201 Created:</strong> a new resource was created.</li>
+<li><strong>204 No Content:</strong> request succeeded without a response body.</li>
+<li><strong>400 Bad Request:</strong> the request or payload is invalid.</li>
+<li><strong>401 Unauthorized:</strong> authentication is missing or invalid.</li>
+<li><strong>403 Forbidden:</strong> the caller is authenticated but lacks permission.</li>
+<li><strong>404 Not Found:</strong> the endpoint or requested resource cannot be found.</li>
+<li><strong>409 Conflict:</strong> the request conflicts with the current resource state.</li>
+<li><strong>429 Too Many Requests:</strong> the service is throttling the client.</li>
+<li><strong>500-series errors:</strong> the remote service reported a server-side problem.</li>
+</ul>
+<p>Do not treat every non-200 response as the same error. Your integration should decide which errors are retryable, which require user intervention and which indicate a permanent data problem.</p>
+
+<h2>Common HttpClient errors and troubleshooting</h2>
+<h3>“The request was blocked by the runtime”</h3>
+<p>Check the extension's <strong>Allow HttpClient Requests</strong> configuration. Outbound requests are intentionally blocked unless the extension is allowed to make them.</p>
+<h3>401 or 403 response</h3>
+<p>Check the access token, authentication scheme, scopes, API permissions and Business Central permissions. A valid token does not automatically mean the caller can access every resource.</p>
+<h3>400 or 415 response</h3>
+<p>Inspect the JSON payload and headers. A missing or incorrect <code>Content-Type</code>, invalid JSON or a payload that does not match the API contract can cause these responses.</p>
+<h3>Timeout</h3>
+<p>External calls take time, and Business Central sessions can remain blocked while the HTTP call completes. Use sensible timeouts and avoid putting slow external calls directly into interactive user actions when possible.</p>
+<h3>Works in Postman but not in Business Central</h3>
+<p>Compare the two requests carefully: URL, HTTP method, authorization scheme, headers, body, content type and environment. Also check the Business Central extension's outbound HTTP permission.</p>
+
+<h2>HttpClient timeout</h2>
+<p>The <code>HttpClient.Timeout</code> method gets or sets the duration before the request times out. Microsoft currently documents a default timeout of 100 seconds, subject to the Business Central Server's maximum timeout configuration.</p>
+<pre><code>Client.Timeout := 30000;</code></pre>
+<p>Use timeouts deliberately. Increasing the timeout does not fix a slow or unreliable integration; it only makes the calling session wait longer.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-timeout-method">Microsoft Learn: HttpClient.Timeout</a></p>
+
+<h2>Performance considerations</h2>
+<p>External HTTP calls can make an AL session wait until the request completes. If a user launches a page action that makes a slow external call, the UI can appear to hang while the server waits.</p>
+<p>For integrations that do not need an immediate user response, consider an asynchronous architecture such as a job queue or an integration layer. Batch work where appropriate instead of making hundreds of individual calls from an interactive action.</p>
+<p>Microsoft also provides outgoing web service request telemetry for HttpClient calls, which can help identify failures and performance problems.</p>
+
+<h2>Real-world example: synchronizing a Business Central customer</h2>
+<p>Imagine an external CRM exposes this endpoint:</p>
+<pre><code>POST https://crm.example.com/api/customers</code></pre>
+<p>When a new Business Central customer is created, an integration can build a JSON payload such as:</p>
+<pre><code>{
+  "externalId": "8b6b9c1a-...",
+  "number": "10000",
+  "name": "Dynexal Customer",
+  "city": "Noida"
+}</code></pre>
+<p>The AL solution can then:</p>
+<ol>
+<li>Read the required Customer fields.</li>
+<li>Create the JSON payload.</li>
+<li>Prepare <code>HttpContent</code> and the required headers.</li>
+<li>Send the POST request through <code>HttpClient</code>.</li>
+<li>Check the HTTP status code.</li>
+<li>Parse the response if the CRM returns an external ID.</li>
+<li>Log or queue the failure when the external service is unavailable.</li>
+</ol>
+<p>For production systems, it is usually better to separate the integration logic into dedicated codeunits rather than placing a large HTTP implementation directly inside a table trigger.</p>
+
+<h2>HttpClient best practices</h2>
+<ul>
+<li>Keep external API calls inside focused integration codeunits.</li>
+<li>Use <code>HttpResponseMessage</code> status codes instead of assuming every request succeeded.</li>
+<li>Validate JSON before reading properties.</li>
+<li>Set the correct <code>Content-Type</code> for request bodies.</li>
+<li>Never hard-code production passwords, client secrets or access tokens in AL source code.</li>
+<li>Use appropriate authentication and permission models.</li>
+<li>Handle 429 and transient 5xx failures with controlled retry strategies where appropriate.</li>
+<li>Do not retry validation errors such as most 400 responses without fixing the payload.</li>
+<li>Keep user-interface actions responsive by moving slow integrations to background processing where practical.</li>
+<li>Log enough information to troubleshoot failures without storing sensitive credentials or personal data unnecessarily.</li>
+<li>Test integrations with non-production data before enabling them for live customers.</li>
+<li>Monitor outgoing web service telemetry in production environments.</li>
+</ul>
+
+<h2>HttpClient vs Business Central APIs</h2>
+<p>These two concepts are related but different:</p>
+<ul>
+<li><strong>Business Central API:</strong> an external application calls Business Central to read or modify ERP data.</li>
+<li><strong>HttpClient:</strong> Business Central calls an external service from AL.</li>
+</ul>
+<p>In a two-way integration, you may use both. For example, an external website could call a Business Central API to read inventory, while Business Central uses HttpClient to send shipment updates back to the website.</p>
+
+<h2>Quick learning checklist</h2>
+<ol>
+<li>Learn HTTP methods and status codes.</li>
+<li>Practice <code>HttpClient.Get</code> with a public test API.</li>
+<li>Learn <code>HttpContent</code> and JSON request bodies.</li>
+<li>Learn request and content headers.</li>
+<li>Practice POST, PUT and DELETE.</li>
+<li>Learn <code>HttpRequestMessage</code> and <code>HttpClient.Send</code> for advanced requests such as PATCH.</li>
+<li>Understand authentication and permissions.</li>
+<li>Move integration code into dedicated codeunits.</li>
+<li>Add logging, retries and monitoring before production use.</li>
+</ol>
+
+<h2>What should you learn next?</h2>
+<div class="article-links">
+<p><a href="business-central-api-integration.html">Business Central API Integration</a> — understand APIs, custom API pages, endpoints and CRUD operations.</p>
+<p><a href="codeunits-business-central.html">Codeunits in Business Central</a> — organize reusable integration and business logic.</p>
+<p><a href="al-event-subscribers-business-central.html">AL Event Subscribers</a> — trigger integration logic from Business Central events.</p>
+<p><a href="al-tables-business-central.html">AL Tables in Business Central</a> — understand the data structures behind your integrations.</p>
+<p><a href="shopify-business-central-integration.html">Shopify and Business Central Integration</a> — explore a practical e-commerce integration scenario.</p>
+</div>
+
+<div class="article-footer"><a class="back" href="../tutorials.html">← Explore all Dynexal tutorials</a></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
