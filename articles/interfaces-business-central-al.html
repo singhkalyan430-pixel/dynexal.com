@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn interfaces in Microsoft Dynamics 365 Business Central AL with practical examples, multiple implementations, polymorphism, interface variables, is and as operators, and best practices.">
+<meta name="author" content="Dynexal"><meta name="robots" content="index,follow">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg"><link rel="canonical" href="https://dynexal.com/articles/interfaces-business-central-al.html">
+<meta property="og:type" content="article"><meta property="og:url" content="https://dynexal.com/articles/interfaces-business-central-al.html"><meta property="og:title" content="Interfaces in Business Central AL: Complete Beginner Guide"><meta property="og:description" content="A practical guide to interfaces, implementations, polymorphism and reusable business logic in Business Central AL."><meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary"><meta name="twitter:title" content="Interfaces in Business Central AL: Complete Beginner Guide"><meta name="twitter:description" content="Learn AL interfaces with practical Business Central examples and best practices.">
+<title>Interfaces in Business Central AL: Complete Beginner Guide | Dynexal</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:900px;margin:0 auto;padding:70px 20px 100px}.article-head{margin-bottom:42px}.article-head .tag{color:#426ee5;font-weight:900;letter-spacing:1px;font-size:12px}.article h1{font-size:48px;line-height:1.12;margin:12px 0 18px}.article .intro{font-size:20px;line-height:1.7;color:#65748a}.article h2{font-size:30px;margin:48px 0 15px}.article h3{font-size:22px;margin:32px 0 12px}.article p,.article li{font-size:17px;line-height:1.75;color:#34445a}.article ul,.article ol{padding-left:25px}.article pre{background:#0b1220;color:#e7edf7;padding:20px;border-radius:12px;overflow:auto;line-height:1.6}.article code{font-family:Consolas,monospace}.note{background:#eef4ff;border-left:4px solid #426ee5;padding:16px 18px;border-radius:8px;margin:22px 0}.warning{background:#fff7e8;border-left:4px solid #e5a62b;padding:16px 18px;border-radius:8px;margin:22px 0}.related{background:#f7f9fc;border:1px solid #e2e7ef;padding:22px;border-radius:14px;margin-top:45px}.related a{color:#426ee5;font-weight:800;text-decoration:none}.meta{color:#7b8798;font-size:14px}@media(max-width:600px){.article{padding-top:45px}.article h1{font-size:36px}.article h2{font-size:26px}}
+</style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Interfaces in Business Central AL: Complete Beginner Guide","description":"A practical guide to interfaces and polymorphic business logic in Microsoft Dynamics 365 Business Central AL.","author":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"publisher":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/interfaces-business-central-al.html"},"isPartOf":{"@type":"WebSite","name":"Dynexal","url":"https://dynexal.com/"}}</script>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article"><div class="article-head"><span class="tag">AL DEVELOPMENT • DESIGN PATTERNS</span><h1>Interfaces in Business Central AL: Complete Beginner Guide</h1><p class="intro">Learn how interfaces work in Microsoft Dynamics 365 Business Central AL and how they help you separate contracts from implementations, reduce dependencies and build flexible business logic.</p><p class="meta">Dynexal · Business Central AL Development</p></div>
+<h2>What is an interface?</h2><p>An interface defines a contract: it describes which procedures an implementation must provide, without defining the implementation itself. A codeunit can implement an interface and provide the actual business logic.</p><div class="note"><strong>Simple idea:</strong> The interface says <em>what</em> a component can do; the implementing codeunit decides <em>how</em> it does it.</div>
+<h2>Why use interfaces in Business Central?</h2><ul><li>Separate business contracts from implementation details.</li><li>Allow multiple implementations of the same behavior.</li><li>Make code easier to replace and extend.</li><li>Reduce direct dependencies between business logic components.</li><li>Support polymorphism and cleaner automated testing.</li></ul>
+<h2>Basic interface syntax</h2><pre><code>interface "Payment Provider"
+{
+    procedure ProcessPayment(Amount: Decimal): Boolean;
+}</code></pre><p>The interface declares a procedure. It does not contain the implementation of that procedure.</p>
+<h2>Implementing an interface in a codeunit</h2><pre><code>codeunit 50130 "Card Payment Provider" implements "Payment Provider"
+{
+    procedure ProcessPayment(Amount: Decimal): Boolean
+    begin
+        // Card payment logic
+        exit(true);
+    end;
+}</code></pre><p>The implementing codeunit must provide the procedures declared by the interface.</p>
+<h2>Multiple implementations</h2><p>The real advantage becomes clear when several components implement the same contract.</p><pre><code>codeunit 50131 "Cash Payment Provider" implements "Payment Provider"
+{
+    procedure ProcessPayment(Amount: Decimal): Boolean
+    begin
+        // Cash payment logic
+        exit(true);
+    end;
+}
+
+codeunit 50132 "Card Payment Provider" implements "Payment Provider"
+{
+    procedure ProcessPayment(Amount: Decimal): Boolean
+    begin
+        // Card payment logic
+        exit(true);
+    end;
+}</code></pre><p>Both codeunits expose the same operation through the interface while keeping their implementation details separate.</p>
+<h2>Using an interface variable</h2><p>An interface variable can reference an implementing object. This lets business logic work with the contract instead of depending directly on one implementation.</p><pre><code>var
+    PaymentProvider: Interface "Payment Provider";
+    PaymentResult: Boolean;
+begin
+    PaymentProvider := "Card Payment Provider";
+    PaymentResult := PaymentProvider.ProcessPayment(1500);
+end;</code></pre><p>The important design benefit is that the calling code can depend on the interface rather than a concrete implementation.</p>
+<h2>Interface with an Enum</h2><p>A common practical pattern is to use an enum to select an implementation. The enum represents the business choice while the interface represents the behavior.</p><pre><code>enum 50130 "Payment Method"
+{
+    Extensible = true;
+
+    value(0; Cash) { }
+    value(1; Card) { }
+}
+</code></pre><p>A factory-style codeunit can then map the selected method to the appropriate implementation. This keeps selection logic separate from payment processing logic.</p>
+<h2>Polymorphism in AL</h2><p>Polymorphism means that the same interface call can execute different implementations. For example, calling <code>ProcessPayment</code> through the interface can execute card, cash or another future payment provider implementation.</p><pre><code>procedure ExecutePayment(PaymentProvider: Interface "Payment Provider"; Amount: Decimal): Boolean
+begin
+    exit(PaymentProvider.ProcessPayment(Amount));
+end;</code></pre><p>This procedure does not need to know which concrete provider is being used.</p>
+<h2>The is operator</h2><p>The <code>is</code> operator can be used when you need to determine whether a value is compatible with a particular interface or type.</p><pre><code>if PaymentProvider is "Payment Provider" then
+    Message('A payment provider is available.');</code></pre><p>Use type checks only when they are genuinely needed. In many designs, simply programming against the interface is cleaner.</p>
+<h2>The as operator</h2><p>The <code>as</code> operator can be used for type casting when a compatible value needs to be treated as another type.</p><pre><code>SomeInterface := SomeValue as "Payment Provider";</code></pre><div class="warning"><strong>Important:</strong> Use casting carefully. Prefer a clear interface contract over frequent runtime type checks and casts.</div>
+<h2>Extending an interface</h2><p>AL supports extending interfaces. An extended interface can add additional procedures while preserving the original contract for existing implementations where appropriate. Check the target Business Central version because interface language features can evolve between platform versions.</p><pre><code>interface "Advanced Payment Provider" extends "Payment Provider"
+{
+    procedure RefundPayment(Amount: Decimal): Boolean;
+}</code></pre>
+<h2>Real-world example: shipping providers</h2><p>Interfaces are useful when a Business Central solution may integrate with multiple shipping providers.</p><pre><code>interface "Shipping Provider"
+{
+    procedure CreateShipment(DocumentNo: Code[20]): Text;
+    procedure CancelShipment(ShipmentId: Text): Boolean;
+}</code></pre><p>Separate codeunits could implement the contract for DHL, FedEx, UPS or an internal logistics service. The sales or warehouse business logic can work with the interface instead of hard-coding one provider.</p>
+<h2>Interfaces and dependency reduction</h2><p>Without an interface, a business process may directly depend on a specific codeunit. Replacing that implementation can then require changes in several places. With an interface, the process can depend on the contract and the implementation can change independently.</p><pre><code>Business Process
+       |
+       v
+Shipping Provider Interface
+       |
+   +---+---+
+   |   |   |
+ DHL UPS Custom</code></pre>
+<h2>Interfaces and automated testing</h2><p>Interfaces can make testing easier because business logic can be designed around a contract rather than a concrete external service. A test-oriented implementation can provide controlled behavior while the production implementation calls the real service.</p>
+<h2>Common mistakes</h2><ul><li>Creating an interface when a simple procedure or codeunit is enough.</li><li>Putting implementation logic into the wrong layer.</li><li>Creating very large interfaces with unrelated responsibilities.</li><li>Using excessive type checks instead of relying on polymorphism.</li><li>Hard-coding a concrete implementation everywhere instead of using the interface.</li><li>Ignoring version compatibility when using newer interface language features.</li></ul>
+<h2>Best practices</h2><ul><li>Keep interfaces focused on one responsibility.</li><li>Use meaningful business-oriented names for interfaces and procedures.</li><li>Depend on interfaces where multiple implementations are expected.</li><li>Keep external integration details inside the implementing codeunit.</li><li>Combine interfaces with enums when a business process has selectable strategies.</li><li>Avoid unnecessary casts and runtime type checks.</li><li>Document important contracts and assumptions.</li><li>Test the business process independently from external implementations where practical.</li></ul>
+<h2>Interface vs codeunit</h2><table style="width:100%;border-collapse:collapse;margin:20px 0"><tr><th style="text-align:left;padding:12px;border-bottom:1px solid #d9e0ea">Interface</th><th style="text-align:left;padding:12px;border-bottom:1px solid #d9e0ea">Codeunit</th></tr><tr><td style="padding:12px;border-bottom:1px solid #e2e7ef">Defines a contract</td><td style="padding:12px;border-bottom:1px solid #e2e7ef">Contains executable business logic</td></tr><tr><td style="padding:12px;border-bottom:1px solid #e2e7ef">Can have multiple implementations</td><td style="padding:12px;border-bottom:1px solid #e2e7ef">Provides a concrete implementation</td></tr><tr><td style="padding:12px">Helps abstraction and polymorphism</td><td style="padding:12px">Executes procedures and logic</td></tr></table>
+<h2>Frequently asked questions</h2><h3>Can one codeunit implement an interface?</h3><p>Yes. A codeunit can implement an interface by declaring the interface in its declaration and providing the required procedures.</p><h3>Can multiple codeunits implement the same interface?</h3><p>Yes. This is one of the main reasons to use interfaces: multiple implementations can follow the same contract.</p><h3>Should every codeunit use an interface?</h3><p>No. Interfaces are most useful when you need abstraction, multiple implementations, replaceable strategies or reduced coupling.</p><h3>Are interfaces useful for Business Central integrations?</h3><p>Yes. They can separate integration contracts from provider-specific HTTP, authentication or mapping logic.</p>
+<div class="related"><h2>Related Dynexal tutorials</h2><p><a href="codeunits-business-central.html">Codeunits in Business Central</a></p><p><a href="al-event-subscribers-business-central.html">AL Event Subscribers</a></p><p><a href="business-central-api-integration.html">Business Central API Integration</a></p><p><a href="oauth-2-authentication-business-central-al.html">OAuth 2.0 Authentication in Business Central AL</a></p><p><a href="httpclient-business-central-al.html">HttpClient in Business Central AL</a></p></div>
+</main><footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script></body></html>
