@@ -1,5 +1,62 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="A practical beginner guide to getting started with AL development in Microsoft Dynamics 365 Business Central."><title>Getting Started with AL Development | Dynexal</title><link rel="stylesheet" href="../styles.css"><style>.article{max-width:820px;margin:70px auto;padding:0 20px}.article .back{color:#426ee5;font-weight:700;font-size:14px}.article h1{font-size:48px;line-height:1.1;letter-spacing:-2px;margin:18px 0}.article .meta{color:#718096}.article h2{margin-top:45px;font-size:28px}.article p,.article li{font-size:17px;color:#46546a}.article code{background:#eef2f7;padding:3px 6px;border-radius:5px}.article pre{background:#0b1220;color:#dbe6f5;padding:22px;border-radius:12px;overflow:auto}.article .hero-note{background:#eaf0ff;padding:18px;border-radius:10px;margin:25px 0}.article-footer{margin-top:60px;padding-top:25px;border-top:1px solid #e1e6ee}</style></head><body><header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav"><a href="../index.html#tutorials">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav></div></header><main class="article"><a class="back" href="../index.html">← Back to Dynexal</a><span class="section-label" style="display:block;margin-top:35px">AL DEVELOPMENT</span><h1>Getting Started with AL Development in Business Central</h1><p class="meta">Dynexal • Beginner Guide</p><div class="hero-note"><strong>What you will learn:</strong> what AL is, how extensions work, and the basic structure of an AL project.</div><h2>What is AL?</h2><p>AL is the development language used to customize and extend Microsoft Dynamics 365 Business Central. Instead of changing the standard application directly, developers typically build extensions that add or modify functionality.</p><h2>Why learn AL?</h2><p>AL lets you work with Business Central data and user experiences through objects such as tables, pages, reports, codeunits and extensions. It is especially useful when you need to adapt Business Central to a company's business process.</p><h2>Your first AL extension</h2><p>A typical extension project contains an <code>app.json</code> manifest and AL source files. A simple page extension can look like this:</p><pre><code>pageextension 50100 MyCustomerExt extends "Customer Card"
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A practical beginner guide to getting started with AL development in Microsoft Dynamics 365 Business Central.">
+  <meta name="author" content="Dynexal">
+  <title>Getting Started with AL Development | Dynexal</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .article{max-width:850px;margin:0 auto;padding:75px 20px 90px}
+    .article .back{color:#426ee5;font-weight:800;font-size:14px}
+    .article .section-label{display:block;margin-top:35px}
+    .article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}
+    .article .meta{color:#718096;font-size:14px;margin-bottom:34px}
+    .article .intro{font-size:20px;color:#4b5b70;line-height:1.7}
+    .article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}
+    .article p,.article li{font-size:17px;color:#46546a;line-height:1.8}
+    .article ul,.article ol{padding-left:25px}
+    .article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}
+    .article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}
+    .article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}
+    .hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}
+    .article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}
+    @media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a>
+      <nav class="nav" aria-label="Article navigation">
+        <a href="../index.html#tutorials">Tutorials</a>
+        <a href="../index.html#topics">Topics</a>
+        <a href="../index.html#projects">Projects</a>
+        <a href="../index.html#about">About</a>
+      </nav>
+      <button class="menu-btn" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <main class="article">
+    <a class="back" href="../index.html">← Back to Dynexal</a>
+    <span class="section-label">AL DEVELOPMENT</span>
+    <h1>Getting Started with AL Development in Business Central</h1>
+    <p class="meta">Dynexal • Beginner Guide • 8 min read</p>
+    <p class="intro">A practical starting point for developers who want to understand AL development and begin building extensions for Microsoft Dynamics 365 Business Central.</p>
+
+    <div class="hero-note"><strong>What you will learn:</strong> what AL is, why extensions matter, the basic structure of an AL project, and a practical learning path.</div>
+
+    <h2>What is AL?</h2>
+    <p>AL is the development language used to customize and extend Microsoft Dynamics 365 Business Central. Developers typically build extensions rather than changing the standard application directly, which helps keep customizations maintainable and upgrade-friendly.</p>
+
+    <h2>Why learn AL?</h2>
+    <p>AL lets you work with Business Central data and user experiences through objects such as tables, pages, reports, codeunits and extensions. It is especially useful when you need to adapt Business Central to a company's business process.</p>
+
+    <h2>Your first AL extension</h2>
+    <p>A typical extension project contains an <code>app.json</code> manifest and AL source files. A simple page extension can look like this:</p>
+    <pre><code>pageextension 50100 MyCustomerExt extends "Customer Card"
 {
     layout
     {
@@ -11,4 +68,24 @@
             }
         }
     }
-}</code></pre><h2>A practical learning path</h2><ol><li>Understand tables and table extensions.</li><li>Learn list, card and document pages.</li><li>Practice page extensions and actions.</li><li>Learn codeunits, events and error handling.</li><li>Build RDLC or Word reports.</li><li>Explore APIs and external integrations.</li><li>Build complete projects and publish them as portfolio work.</li></ol><h2>What's next?</h2><p>On Dynexal, we will turn each of these topics into practical tutorials with examples and complete projects. Start with a small extension, test it in a development environment, and gradually move toward integrations and production-ready solutions.</p><div class="article-footer"><a class="back" href="../index.html">← Explore more Dynexal tutorials</a></div></main></body></html>
+}</code></pre>
+
+    <h2>How to approach AL development</h2>
+    <ol>
+      <li>Understand tables and table extensions.</li>
+      <li>Learn list, card and document pages.</li>
+      <li>Practice page extensions and actions.</li>
+      <li>Learn codeunits, events and error handling.</li>
+      <li>Build RDLC or Word reports.</li>
+      <li>Explore APIs and external integrations.</li>
+      <li>Build complete projects and publish them as portfolio work.</li>
+    </ol>
+
+    <h2>What's next?</h2>
+    <p>On Dynexal, these topics will become practical tutorials with examples and complete projects. Start with a small extension, test it in a development environment, and gradually move toward integrations and production-ready solutions.</p>
+
+    <div class="article-footer"><a class="back" href="../index.html#tutorials">← Explore more Dynexal tutorials</a></div>
+  </main>
+  <script src="../script.js"></script>
+</body>
+</html>
