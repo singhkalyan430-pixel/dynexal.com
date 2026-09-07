@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn Microsoft Dynamics 365 Business Central API integration with practical AL examples covering API pages, API queries, endpoints, authentication, CRUD operations, Postman testing and best practices.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-api-integration.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-api-integration.html">
+<meta property="og:title" content="Business Central API Integration: Complete Beginner Guide | Dynexal">
+<meta property="og:description" content="A practical guide to Business Central REST APIs, custom API pages, API queries, endpoints, authentication, CRUD operations and testing.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central API Integration: Complete Beginner Guide | Dynexal">
+<meta name="twitter:description" content="Learn Business Central API integration with practical AL examples and real-world integration patterns.">
+<title>Business Central API Integration: Complete Beginner Guide | Dynexal</title>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"Business Central API Integration: Complete Beginner Guide",
+  "description":"A practical guide to Business Central REST APIs, custom API pages, API queries, endpoints, authentication, CRUD operations and testing.",
+  "author":{"@type":"Organization","name":"Dynexal"},
+  "publisher":{"@type":"Organization","name":"Dynexal"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-api-integration.html"},
+  "url":"https://dynexal.com/articles/business-central-api-integration.html",
+  "inLanguage":"en"
+}
+</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d38b2c;background:#fff8eb;padding:16px 20px;margin:24px 0;color:#5b4a2d}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../index.html#tutorials">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">INTEGRATION</span>
+<h1>Business Central API Integration: Complete Beginner Guide</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 14 min read</p>
+<p class="intro">Business Central APIs make it possible to exchange ERP data with websites, mobile apps, e-commerce platforms, middleware and other business systems. This guide explains the API architecture, standard APIs, custom API pages, API queries, endpoints, authentication concepts, CRUD operations and practical testing.</p>
+<div class="hero-note"><strong>What you will learn:</strong> REST APIs, standard API v2.0, custom API pages, API queries, endpoint structure, CRUD operations, Microsoft Entra authentication concepts, Postman testing, troubleshooting and integration best practices.</div>
+
+<h2>What is a Business Central API?</h2>
+<p>An API is an interface that allows an external application to communicate with Business Central over HTTP. Business Central provides built-in REST APIs and also lets AL developers create custom APIs using API pages and API queries. Microsoft describes the Business Central API stack as a preferred integration approach for REST-based integrations.</p>
+<p>This makes APIs useful for scenarios such as synchronizing customers from a website, sending orders from an e-commerce platform, reading inventory into a mobile application, or connecting Business Central to an integration platform.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-api">Microsoft Learn: API development overview</a></p>
+
+<h2>Standard APIs vs custom APIs</h2>
+<p>Business Central includes standard APIs for commonly used business entities. These can often be used without writing an AL API object. When the standard API does not expose the data or behavior required by your integration, you can create a custom API.</p>
+<ul>
+<li><strong>Standard API:</strong> use Microsoft's built-in endpoints when they provide the fields and operations you need.</li>
+<li><strong>Custom API page:</strong> use an AL API page when you need a custom read/write endpoint based on a table.</li>
+<li><strong>API query:</strong> use an API query for read-only data, especially when data needs to be combined from multiple sources.</li>
+</ul>
+<p>Microsoft currently documents API pages as supporting read, create, update and delete operations, while API queries are read-only and can join data from multiple sources.</p>
+
+<h2>Business Central API endpoint structure</h2>
+<p>A Business Central Online API endpoint generally follows this structure:</p>
+<pre><code>https://api.businesscentral.dynamics.com/v2.0/{environment}/api/v2.0/{endpoint}</code></pre>
+<p>For a custom API, the route also contains your publisher, group and version:</p>
+<pre><code>https://api.businesscentral.dynamics.com/v2.0/{environment}/api/{publisher}/{group}/{version}/{endpoint}</code></pre>
+<p>For company-specific requests, the company can be represented in the endpoint, for example:</p>
+<pre><code>https://api.businesscentral.dynamics.com/v2.0/{environment}/api/v2.0/companies({companyId})/customers</code></pre>
+<p>Always use the endpoint format appropriate for your Business Central environment and API version. Microsoft documents the current endpoint structure in detail.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/webservices/api-endpoint-structure">Microsoft Learn: API endpoint structure</a></p>
+
+<h2>Create a custom API page in AL</h2>
+<p>If your integration needs a custom read/write endpoint, an API page is a common AL solution. A minimal example looks like this:</p>
+<pre><code>page 50120 "Dynexal Customer API"
+{
+    PageType = API;
+    Caption = 'Dynexal Customer API';
+
+    APIPublisher = 'dynexal';
+    APIGroup = 'integration';
+    APIVersion = 'v1.0';
+
+    EntityName = 'customer';
+    EntitySetName = 'customers';
+
+    SourceTable = Customer;
+    DelayedInsert = true;
+    ODataKeyFields = SystemId;
+
+    layout
+    {
+        area(Content)
+        {
+            repeater(Group)
+            {
+                field(id; Rec.SystemId)
+                {
+                    Caption = 'Id';
+                    Editable = false;
+                }
+                field(number; Rec."No.")
+                {
+                    Caption = 'Number';
+                }
+                field(name; Rec.Name)
+                {
+                    Caption = 'Name';
+                }
+                field(city; Rec.City)
+                {
+                    Caption = 'City';
+                }
+            }
+        }
+    }
+}</code></pre>
+<p>The API metadata properties are important. <code>APIPublisher</code>, <code>APIGroup</code> and <code>APIVersion</code> determine the API route, while <code>EntityName</code> and <code>EntitySetName</code> determine the exposed resource names.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-api-pagetype">Microsoft Learn: API page type</a></p>
+
+<h2>API Page properties you should understand</h2>
+<ul>
+<li><strong>PageType = API;</strong> identifies the object as an API page rather than a user-interface page.</li>
+<li><strong>APIPublisher</strong> identifies the publisher namespace used by your API route.</li>
+<li><strong>APIGroup</strong> groups related API endpoints.</li>
+<li><strong>APIVersion</strong> gives the API an explicit version such as <code>v1.0</code>.</li>
+<li><strong>EntityName</strong> defines the singular entity name.</li>
+<li><strong>EntitySetName</strong> defines the collection name.</li>
+<li><strong>ODataKeyFields</strong> identifies the field used as the OData key; <code>SystemId</code> is commonly used for API pages.</li>
+<li><strong>DelayedInsert</strong> is commonly used on API pages so records are inserted when the request is ready to commit.</li>
+</ul>
+
+<h2>API Page vs API Query</h2>
+<p>Choosing the right API object is important.</p>
+<table style="width:100%;border-collapse:collapse;margin:24px 0;color:#46546a">
+<tr><th style="text-align:left;border-bottom:1px solid #dce2ea;padding:12px">API Page</th><th style="text-align:left;border-bottom:1px solid #dce2ea;padding:12px">API Query</th></tr>
+<tr><td style="padding:12px;vertical-align:top">Supports read/write operations</td><td style="padding:12px;vertical-align:top">Read-only</td></tr>
+<tr><td style="padding:12px;vertical-align:top">Usually exposes one source table</td><td style="padding:12px;vertical-align:top">Can combine data from multiple sources</td></tr>
+<tr><td style="padding:12px;vertical-align:top">Useful for CRUD-style integrations</td><td style="padding:12px;vertical-align:top">Useful for reporting and combined read models</td></tr>
+<tr><td style="padding:12px;vertical-align:top">Supports webhook scenarios</td><td style="padding:12px;vertical-align:top">Designed for read access</td></tr>
+</table>
+<div class="tip"><strong>Simple rule:</strong> if an external system needs to create or update Business Central records, start by evaluating an API page. If it only needs combined read-only data, an API query may be a better fit.</div>
+
+<h2>CRUD operations</h2>
+<p>CRUD means Create, Read, Update and Delete. API pages support these operations unless the corresponding permissions are restricted by the API object properties and application behavior.</p>
+<ul>
+<li><strong>GET:</strong> read a collection or a specific resource.</li>
+<li><strong>POST:</strong> create a new resource.</li>
+<li><strong>PATCH:</strong> update selected fields on an existing resource.</li>
+<li><strong>DELETE:</strong> remove a resource when deletion is allowed and appropriate.</li>
+</ul>
+<p>A typical integration flow might be: external website sends a POST request to create an order, Business Central processes it, and the external system later uses GET requests to read the order status.</p>
+
+<h2>Testing a Business Central API with Postman</h2>
+<p>Postman is useful for learning and troubleshooting REST integrations. A basic GET request can be used to verify that an endpoint responds correctly.</p>
+<pre><code>GET https://api.businesscentral.dynamics.com/v2.0/{environment}/api/v2.0/companies({companyId})/customers</code></pre>
+<p>For a POST request, the request body depends on the fields exposed by the endpoint. For example:</p>
+<pre><code>{
+  "name": "Dynexal Demo Customer",
+  "city": "Noida"
+}</code></pre>
+<p>In Postman, configure the request URL, HTTP method, authentication, headers and body. Start with a simple GET request before testing create or update operations.</p>
+<div class="warning"><strong>Important:</strong> do not paste real production access tokens, client secrets or passwords into screenshots, blog posts, GitHub repositories or public examples.</div>
+
+<h2>Authentication concepts</h2>
+<p>Business Central Online integrations commonly use Microsoft Entra ID-based authentication. Your integration architecture determines how the application obtains an access token and which Business Central permissions the identity receives.</p>
+<p>Think about authentication as two separate questions:</p>
+<ol>
+<li><strong>Who is calling?</strong> The identity is authenticated through the configured Microsoft Entra authentication flow.</li>
+<li><strong>What can it do?</strong> Business Central permissions determine which data and operations that identity can access.</li>
+</ol>
+<p>For production integrations, use the authentication flow recommended for your application type and avoid embedding secrets in source code.</p>
+
+<h2>Common API errors</h2>
+<h3>401 Unauthorized</h3>
+<p>The request is not authenticated correctly or the access token is missing, expired or invalid. Check the authentication configuration and token scope.</p>
+<h3>403 Forbidden</h3>
+<p>The identity is authenticated but does not have sufficient permissions for the requested resource or operation.</p>
+<h3>404 Not Found</h3>
+<p>Check the environment name, API route, company ID, endpoint name and API version. Custom APIs also require the correct publisher, group and version.</p>
+<h3>400 Bad Request</h3>
+<p>The request may contain invalid JSON, an invalid field name, an unsupported value or a missing required property.</p>
+<h3>429 Too Many Requests</h3>
+<p>Your integration may be sending requests too quickly. Design clients to handle throttling and retry responses appropriately instead of continuously retrying without delay.</p>
+
+<h2>API versioning</h2>
+<p>Do not treat an API URL as something that can never change. Version custom APIs deliberately. A version such as <code>v1.0</code> gives you a stable contract while allowing a future <code>v2.0</code> to introduce breaking changes.</p>
+<div class="tip"><strong>Good integration practice:</strong> document your API contract, keep response fields stable, avoid unnecessary breaking changes and communicate version changes to consumers before migration.</div>
+
+<h2>Business Central API integration architecture</h2>
+<p>A real integration normally contains more than Business Central and an HTTP request. A common architecture looks like this:</p>
+<pre><code>Website / Mobile App / Shopify
+            |
+            v
+     Integration Layer
+            |
+            v
+   Business Central API
+            |
+            v
+       AL Business Logic
+            |
+            v
+     Business Central Data</code></pre>
+<p>The integration layer can be middleware, an Azure service, an e-commerce connector or another application. Keeping responsibilities separated makes the solution easier to monitor, secure and maintain.</p>
+
+<h2>Best practices for Business Central APIs</h2>
+<ul>
+<li>Prefer standard APIs when they already meet the business requirement.</li>
+<li>Create custom APIs only when you need a custom contract or data model.</li>
+<li>Keep API pages focused on integration data rather than user-interface concerns.</li>
+<li>Use clear publisher, group, entity and version names.</li>
+<li>Use <code>SystemId</code> appropriately as an integration identifier.</li>
+<li>Validate data before performing important business operations.</li>
+<li>Keep authentication secrets out of AL source code and public repositories.</li>
+<li>Log integration failures with enough context to troubleshoot them without exposing sensitive data.</li>
+<li>Handle throttling and transient failures with controlled retry logic.</li>
+<li>Test GET requests first, then create and update operations with non-production data.</li>
+</ul>
+
+<h2>What should you learn next?</h2>
+<div class="article-links">
+<p><a href="codeunits-business-central.html">Codeunits in Business Central</a> — move reusable business logic into dedicated AL codeunits.</p>
+<p><a href="al-tables-business-central.html">AL Tables in Business Central</a> — understand the data structures behind your APIs.</p>
+<p><a href="page-extensions-business-central.html">Page Extensions in Business Central</a> — extend the Business Central user experience.</p>
+<p><a href="rdlc-reports-business-central.html">RDLC Reports in Business Central</a> — learn the reporting side of Business Central development.</p>
+<p><a href="creating-list-and-card-pages-al.html">Creating List and Card Pages in AL</a> — build the user interface for your Business Central data.</p>
+</div>
+
+<div class="article-footer"><a class="back" href="../tutorials.html">← Explore all Dynexal tutorials</a></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
