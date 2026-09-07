@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn AI in Microsoft Dynamics 365 Business Central with practical guidance on Copilot, generative AI, AL extensions, Azure OpenAI, AI agents, MCP and responsible AI.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/ai-business-central-complete-guide.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/ai-business-central-complete-guide.html">
+<meta property="og:title" content="AI in Business Central: Complete Beginner Guide | Dynexal">
+<meta property="og:description" content="A practical guide to Copilot, generative AI, AL development, Azure OpenAI, AI agents and MCP in Microsoft Dynamics 365 Business Central.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AI in Business Central: Complete Beginner Guide | Dynexal">
+<meta name="twitter:description" content="Understand practical AI use cases and development options in Business Central.">
+<title>AI in Business Central: Complete Beginner Guide | Dynexal</title>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"AI in Business Central: Complete Beginner Guide",
+  "description":"A practical guide to Copilot, generative AI, AL development, Azure OpenAI, AI agents and MCP in Microsoft Dynamics 365 Business Central.",
+  "author":{"@type":"Organization","name":"Dynexal"},
+  "publisher":{"@type":"Organization","name":"Dynexal"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/ai-business-central-complete-guide.html"},
+  "url":"https://dynexal.com/articles/ai-business-central-complete-guide.html",
+  "inLanguage":"en"
+}
+</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d38b2c;background:#fff8eb;padding:16px 20px;margin:24px 0;color:#5b4a2d}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}.source-note{font-size:14px!important;color:#718096!important}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../index.html#tutorials">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">AI + BUSINESS CENTRAL</span>
+<h1>AI in Business Central: Complete Beginner Guide</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 15 min read</p>
+<p class="intro">Artificial intelligence is becoming a practical part of Microsoft Dynamics 365 Business Central. This guide explains Copilot, generative AI, AI-powered business scenarios, AL development with AI, Azure OpenAI, AI agents and the Business Central MCP approach.</p>
+<div class="hero-note"><strong>What you will learn:</strong> AI basics, Copilot, practical use cases, AI extension architecture, Azure OpenAI, AL examples, AI agents, MCP, security, responsible AI and project ideas.</div>
+
+<h2>What does AI mean in Business Central?</h2>
+<p>AI in Business Central is not just a chatbot. It can assist users with tasks, generate or summarize content, analyze information and support business processes. Microsoft describes Copilot as an AI-powered assistant that works collaboratively with users, while agents are designed to handle specific tasks with more autonomy and keep work transparent and reviewable.</p>
+<p>The important idea for developers is that AI can become part of an ERP workflow instead of living as a separate application.</p>
+
+<h2>Copilot vs AI agents</h2>
+<ul>
+  <li><strong>Copilot:</strong> assists a user while the user initiates or reviews the work.</li>
+  <li><strong>AI agent:</strong> can perform defined tasks with minimal human input, subject to the permissions and configuration provided by the solution.</li>
+</ul>
+<pre><code>User
+  │
+  ├── Copilot → Suggest / Summarize / Assist
+  │
+  └── Agent   → Plan / Execute defined tasks
+                    │
+                    ▼
+             Business Central
+                    │
+          Customers / Items / Orders
+                    │
+                    ▼
+               Business data</code></pre>
+<p>For production systems, the distinction matters because an agent may need permissions to create, modify or execute business operations, while a Copilot experience can be designed around suggestions and human review.</p>
+
+<h2>Practical AI use cases</h2>
+<h3>1. Finance</h3>
+<p>AI can help users understand financial information, summarize records and assist with repetitive finance-related tasks. Always validate generated results before posting or making financial decisions.</p>
+<h3>2. Sales and customer service</h3>
+<p>AI can help draft customer-facing content, summarize customer information and support sales workflows.</p>
+<h3>3. Inventory and supply chain</h3>
+<p>AI can assist users in understanding inventory information and identifying patterns or exceptions that deserve attention.</p>
+<h3>4. Company setup</h3>
+<p>AI-assisted experiences can reduce repetitive setup work and make Business Central easier for new users to learn.</p>
+<h3>5. Developer productivity</h3>
+<p>AI coding tools can help developers understand AL symbols, build projects, diagnose errors, debug extensions and work through development tasks faster. Human review and normal AL testing remain important.</p>
+
+<h2>How AI fits into an AL extension</h2>
+<p>Microsoft provides developer tools for Copilot that allow AL developers to integrate generative AI capabilities into Business Central extensions. The System.AI namespace includes functionality for connecting extensions to Azure OpenAI, and Business Central also provides Copilot-oriented UI patterns such as the PromptDialog page type.</p>
+<p>A typical custom AI extension can be structured like this:</p>
+<pre><code>Business Central Page
+       │
+       ▼
+  User Input
+       │
+       ▼
+  AL Codeunit
+       │
+       ├── Validate input
+       ├── Build prompt
+       ├── Add relevant BC context
+       │
+       ▼
+   AI service
+       │
+       ▼
+  Validate response
+       │
+       ▼
+  Show suggestion / result
+       │
+       ▼
+ Human review or approved action</code></pre>
+
+<h2>Azure OpenAI and Business Central</h2>
+<p>Business Central supports AI development through Azure OpenAI. Microsoft's current developer toolkit is designed to help partners build AI-powered extensions and Copilot experiences. The toolkit includes an AI module and APIs for working with Azure OpenAI from AL.</p>
+<p>When developing your own AI capability, you need to consider the Azure resource, model deployment, authorization, region availability, consumption and data governance requirements. Microsoft's setup guidance covers the Azure subscription, access, resource creation and model deployment steps.</p>
+<div class="warning"><strong>Important:</strong> never put API keys, passwords or other secrets directly into AL source code or a public Git repository. Use an appropriate secure configuration and secret-management approach.</div>
+
+<h2>Simple AL concept</h2>
+<p>The following example is intentionally simplified to demonstrate the shape of an AI-enabled AL solution. Production implementations should use the current System.AI APIs, authorization model and error handling documented for your Business Central version.</p>
+<pre><code>codeunit 50100 "AI Product Assistant"
+{
+    procedure GenerateSuggestion(ProductText: Text): Text
+    begin
+        // 1. Validate the input
+        // 2. Configure the supported AI service
+        // 3. Send a controlled prompt
+        // 4. Validate the response
+        // 5. Return a suggestion for user review
+    end;
+}</code></pre>
+<p>The example is deliberately not tied to a specific model API signature because Microsoft evolves the AI toolkit. For real development, use the System.AI APIs available in the target Business Central version.</p>
+
+<h2>Prompt design for Business Central</h2>
+<p>A good enterprise prompt should be specific about the task, context, output format and limitations.</p>
+<pre><code>Role: Business Central assistant
+Task: Summarize the sales order exception
+Context: {{approved business data}}
+Rules:
+- Do not invent missing values.
+- Return only information supported by the context.
+- Clearly identify uncertainty.
+Output:
+1. Issue
+2. Evidence
+3. Suggested next step</code></pre>
+<div class="tip"><strong>Developer tip:</strong> do not send unnecessary business data to an AI service. Select only the context required for the task and enforce Business Central permissions before retrieving that data.</div>
+
+<h2>Grounding AI with Business Central data</h2>
+<p>AI responses become more useful when they are grounded in current business information. Business Central's AI experiences can retrieve relevant data using normal Business Central access mechanisms, so the AI experience should not be designed as a way to bypass permissions.</p>
+<p>For custom extensions, think carefully about which records, fields and calculated values are included in the AI context. The safest design is to expose only the minimum data needed to complete the task.</p>
+
+<h2>Business Central MCP and AI agents</h2>
+<p>Model Context Protocol, or MCP, provides a standardized way for AI applications to discover and use tools and data. Business Central's MCP server can expose Business Central data and operations to supported AI clients.</p>
+<p>By default, exposed API pages can provide read access. Write operations such as creating, modifying or deleting data require explicit configuration and permissions. This makes API design and permission management important when building agent workflows.</p>
+<pre><code>AI Client / Agent
+       │
+       │ MCP
+       ▼
+Business Central MCP Server
+       │
+       ├── API Pages
+       ├── Business data
+       └── Allowed actions
+              │
+              ▼
+        Business Central</code></pre>
+<div class="warning"><strong>Security first:</strong> giving an AI agent write access is fundamentally different from giving it read access. Define the smallest possible set of operations, permissions and APIs required for the business scenario.</div>
+
+<h2>AI agents for AL development</h2>
+<p>Modern Business Central development also includes AI-agent tooling for AL development. Microsoft's current tooling can allow AI agents to build projects, publish extensions, download symbols, search symbols, retrieve diagnostics and work with debugging workflows depending on the development surface.</p>
+<p>This does not remove the need for an AL developer. Developers still need to review generated code, understand business requirements, validate security, run tests and decide whether a proposed change is appropriate for the solution.</p>
+
+<h2>Responsible AI checklist</h2>
+<ol>
+  <li>Keep a human review step for business-critical generated results.</li>
+  <li>Use least-privilege permissions for AI and agent operations.</li>
+  <li>Send only the data required for the task.</li>
+  <li>Do not expose secrets in prompts, code or logs.</li>
+  <li>Validate AI output before posting financial or operational documents.</li>
+  <li>Log important AI-driven actions so they can be investigated.</li>
+  <li>Test failure cases, incomplete data and unexpected model output.</li>
+  <li>Check regional, licensing and feature-availability requirements.</li>
+</ol>
+
+<h2>AI project ideas for Business Central developers</h2>
+<ul>
+  <li><strong>AI Item Description Assistant:</strong> generate draft item descriptions for user review.</li>
+  <li><strong>Sales Order Summarizer:</strong> summarize order risks, missing information and exceptions.</li>
+  <li><strong>Customer Query Assistant:</strong> retrieve approved customer information and explain it conversationally.</li>
+  <li><strong>Invoice Email Assistant:</strong> draft customer communication from approved invoice data.</li>
+  <li><strong>Inventory Insight Assistant:</strong> explain stock exceptions using controlled inventory context.</li>
+  <li><strong>AI Developer Assistant:</strong> combine AL symbol search, diagnostics and coding assistance into a developer workflow.</li>
+  <li><strong>Business Central MCP Agent:</strong> build a controlled agent that reads selected ERP data and performs explicitly permitted actions.</li>
+</ul>
+
+<h2>Standard Copilot, custom AI extension or MCP?</h2>
+<table style="width:100%;border-collapse:collapse;margin:25px 0;font-size:15px"><tr><th style="text-align:left;border-bottom:1px solid #dfe5ee;padding:10px">Requirement</th><th style="text-align:left;border-bottom:1px solid #dfe5ee;padding:10px">Good starting point</th></tr><tr><td style="padding:10px;border-bottom:1px solid #edf0f5">Use an existing Microsoft AI experience</td><td style="padding:10px;border-bottom:1px solid #edf0f5">Standard Business Central Copilot</td></tr><tr><td style="padding:10px;border-bottom:1px solid #edf0f5">Add a specialized AI workflow to an extension</td><td style="padding:10px;border-bottom:1px solid #edf0f5">AL + Developer Tools for Copilot</td></tr><tr><td style="padding:10px;border-bottom:1px solid #edf0f5">Let an AI client interact with exposed BC tools/data</td><td style="padding:10px;border-bottom:1px solid #edf0f5">Business Central MCP Server</td></tr><tr><td style="padding:10px">Need a completely different AI architecture</td><td style="padding:10px">Custom API / Azure integration</td></tr></table>
+
+<h2>Recommended learning path</h2>
+<ol>
+  <li>Learn AL fundamentals, tables, pages and codeunits.</li>
+  <li>Understand Business Central APIs and integrations.</li>
+  <li>Learn basic prompt engineering and generative AI concepts.</li>
+  <li>Explore the Business Central AI and Copilot capabilities.</li>
+  <li>Learn the System.AI developer toolkit and PromptDialog patterns.</li>
+  <li>Build a small AI extension with human review.</li>
+  <li>Study permissions, data governance and responsible AI.</li>
+  <li>Explore AI agents and MCP after understanding APIs and security.</li>
+</ol>
+
+<div class="article-links"><strong>Continue learning:</strong><br><br><a href="business-central-api-integration.html">Business Central API Integration →</a><br><a href="codeunits-business-central.html">Codeunits in Business Central →</a><br><a href="page-extensions-business-central.html">Page Extensions in Business Central →</a><br><a href="shopify-business-central-integration.html">Shopify and Business Central Integration →</a><br><a href="al-tables-business-central.html">AL Tables in Business Central →</a></div>
+
+<div class="article-footer"><p class="source-note">This guide is an educational overview. AI features, developer APIs, availability and configuration can change between Business Central versions. Always verify the current Microsoft documentation for your target release before implementing production solutions.</p></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
