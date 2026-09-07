@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn Business Central API filters and OData query options with practical examples for $filter, $select, $expand, $orderby, $top, pagination, troubleshooting and performance.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-api-filters-odata.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-api-filters-odata.html">
+<meta property="og:title" content="Business Central API Filters & OData: Complete Practical Guide | Dynexal">
+<meta property="og:description" content="A practical guide to filtering Business Central APIs and OData services with $filter, $select, $expand, $orderby, pagination and troubleshooting examples.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central API Filters & OData: Complete Practical Guide | Dynexal">
+<meta name="twitter:description" content="Learn practical Business Central API and OData filtering patterns for integrations, Postman testing and performance.">
+<title>Business Central API Filters &amp; OData: Complete Practical Guide | Dynexal</title>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"Business Central API Filters & OData: Complete Practical Guide",
+  "description":"A practical guide to filtering Business Central APIs and OData services with $filter, $select, $expand, $orderby, pagination and troubleshooting examples.",
+  "author":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},
+  "publisher":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-api-filters-odata.html"},
+  "isPartOf":{"@type":"WebSite","name":"Dynexal","url":"https://dynexal.com/"}
+}
+</script>
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article" style="max-width:850px;margin:0 auto;padding:75px 20px 90px">
+<a href="../tutorials.html">← Back to Tutorials</a>
+<span style="display:block;margin-top:35px">INTEGRATION</span>
+<h1>Business Central API Filters &amp; OData: Complete Practical Guide</h1>
+<p>Dynexal • Beginner to Intermediate • 15 min read</p>
+<p style="font-size:20px;line-height:1.7">When an external application calls Business Central, returning every available record and field is rarely a good integration design. Filters and OData query options let you request only the data you need, reduce unnecessary traffic and make integrations easier to maintain.</p>
+
+<h2>What are API filters in Business Central?</h2>
+<p>Business Central APIs support query parameters that can narrow or shape the response. A common example is <code>$filter</code>, which limits records based on a condition. Microsoft documents filtering for API calls using REST-style filter expressions. For example, an API request can return only open sales invoices above a specified amount.</p>
+<pre><code>GET https://api.businesscentral.dynamics.com/v2.0/{environment}/api/v2.0/companies({companyId})/salesInvoices?$filter=status eq 'Open' and totalAmountExcludingTax gt 1000</code></pre>
+
+<h2>What is OData?</h2>
+<p>OData, or Open Data Protocol, is a web protocol for querying and working with tabular data over HTTP. Business Central supports OData web services and OData query options such as filtering, sorting and selecting fields. API endpoints and OData web services are related integration technologies, but their URL structures and capabilities are not identical.</p>
+
+<h2>API vs OData: what should you use?</h2>
+<table><thead><tr><th>Scenario</th><th>Recommended starting point</th></tr></thead><tbody>
+<tr><td>Standard Business Central REST integration</td><td>Business Central API v2.0</td></tr>
+<tr><td>Custom entity with CRUD requirements</td><td>Custom API Page</td></tr>
+<tr><td>Read-only combined dataset</td><td>API Query</td></tr>
+<tr><td>OData-specific integration or published query/page</td><td>OData web service</td></tr>
+<tr><td>Need to reduce returned records</td><td>Use supported filter/query options</td></tr>
+</tbody></table>
+<p>For custom entities, see <a href="business-central-custom-api-page.html">Business Central Custom API Page</a>. For read-only joined datasets, see <a href="business-central-api-query.html">Business Central API Query</a>.</p>
+
+<h2>1. $filter — return only matching records</h2>
+<p><code>$filter</code> is the most important option for integration developers. It limits the records returned by the endpoint.</p>
+<pre><code>?$filter=status eq 'Open'</code></pre>
+<p>Multiple conditions can be combined with <code>and</code> when the endpoint supports the expression.</p>
+<pre><code>?$filter=status eq 'Open' and totalAmountExcludingTax gt 1000</code></pre>
+<p>For OData web services, the same concept is expressed through the OData URI:</p>
+<pre><code>https://localhost:7048/BC/ODataV4/Company('CRONUS International Ltd.')/Customer?$filter=City eq 'Miami'</code></pre>
+
+<h2>Common comparison operators</h2>
+<table><thead><tr><th>Operator</th><th>Meaning</th><th>Example</th></tr></thead><tbody>
+<tr><td>eq</td><td>Equal</td><td><code>Status eq 'Open'</code></td></tr>
+<tr><td>ne</td><td>Not equal</td><td><code>Country eq 'IN'</code> is not the same as <code>Country ne 'IN'</code></td></tr>
+<tr><td>gt</td><td>Greater than</td><td><code>Amount gt 1000</code></td></tr>
+<tr><td>ge</td><td>Greater than or equal</td><td><code>Amount ge 1000</code></td></tr>
+<tr><td>lt</td><td>Less than</td><td><code>Amount lt 1000</code></td></tr>
+<tr><td>le</td><td>Less than or equal</td><td><code>Amount le 1000</code></td></tr>
+</tbody></table>
+<p>String values normally use single quotation marks and numeric values do not require quotation marks.</p>
+
+<h2>2. and / or</h2>
+<p>You can combine compatible conditions with logical operators.</p>
+<pre><code>?$filter=country eq 'IN' and status eq 'Open'</code></pre>
+<p>Be careful with <code>or</code>. Business Central has documented OData limitations; for example, applying OR across two different fields is not supported in some OData scenarios.</p>
+<pre><code>?$filter=country eq 'IN' or country eq 'US'</code></pre>
+<p>Keep filters simple, test them against your exact endpoint and check the current schema version when using newer filter functionality.</p>
+
+<h2>3. String functions</h2>
+<p>Business Central OData supports several useful string functions, including <code>startswith</code>, <code>endswith</code> and <code>contains</code> in supported scenarios.</p>
+<pre><code>?$filter=startswith(Name,'A')</code></pre>
+<pre><code>?$filter=contains(Name,'tech')</code></pre>
+<pre><code>?$filter=endswith(Code,'01')</code></pre>
+<p>Functions such as <code>tolower</code>, <code>toupper</code> and <code>substring</code> are also documented for supported OData filter expressions. Newer schema versions provide more flexible behavior, so test your request against the Business Central version you deploy.</p>
+
+<h2>4. $select — return only required fields</h2>
+<p><code>$select</code> is useful when the consumer needs only a small subset of an entity.</p>
+<pre><code>GET .../customers?$select=id,number,displayName,email</code></pre>
+<p>Reducing the response fields can make payloads easier to process and can reduce unnecessary data transfer.</p>
+<p>Do not assume that every endpoint supports every query option in exactly the same way. Check the service metadata and test the deployed endpoint.</p>
+
+<h2>5. $orderby — sort the response</h2>
+<p><code>$orderby</code> requests a particular sort order.</p>
+<pre><code>GET .../customers?$orderby=displayName</code></pre>
+<p>Descending order can be requested where supported:</p>
+<pre><code>GET .../customers?$orderby=displayName desc</code></pre>
+<p>Sorting large datasets can have performance implications. Use it intentionally rather than automatically adding complex ordering to every integration request.</p>
+
+<h2>6. $top — limit the number of records</h2>
+<p><code>$top</code> is useful when an application needs a limited result set, for example during testing or when retrieving a small batch.</p>
+<pre><code>GET .../customers?$top=20</code></pre>
+<p>For production synchronization of large datasets, do not treat <code>$top</code> as a complete pagination strategy. Use the endpoint's documented paging behavior.</p>
+
+<h2>7. $expand — retrieve related data</h2>
+<p><code>$expand</code> can request related resources where the endpoint exposes supported navigation properties.</p>
+<pre><code>GET .../customers?$select=id,displayName&amp;$expand=contacts</code></pre>
+<p>The exact navigation properties available depend on the API metadata. If the property is not exposed by the endpoint, adding <code>$expand</code> will not magically create the relationship.</p>
+
+<h2>8. Pagination and large datasets</h2>
+<p>Large integrations should not assume that one API call returns the complete dataset. Business Central APIs can use server-driven paging, and clients need to follow the paging mechanism returned by the service.</p>
+<p>A safe integration pattern is:</p>
+<ol>
+<li>Request the first page.</li>
+<li>Read the response and check whether more data is available.</li>
+<li>Follow the next-page URL or documented continuation mechanism.</li>
+<li>Process the page.</li>
+<li>Continue until the service indicates that there are no more records.</li>
+<li>Store synchronization state when the business process requires incremental processing.</li>
+</ol>
+<p>Do not invent a page URL by guessing query parameters. Follow the next link or pagination mechanism returned by the actual API.</p>
+
+<h2>Filtering by date</h2>
+<p>Date and date-time filtering is common in integrations. The exact syntax depends on the API field type and endpoint.</p>
+<pre><code>GET .../salesInvoices?$filter=postingDate ge 2026-01-01</code></pre>
+<p>When working with date-time fields, pay attention to time zones and the data type exposed in service metadata. Test boundary conditions such as midnight, month-end and daylight-saving transitions where relevant to your integration.</p>
+
+<h2>Filtering by multiple values</h2>
+<p>Some OData schema versions support an <code>in</code> expression for a list of values. Microsoft documents this capability for <code>$schemaversion=2.1</code>.</p>
+<pre><code>?$filter=entryNo in (610,612,614)&amp;$schemaversion=2.1</code></pre>
+<p>If your target environment does not support the syntax you are using, split the requests or use another supported filtering pattern.</p>
+
+<h2>API endpoint structure</h2>
+<p>For standard Business Central APIs, a typical endpoint starts with the Business Central API base and environment, followed by <code>/api/v2.0</code>.</p>
+<pre><code>https://api.businesscentral.dynamics.com/v2.0/{environment}/api/v2.0/{endpoint}</code></pre>
+<p>For partner-created APIs, the route includes the publisher, group and version:</p>
+<pre><code>https://api.businesscentral.dynamics.com/v2.0/{environment}/api/{publisher}/{group}/{version}/{endpoint}</code></pre>
+<p>The company can normally be supplied as part of the URL or as a company query parameter, depending on the API endpoint.</p>
+
+<h2>Real Postman example</h2>
+<p>Suppose you want open sales invoices above 1000 from a standard API. A request can look like this:</p>
+<pre><code>GET https://api.businesscentral.dynamics.com/v2.0/{environment}/api/v2.0/companies({companyId})/salesInvoices?$filter=status eq 'Open' and totalAmountExcludingTax gt 1000
+Authorization: Bearer {access-token}</code></pre>
+<p>For troubleshooting, first remove optional query parameters and confirm that the basic endpoint works. Then add one option at a time.</p>
+
+<h2>Combining options</h2>
+<p>Query options can often be combined when supported by the endpoint.</p>
+<pre><code>GET .../customers?$select=id,number,displayName&amp;$filter=blocked eq false&amp;$orderby=displayName&amp;$top=25</code></pre>
+<p>A useful development technique is to build requests incrementally:</p>
+<pre><code>1. /customers
+2. /customers?$filter=blocked eq false
+3. /customers?$filter=blocked eq false&amp;$select=id,number,displayName
+4. /customers?$filter=blocked eq false&amp;$select=id,number,displayName&amp;$orderby=displayName</code></pre>
+
+<h2>API filters vs AL Query filters</h2>
+<p>These concepts are related but not identical.</p>
+<ul>
+<li><strong>API/OData URI filter:</strong> the external client sends a filter expression in the HTTP request.</li>
+<li><strong>DataItemTableFilter:</strong> a query object property applies a filter to a query data item.</li>
+<li><strong>ColumnFilter:</strong> filters a query column and can be overridden by runtime filtering in relevant scenarios.</li>
+<li><strong>SetFilter / SetRange:</strong> AL methods can apply query filters at runtime.</li>
+</ul>
+<p>For API Query development, see <a href="business-central-api-query.html">Business Central API Query</a>.</p>
+
+<h2>Common errors</h2>
+<h3>400 Bad Request</h3>
+<p>Usually check the query syntax, field name, data type, quotation marks and supported operators first.</p>
+<h3>Field not found</h3>
+<p>Check the endpoint metadata. The AL table field name is not necessarily the same as the property name exposed by the API.</p>
+<h3>Filter works in one endpoint but not another</h3>
+<p>API pages, API queries and OData web services can expose different fields and capabilities. Compare the metadata and use the syntax supported by that specific service.</p>
+<h3>$expand fails</h3>
+<p>Verify that the endpoint exposes the requested navigation property and that the relationship is supported.</p>
+<h3>Too many records</h3>
+<p>Add a meaningful filter, reduce selected fields and implement correct paging rather than downloading the entire dataset repeatedly.</p>
+<h3>OR expression fails</h3>
+<p>Business Central OData has documented limitations around OR expressions across different fields. Simplify the filter or redesign the request when necessary.</p>
+
+<h2>Performance best practices</h2>
+<ul>
+<li>Filter as early as possible.</li>
+<li>Request only the fields the consumer actually needs.</li>
+<li>Use sensible ordering.</li>
+<li>Process pages incrementally instead of loading everything into memory.</li>
+<li>Avoid repeated full-table synchronization.</li>
+<li>Use webhooks or another change-detection strategy where appropriate.</li>
+<li>Cache stable reference data when the business process allows it.</li>
+<li>Monitor response times, failures and throttling.</li>
+</ul>
+
+<h2>Security best practices</h2>
+<ul>
+<li>Use Microsoft Entra ID and OAuth-based authentication for Business Central online integrations.</li>
+<li>Never put access tokens or client secrets in browser JavaScript or public repositories.</li>
+<li>Use least-privilege permissions.</li>
+<li>Validate external input before using it in downstream operations.</li>
+<li>Log integration failures without exposing secrets or sensitive tokens.</li>
+</ul>
+
+<h2>Recommended integration pattern</h2>
+<pre><code>External Application
+       |
+       | OAuth access token
+       v
+Business Central API
+       |
+       +---- $filter  -> reduce records
+       +---- $select  -> reduce fields
+       +---- $orderby -> controlled sorting
+       +---- $top     -> small batches/tests
+       +---- paging   -> process large datasets
+       |
+       v
+Integration Worker
+       |
+       +---- Transform
+       +---- Validate
+       +---- Store / Send</code></pre>
+
+<h2>Practical testing checklist</h2>
+<ol>
+<li>Confirm the base endpoint works.</li>
+<li>Confirm authentication works.</li>
+<li>Test one simple <code>$filter</code>.</li>
+<li>Test <code>$select</code> with known properties.</li>
+<li>Test sorting only after the basic request works.</li>
+<li>Test paging with more records than one response can return.</li>
+<li>Test invalid filters and confirm your integration handles 4xx responses.</li>
+<li>Test empty results.</li>
+<li>Test large datasets in a sandbox.</li>
+<li>Review logs and remove secrets before sharing Postman collections or code.</li>
+</ol>
+
+<h2>FAQ</h2>
+<h3>Can I use $filter with Business Central APIs?</h3>
+<p>Yes. Business Central documents filtering for API calls, subject to the capabilities of the endpoint and supported syntax.</p>
+<h3>Are API filters the same as OData filters?</h3>
+<p>They use closely related query/filter concepts, but the exact endpoint and supported options depend on whether you are calling a Business Central API or an OData web service.</p>
+<h3>Does $filter improve performance?</h3>
+<p>It can reduce the amount of data returned and processed, but actual performance depends on the endpoint, data volume, query design and other factors.</p>
+<h3>Should I use $top for pagination?</h3>
+<p>No. Treat <code>$top</code> as a result-size limit where supported. For complete synchronization, follow the endpoint's documented paging mechanism.</p>
+<h3>Can every OData operator be used in Business Central?</h3>
+<p>No. Business Central documents supported expressions and known limitations. Always test the expression against the target Business Central version.</p>
+
+<div style="margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px"><strong>Related Dynexal tutorials:</strong><br><a href="business-central-api-integration.html">Business Central API Integration</a> · <a href="business-central-custom-api-page.html">Custom API Page</a> · <a href="business-central-api-query.html">Business Central API Query</a> · <a href="oauth-2-authentication-business-central-al.html">OAuth 2.0 Authentication</a> · <a href="httpclient-business-central-al.html">HttpClient</a> · <a href="json-handling-business-central-al.html">JSON Handling</a> · <a href="business-central-webhooks.html">Business Central Webhooks</a></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
