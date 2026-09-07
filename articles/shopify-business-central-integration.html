@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn Shopify and Microsoft Dynamics 365 Business Central integration with practical guidance for products, inventory, prices, customers, orders, fulfillment, synchronization and troubleshooting.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/shopify-business-central-integration.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/shopify-business-central-integration.html">
+<meta property="og:title" content="Shopify and Business Central Integration: Complete Guide | Dynexal">
+<meta property="og:description" content="A practical guide to Shopify and Business Central integration, covering products, inventory, prices, customers, orders, fulfillment and synchronization.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shopify and Business Central Integration: Complete Guide | Dynexal">
+<meta name="twitter:description" content="Understand the Shopify Connector and build reliable Business Central e-commerce integrations.">
+<title>Shopify and Business Central Integration: Complete Guide | Dynexal</title>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"Shopify and Business Central Integration: Complete Guide",
+  "description":"A practical guide to Shopify and Business Central integration, covering products, inventory, prices, customers, orders, fulfillment and synchronization.",
+  "author":{"@type":"Organization","name":"Dynexal"},
+  "publisher":{"@type":"Organization","name":"Dynexal"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/shopify-business-central-integration.html"},
+  "url":"https://dynexal.com/articles/shopify-business-central-integration.html",
+  "inLanguage":"en"
+}
+</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d38b2c;background:#fff8eb;padding:16px 20px;margin:24px 0;color:#5b4a2d}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}.source-note{font-size:14px!important;color:#718096!important}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../index.html#tutorials">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../index.html#about">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">E-COMMERCE INTEGRATION</span>
+<h1>Shopify and Business Central Integration: Complete Guide</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 15 min read</p>
+<p class="intro">Shopify and Microsoft Dynamics 365 Business Central can work together to connect online commerce with ERP processes. This guide explains the Microsoft Shopify Connector, the data flow between both systems, synchronization of products and inventory, customers, prices, orders and fulfillment, plus practical troubleshooting and integration best practices.</p>
+<div class="hero-note"><strong>What you will learn:</strong> Shopify Connector basics, connection setup, products, inventory, prices, customers, orders, fulfillment, synchronization, testing, troubleshooting and how to approach custom extensions.</div>
+
+<h2>Why integrate Shopify with Business Central?</h2>
+<p>Shopify is designed for online commerce while Business Central manages broader business processes such as sales, inventory, finance and operations. An integration reduces duplicate data entry and helps keep commerce and ERP processes connected.</p>
+<p>Microsoft's Shopify Connector is designed to synchronize information such as items, inventory, prices, customers, sales orders and fulfillment information between the two systems. It can also use background synchronization through Business Central's job queue. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/shopify/shopify-connector-overview" target="_blank" rel="noopener">Microsoft Shopify Connector overview</a>.</p>
+
+<h2>How the integration works</h2>
+<p>At a high level, the integration looks like this:</p>
+<pre><code>Shopify Store
+     │
+     │ Products / Customers / Orders
+     ▼
+Shopify Connector
+     │
+     │ Mapping + Synchronization
+     ▼
+Business Central
+     │
+     │ Inventory / Prices / Fulfillment / Financial processing
+     ▼
+Shopify Store</code></pre>
+<p>The connector handles the communication and synchronization workflows. Your configuration determines what should flow from Shopify to Business Central, what should flow in the opposite direction, and how records are mapped.</p>
+
+<h2>Prerequisites</h2>
+<ul>
+  <li>A Shopify account and online store.</li>
+  <li>A Business Central environment with appropriate permissions.</li>
+  <li>The Shopify Connector app installed in Business Central.</li>
+  <li>A clear decision about which system should be the source of truth for each type of data.</li>
+  <li>A safe test or sandbox environment for initial validation.</li>
+</ul>
+<p>Microsoft's current setup guidance recommends having the Shopify Connector installed and the required permissions assigned before connecting a store. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/shopify/get-started" target="_blank" rel="noopener">Get started with the Shopify Connector</a>.</p>
+
+<h2>Connect Shopify to Business Central</h2>
+<p>In Business Central, search for <strong>Shopify Shops</strong> and create a new Shopify Shop record. Enter a recognizable shop code and the Shopify online store URL, enable the connection and complete the authorization flow.</p>
+<ol>
+  <li>Open Business Central.</li>
+  <li>Search for <strong>Shopify Shops</strong>.</li>
+  <li>Choose <strong>New</strong>.</li>
+  <li>Enter a shop code.</li>
+  <li>Enter the Shopify Admin URL in the format expected by the connector.</li>
+  <li>Enable the shop and complete the Shopify authorization.</li>
+  <li>Review synchronization settings before running the first sync.</li>
+</ol>
+<div class="warning"><strong>Important:</strong> do not treat the first synchronization as a harmless read-only operation. Depending on configuration, the connector can create or update items, customers and sales documents. Test with controlled data before enabling production synchronization.</div>
+
+<h2>Synchronizing products and items</h2>
+<p>Product synchronization connects Shopify products and variants with Business Central items. Depending on your process, you can manage product information primarily in Business Central and export it to Shopify, or import Shopify data into Business Central.</p>
+<p>Typical product data can include item numbers, descriptions, variants, images, categories, prices and inventory-related information. Mapping rules should be designed before the first production synchronization.</p>
+<div class="tip"><strong>Best practice:</strong> decide which application owns each field. For example, Business Central may be the system of record for item numbers and inventory while Shopify remains the storefront for web-specific presentation.</div>
+
+<h2>Synchronizing inventory</h2>
+<p>Inventory is one of the most important parts of an e-commerce integration. A customer should not be able to purchase stock that Business Central considers unavailable.</p>
+<p>The connector supports inventory synchronization for Shopify locations. Your setup should define which Business Central locations contribute to the Shopify stock calculation and how multiple locations should be handled.</p>
+<p>Microsoft documents inventory synchronization as a separate configuration area within the Shopify Connector. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/shopify/synchronize-items" target="_blank" rel="noopener">Synchronize items and inventory</a>.</p>
+
+<h2>Synchronizing prices and taxes</h2>
+<p>Prices need careful planning because Business Central may calculate selling prices using its pricing logic while Shopify displays the resulting storefront price. Discounts, markets, taxes and customer-specific pricing can affect the final amount.</p>
+<ul>
+  <li>Define the source of product pricing.</li>
+  <li>Understand how discounts should be represented.</li>
+  <li>Configure tax behavior consistently.</li>
+  <li>Test prices for different markets or customer scenarios.</li>
+  <li>Verify rounding and currency behavior.</li>
+</ul>
+
+<h2>Synchronizing customers</h2>
+<p>Customer synchronization can create or update Business Central customers from Shopify, depending on configuration. Before enabling automatic creation, define how unknown customers should be handled and how duplicate customers will be avoided.</p>
+<p>For B2B scenarios, company and contact relationships require additional mapping and configuration. Always test customer creation with realistic but controlled data.</p>
+
+<h2>Importing Shopify orders into Business Central</h2>
+<p>A common flow is for a customer to place an order in Shopify, after which the order is synchronized into Business Central for sales processing.</p>
+<pre><code>Customer places order in Shopify
+            ↓
+      Shopify Order
+            ↓
+   Sync Orders From Shopify
+            ↓
+   Shopify Order in BC
+            ↓
+      Sales Document
+            ↓
+   Warehouse / Posting
+            ↓
+      Fulfillment
+            ↓
+   Shipment information → Shopify</code></pre>
+<p>Depending on configuration, the imported order can be associated with an existing customer or can create a customer when the matching rules allow it. Business Central can then handle the downstream sales and fulfillment processes.</p>
+
+<h2>Fulfillment and shipment updates</h2>
+<p>After an order is processed and shipped in Business Central, fulfillment information can be synchronized back to Shopify. Tracking information can also be transferred when configured.</p>
+<p>This creates a useful two-way flow: Shopify captures the customer order while Business Central handles operational processing, and Shopify receives the fulfillment status needed by the customer-facing storefront.</p>
+
+<h2>Background synchronization with job queues</h2>
+<p>Manual synchronization can be useful during initial setup and testing, but production integrations often benefit from background processing. Business Central can automate Shopify synchronization through the job queue.</p>
+<p>Background processing should be designed around business requirements rather than simply running everything as frequently as possible. Consider data volume, API limits, error handling, monitoring and the acceptable delay between systems.</p>
+
+<h2>Testing strategy</h2>
+<p>Use a controlled test cycle before connecting production data:</p>
+<ol>
+  <li>Connect a test Shopify store or safe test environment.</li>
+  <li>Create a small number of test items.</li>
+  <li>Synchronize products and verify mappings.</li>
+  <li>Test inventory changes in both directions where applicable.</li>
+  <li>Test customer creation and matching.</li>
+  <li>Create a test order and import it into Business Central.</li>
+  <li>Process shipment and verify fulfillment synchronization.</li>
+  <li>Review synchronization logs and correct errors.</li>
+  <li>Repeat the test after configuration changes.</li>
+</ol>
+<p>Microsoft specifically recommends careful testing because connector settings can create or modify business records. <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/shopify/get-started" target="_blank" rel="noopener">Microsoft testing guidance</a>.</p>
+
+<h2>Common Shopify integration problems</h2>
+<h3>1. Products are not synchronizing</h3>
+<p>Check shop configuration, item filters, mapping, synchronization direction and whether the item meets the conditions required for export or import.</p>
+<h3>2. Inventory is incorrect</h3>
+<p>Review location mapping, stock calculation settings and the inventory available at the selected Business Central locations.</p>
+<h3>3. Duplicate customers appear</h3>
+<p>Review customer matching rules and avoid enabling automatic creation without understanding how Shopify customer information maps to Business Central.</p>
+<h3>4. Orders fail to import</h3>
+<p>Check customer and item mapping, missing data, configuration templates, synchronization logs and the status of the Shopify order.</p>
+<h3>5. Authorization or connection errors</h3>
+<p>Check the Shopify connection, permissions, authorization flow, browser pop-up blocking and the store URL. Re-authorize the connection when appropriate.</p>
+
+<h2>When should you build custom AL code?</h2>
+<p>The standard Shopify Connector should be the starting point for normal supported scenarios. Custom AL development becomes useful when your business process requires additional validation, custom mappings, extra fields, automated workflows or integration-specific logic.</p>
+<p>For example, you may create an extension that adds custom fields to Shopify-related records, subscribes to connector events or applies additional business rules. Keep custom logic isolated and event-driven where possible so upgrades are easier to manage.</p>
+
+<h2>Recommended architecture for custom extensions</h2>
+<pre><code>Shopify
+   │
+   ▼
+Standard Shopify Connector
+   │
+   ├── Standard synchronization
+   │
+   └── Events / extension points
+             │
+             ▼
+       Custom AL Extension
+             │
+       ┌─────┴─────┐
+       ▼           ▼
+ Validation    Custom mapping
+       │           │
+       └─────┬─────┘
+             ▼
+      Business Central</code></pre>
+<div class="tip"><strong>Developer tip:</strong> avoid replacing standard connector behavior when an event subscriber or supported extension point can achieve the same result. Smaller extensions are usually easier to test, maintain and upgrade.</div>
+
+<h2>Shopify Connector vs custom API integration</h2>
+<p>Use the standard Shopify Connector when your requirements match the supported synchronization scenarios. A custom API integration may make sense when you need a different architecture, another commerce platform, specialized middleware or full control over the data contract.</p>
+<table style="width:100%;border-collapse:collapse;margin:25px 0;font-size:15px"><tr><th style="text-align:left;border-bottom:1px solid #dfe5ee;padding:10px">Scenario</th><th style="text-align:left;border-bottom:1px solid #dfe5ee;padding:10px">Recommended starting point</th></tr><tr><td style="padding:10px;border-bottom:1px solid #edf0f5">Standard Shopify + Business Central processes</td><td style="padding:10px;border-bottom:1px solid #edf0f5">Shopify Connector</td></tr><tr><td style="padding:10px;border-bottom:1px solid #edf0f5">Custom fields or validation</td><td style="padding:10px;border-bottom:1px solid #edf0f5">Connector + AL extension</td></tr><tr><td style="padding:10px;border-bottom:1px solid #edf0f5">Different commerce platform</td><td style="padding:10px;border-bottom:1px solid #edf0f5">Business Central APIs / custom integration</td></tr><tr><td style="padding:10px">Complex multi-system architecture</td><td style="padding:10px">API + middleware + event-driven design</td></tr></table>
+
+<h2>Security and production best practices</h2>
+<ul>
+  <li>Use least-privilege permissions.</li>
+  <li>Test synchronization before production rollout.</li>
+  <li>Back up or protect important production data before major configuration changes.</li>
+  <li>Monitor synchronization errors and logs.</li>
+  <li>Define ownership for products, prices, customers and inventory.</li>
+  <li>Document mappings and synchronization direction.</li>
+  <li>Keep custom AL logic modular and upgrade-friendly.</li>
+  <li>Do not expose secrets or access tokens in source code.</li>
+</ul>
+
+<h2>What should you learn next?</h2>
+<div class="article-links">
+  <p><a href="business-central-api-integration.html">Business Central API Integration</a> — understand REST APIs and custom integration patterns.</p>
+  <p><a href="codeunits-business-central.html">Codeunits in Business Central</a> — build reusable AL business logic for integration processes.</p>
+  <p><a href="page-extensions-business-central.html">Page Extensions in Business Central</a> — extend standard pages with custom fields and actions.</p>
+  <p><a href="rdlc-reports-business-central.html">RDLC Reports in Business Central</a> — build reporting solutions for ERP data.</p>
+  <p><a href="al-tables-business-central.html">AL Tables in Business Central</a> — understand the data structures behind Business Central solutions.</p>
+</div>
+
+<p class="source-note">Technical reference: Microsoft Learn documentation for the Business Central Shopify Connector, synchronization scenarios and setup guidance.</p>
+<div class="article-footer"><a class="back" href="../tutorials.html">← Explore all Dynexal tutorials</a></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js"></script>
+</body>
+</html>
