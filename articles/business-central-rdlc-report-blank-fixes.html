@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Business Central RDLC report blank? Learn 10 common causes and fixes, including empty datasets, wrong layout, missing fields, filters, grouping, expressions, Report Builder issues and troubleshooting steps.">
+<meta name="author" content="Dynexal">
+<meta name="theme-color" content="#0b1220">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-rdlc-report-blank-fixes.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-rdlc-report-blank-fixes.html">
+<meta property="og:title" content="Business Central RDLC Report Blank: 10 Common Causes & Fixes">
+<meta property="og:description" content="A practical troubleshooting guide for blank RDLC reports in Microsoft Dynamics 365 Business Central, from dataset and filters to layout and expressions.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central RDLC Report Blank: 10 Common Causes & Fixes">
+<meta name="twitter:description" content="Troubleshoot blank RDLC reports in Business Central with practical dataset, layout, filter and Report Builder checks.">
+<title>Business Central RDLC Report Blank: 10 Common Causes & Fixes | Dynexal</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article-page{padding:78px 20px 100px}.article-wrap{max-width:900px}.article-head{max-width:850px;margin-bottom:44px}.article-head h1{font-size:50px;line-height:1.08;margin:12px 0 18px}.article-head .lead{font-size:20px;line-height:1.75;color:#65748a}.article-meta{color:#65748a;font-size:14px}.article{background:#fff;border:1px solid #e2e7ef;border-radius:20px;padding:42px;box-shadow:0 8px 28px rgba(20,35,60,.05)}.article h2{font-size:30px;margin:38px 0 14px}.article h3{font-size:21px;margin:28px 0 10px}.article p,.article li{color:#43546b;line-height:1.8}.article ul,.article ol{padding-left:24px}.article code{background:#f1f4f8;padding:2px 6px;border-radius:5px;font-size:.92em}.article pre{background:#0b1220;color:#e8eef8;padding:20px;border-radius:12px;overflow:auto;line-height:1.6}.article pre code{background:transparent;padding:0}.callout{margin:24px 0;padding:18px 20px;border-left:4px solid #426ee5;background:#f5f7fb;border-radius:0 12px 12px 0}.checklist{display:grid;gap:10px;margin:20px 0}.check{padding:13px 15px;border:1px solid #e2e7ef;border-radius:10px;background:#fafbfc}.source-links a,.related a{color:#426ee5;font-weight:700;text-decoration:none}.related{margin-top:42px;padding-top:28px;border-top:1px solid #e2e7ef}@media(max-width:700px){.article-head h1{font-size:38px}.article{padding:25px}}
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"Business Central RDLC Report Blank: 10 Common Causes & Fixes",
+  "description":"A practical troubleshooting guide for blank RDLC reports in Microsoft Dynamics 365 Business Central.",
+  "author":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},
+  "publisher":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-rdlc-report-blank-fixes.html"},
+  "url":"https://dynexal.com/articles/business-central-rdlc-report-blank-fixes.html",
+  "isPartOf":{"@type":"WebSite","name":"Dynexal","url":"https://dynexal.com/"}
+}
+</script>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article-page"><div class="container article-wrap">
+<section class="article-head"><span class="section-label">REPORTING • TROUBLESHOOTING</span><h1>Business Central RDLC Report Blank: 10 Common Causes &amp; Fixes</h1><p class="lead">Your Business Central report runs, but the RDLC output is blank or missing expected data? Start with the dataset before changing the layout. This guide walks through the most common causes and a practical troubleshooting sequence.</p><p class="article-meta">By Dynexal · Microsoft Dynamics 365 Business Central · RDLC</p></section>
+<article class="article">
+<h2>Why does a Business Central RDLC report show blank output?</h2>
+<p>A Business Central report has two important layers: the <strong>dataset</strong> defined in AL and the <strong>layout</strong> that renders that dataset. Microsoft describes the report object as defining the underlying data model, while the layout controls how the data is presented. If the dataset contains no records, the layout cannot display the expected rows. If the dataset is correct but the layout references the wrong fields, the rendered report can still appear empty or incomplete.</p>
+<div class="callout"><strong>Fastest diagnostic:</strong> run the report and use <strong>Send to → XML (data only)</strong> to inspect the raw dataset. If the expected records or columns are missing there, fix the AL dataset/filter logic first. If the data is present, investigate the RDLC layout, groups, expressions and report layout selection.</div>
+
+<h2>1. The report dataset returns zero records</h2>
+<p>This is the first thing to check. Your RDLC layout can be perfectly designed and still render no detail rows when the report dataitem returns nothing.</p>
+<pre><code>dataitem(Customer; Customer)
+{
+    column(CustomerNo; "No.") { }
+    column(CustomerName; Name) { }
+}</code></pre>
+<p>Check the dataitem table, filters, links and request-page filters. If the report is based on a filtered document or date range, temporarily test with a known record.</p>
+<p><strong>Fix:</strong> confirm that the report dataitem actually has records for the selected filters before debugging RDLC expressions.</p>
+
+<h2>2. Request-page filters exclude all records</h2>
+<p>Business Central request pages can apply filters before the dataset is generated. A filter that looks harmless can remove every record.</p>
+<p>Typical examples include:</p>
+<ul><li>Date ranges that don't contain transaction dates.</li><li>Customer, vendor or item filters that don't match the selected company.</li><li>Document numbers or posting groups with no matching records.</li><li>Filters left over from a previous test.</li></ul>
+<p><strong>Fix:</strong> clear the request-page filters and run the report again. Then add filters one at a time.</p>
+
+<h2>3. The RDLC layout is not the layout actually being used</h2>
+<p>A report can have multiple layouts, and the selected/default layout matters. If you edited one RDLC file but Business Central is rendering another layout, your changes won't appear.</p>
+<p>Check the <strong>Report Layouts</strong> or <strong>Report Layout Selection</strong> setup and verify the layout assigned to the report and company. Business Central supports multiple report layouts and lets you select which layout is used.</p>
+<p><strong>Fix:</strong> confirm the report ID, layout type and selected layout before assuming the RDLC file is broken.</p>
+
+<h2>4. Dataset column names don't match the RDLC fields</h2>
+<p>The RDLC layout depends on the dataset exposed by the report. If you rename a column in AL, remove it, or regenerate the dataset without updating the layout, the layout can contain stale field references.</p>
+<pre><code>column(ItemNo; "No.") { }
+column(ItemDescription; Description) { }
+column(LineAmount; "Line Amount") { }</code></pre>
+<p>After changing the AL dataset, refresh or regenerate the layout dataset information as appropriate for your development workflow.</p>
+<p><strong>Fix:</strong> compare the dataset fields with the fields referenced by the RDLC report definition.</p>
+
+<h2>5. The RDLC has the wrong dataset or data region</h2>
+<p>RDLC reports commonly use tablix controls, groups and datasets. If a textbox or tablix is bound to the wrong field or data region, the report may render headers but no useful values.</p>
+<p>In Report Builder, inspect the tablix and verify that its dataset is the dataset generated by the Business Central report. Then check the row group hierarchy and detail group.</p>
+<p><strong>Fix:</strong> select the tablix and verify its <strong>Dataset Name</strong>, then check the group expressions.</p>
+
+<h2>6. A group expression is removing or hiding detail rows</h2>
+<p>Grouping is useful for invoices, customer summaries and totals, but an incorrect group expression can produce unexpected results. Hidden groups can also make a report appear blank.</p>
+<p>Check:</p>
+<ul><li>Row Group and Column Group expressions.</li><li>Visibility expressions.</li><li>Group filters.</li><li>KeepTogether and page-break settings when diagnosing pagination problems.</li></ul>
+<p><strong>Fix:</strong> temporarily simplify the tablix to a basic detail row and display one or two raw dataset fields. If the values appear, rebuild the grouping step by step.</p>
+
+<h2>7. An expression returns Nothing or hides the value</h2>
+<p>RDLC expressions can transform or hide data. A faulty <code>IIF</code>, incorrect scope, or formatting expression can result in blank values even when the dataset is correct.</p>
+<pre><code>=IIF(IsNothing(Fields!ItemDescription.Value), "", Fields!ItemDescription.Value)</code></pre>
+<p>When debugging, replace complex expressions temporarily with a direct field reference:</p>
+<pre><code>=Fields!ItemDescription.Value</code></pre>
+<p>If the direct field displays correctly, the problem is in the expression rather than the AL dataset.</p>
+
+<h2>8. The report layout file is stale or was not regenerated after AL changes</h2>
+<p>Changing the report dataset in AL does not magically redesign an existing RDLC layout. If you add columns, change dataitems or alter the report structure, the layout may no longer match the dataset it was designed against.</p>
+<p><strong>Fix:</strong> regenerate or update the report layout dataset after structural AL changes, then verify the fields and groups in Report Builder.</p>
+
+<h2>9. Report Builder is opening the file incorrectly</h2>
+<p>Business Central RDLC layouts use <code>.rdlc</code> files, while Microsoft notes that Report Builder recognizes the <code>.rdl</code> file type. When modifying a layout in Report Builder, an exported Business Central <code>.rdlc</code> file may need to be renamed to <code>.rdl</code> for the tool to open it.</p>
+<p><strong>Fix:</strong> make a working copy of the layout and use the correct file type for your design tool. Don't overwrite the original until the layout has been tested.</p>
+
+<h2>10. The report is fine, but the problem is actually pagination or rendering</h2>
+<p>Sometimes “blank” means the expected content is on another page or outside the visible area rather than missing from the dataset. Large report bodies, page breaks, hidden sections, excessive widths and group settings can create confusing output.</p>
+<p>Check:</p>
+<ul><li>Report body width versus page width and margins.</li><li>Explicit page breaks.</li><li>Hidden rows, columns or groups.</li><li>Large rectangles or tablix controls positioned outside the expected area.</li><li>PDF/print preview versus the Report Builder design surface.</li></ul>
+
+<h2>A practical troubleshooting workflow</h2>
+<div class="checklist">
+<div class="check"><strong>Step 1:</strong> Run the report with filters cleared or minimized.</div>
+<div class="check"><strong>Step 2:</strong> Export <strong>XML (data only)</strong> and confirm records exist.</div>
+<div class="check"><strong>Step 3:</strong> If the dataset is empty, debug AL dataitems, links and filters.</div>
+<div class="check"><strong>Step 4:</strong> If the dataset is correct, verify the selected Business Central report layout.</div>
+<div class="check"><strong>Step 5:</strong> In Report Builder, verify the tablix dataset and field names.</div>
+<div class="check"><strong>Step 6:</strong> Replace complex expressions with direct field references.</div>
+<div class="check"><strong>Step 7:</strong> Simplify grouping and visibility settings.</div>
+<div class="check"><strong>Step 8:</strong> Test again in PDF/preview after each change.</div>
+</div>
+
+<h2>Common AL checks before blaming RDLC</h2>
+<p>When the dataset is unexpectedly empty, inspect the AL report definition first. A simplified dataitem can help isolate the problem:</p>
+<pre><code>report 50110 "My RDLC Test"
+{
+    UsageCategory = ReportsAndAnalysis;
+    ApplicationArea = All;
+
+    dataset
+    {
+        dataitem(Customer; Customer)
+        {
+            RequestFilterFields = "No.", "Customer Posting Group";
+
+            column(CustomerNo; "No.") { }
+            column(CustomerName; Name) { }
+        }
+    }
+
+    // Add your RDLC rendering definition/layout here.
+}</code></pre>
+<p>The exact dataset should match your business requirement. The purpose of a minimal test report is to determine whether the problem is in data retrieval or presentation.</p>
+
+<h2>What if the XML dataset contains data but the report is still blank?</h2>
+<p>Then move your investigation to the layout. Check the selected layout, dataset name, fields, groups, visibility and expressions. A useful debugging technique is to create a very simple tablix with a direct field such as <code>=Fields!CustomerName.Value</code>. If that works, add your original formatting and expressions back gradually.</p>
+
+<h2>RDLC troubleshooting checklist</h2>
+<ul>
+<li>☐ Dataset contains records.</li>
+<li>☐ Request-page filters are correct.</li>
+<li>☐ Dataitem links and filters are correct.</li>
+<li>☐ The intended report layout is selected.</li>
+<li>☐ RDLC dataset and field names match AL.</li>
+<li>☐ Tablix uses the correct dataset.</li>
+<li>☐ Group filters and visibility don't hide rows.</li>
+<li>☐ Expressions don't return unexpected blank values.</li>
+<li>☐ Layout was updated after dataset changes.</li>
+<li>☐ Page size, margins and page breaks are reasonable.</li>
+</ul>
+
+<h2>FAQ</h2>
+<h3>Why is my Business Central RDLC report completely blank?</h3>
+<p>Start by checking whether the AL dataset returns records. Export the report as XML data-only. If there are no records, investigate filters and dataitem logic. If records exist, investigate the selected layout and RDLC field/group configuration.</p>
+<h3>How do I check whether the Business Central report dataset has data?</h3>
+<p>Run the report and use <strong>Send to → XML (data only)</strong>. Microsoft recommends using the raw dataset to validate that the report returns the expected data while troubleshooting RDL layouts.</p>
+<h3>Why does RDLC show headers but no data?</h3>
+<p>This often indicates that the report rendered the layout but the detail region has no matching records, uses the wrong dataset, has a filter/group problem, or references fields that aren't populated.</p>
+<h3>Can Report Builder open an RDLC file?</h3>
+<p>Microsoft currently notes that Report Builder recognizes <code>.rdl</code>, while layouts exported from Business Central can use <code>.rdlc</code>. When needed, work on a copy and rename the exported file to <code>.rdl</code> for Report Builder.</p>
+
+<div class="related"><h2>Related Dynexal guides</h2><ul><li><a href="rdlc-reports-business-central.html">RDLC Reports in Business Central: Complete Beginner Guide</a></li><li><a href="rdlc-grouping-expressions-business-central.html">Business Central RDLC Grouping &amp; Expressions</a></li><li><a href="../services.html">Dynexal Business Central &amp; RDLC Services</a></li></ul></div>
+
+<div class="source-links related"><h2>Microsoft Learn references</h2><ul><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-reports-troubleshooting" target="_blank" rel="noopener">Troubleshooting reports in Business Central</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-report-object" target="_blank" rel="noopener">Business Central Report object</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/ui-rdlc-report-layouts" target="_blank" rel="noopener">Working with RDLC layouts</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-howto-rdl-report-layout" target="_blank" rel="noopener">Creating an RDL layout report</a></li></ul></div>
+</article>
+</div></main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><p>Learn. Build. Integrate.</p><span><a href="../about.html">About</a> · <a href="../services.html">Services</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js"></script>
+</body>
+</html>
