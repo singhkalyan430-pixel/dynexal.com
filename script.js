@@ -76,7 +76,7 @@
     });
   }
   document.addEventListener('keydown',event=>{
-    if(!slideshow||!slideshow.matches(':hover')&& !slideshow.contains(document.activeElement)) return;
+    if(!slideshow||(!slideshow.matches(':hover')&&!slideshow.contains(document.activeElement))) return;
     if(event.key==='ArrowRight'){showSlide(current+1);restart();}
     if(event.key==='ArrowLeft'){showSlide(current-1);restart();}
   });
@@ -109,7 +109,8 @@
       });
       posts.forEach(post=>{
         const tag=(post.querySelector('.tag')?.textContent||'').toUpperCase();
-        post.hidden=selected!=='all'&&!tag.includes(selected);
+        const matches=selected==='all'||tag.includes(selected)||(selected==='INTEGRATION'&&tag.includes('E-COMMERCE'));
+        post.hidden=!matches;
       });
     };
     filter.addEventListener('click',apply);
