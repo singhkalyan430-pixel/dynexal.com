@@ -3,6 +3,28 @@ const menuBtn=document.querySelector('.menu-btn');const nav=document.querySelect
 // Google Analytics 4
 (function(){const measurementId='G-M2JGL0B9K1';window.dataLayer=window.dataLayer||[];function gtag(){window.dataLayer.push(arguments);}window.gtag=gtag;gtag('js',new Date());gtag('config',measurementId);const s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id='+measurementId;document.head.appendChild(s);})();
 
+// Hero slideshow
+(function(){
+  const slides=[...document.querySelectorAll('.hero-slide')];
+  const dots=[...document.querySelectorAll('.slide-dot')];
+  const prev=document.querySelector('.slide-btn.prev');
+  const next=document.querySelector('.slide-btn.next');
+  if(!slides.length) return;
+  let current=0;
+  let timer;
+  function showSlide(index){
+    current=(index+slides.length)%slides.length;
+    slides.forEach((slide,i)=>slide.classList.toggle('active',i===current));
+    dots.forEach((dot,i)=>dot.classList.toggle('active',i===current));
+  }
+  function restart(){clearInterval(timer);timer=setInterval(()=>showSlide(current+1),5000);}
+  if(next) next.addEventListener('click',()=>{showSlide(current+1);restart();});
+  if(prev) prev.addEventListener('click',()=>{showSlide(current-1);restart();});
+  dots.forEach((dot,i)=>dot.addEventListener('click',()=>{showSlide(i);restart();}));
+  showSlide(0);
+  restart();
+})();
+
 // Internal topic navigation for article pages
 (function(){
   if(!location.pathname.includes('/articles/')) return;
