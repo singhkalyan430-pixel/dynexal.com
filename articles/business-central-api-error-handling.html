@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn how to troubleshoot and handle Business Central API errors including HTTP 400, 401, 403, 404, 409, 429, 500, 503 and 504 with practical AL and integration patterns.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-api-error-handling.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-api-error-handling.html">
+<meta property="og:title" content="Business Central API Error Handling: 400, 401, 403, 404, 409 &amp; 429 Explained | Dynexal">
+<meta property="og:description" content="A practical Business Central API troubleshooting guide covering HTTP status codes, authentication, permissions, validation, throttling, retries and AL error handling.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central API Error Handling: HTTP Errors Explained | Dynexal">
+<meta name="twitter:description" content="Troubleshoot Business Central REST API errors with practical AL and integration examples.">
+<title>Business Central API Error Handling: 400, 401, 403, 404, 409 &amp; 429 Explained | Dynexal</title>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"TechArticle",
+  "headline":"Business Central API Error Handling: 400, 401, 403, 404, 409 & 429 Explained",
+  "description":"A practical Business Central API troubleshooting guide covering HTTP status codes, authentication, permissions, validation, throttling, retries and AL error handling.",
+  "author":{"@type":"Organization","name":"Dynexal"},
+  "publisher":{"@type":"Organization","name":"Dynexal"},
+  "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-api-error-handling.html"},
+  "url":"https://dynexal.com/articles/business-central-api-error-handling.html",
+  "inLanguage":"en"
+}
+</script>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d38b2c;background:#fff8eb;padding:16px 20px;margin:24px 0;color:#5b4a2d}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span>Dynexal</span></a><nav class="nav" aria-label="Article navigation"><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<main class="article">
+<a class="back" href="../tutorials.html">← Back to Tutorials</a><span class="section-label">INTEGRATION • TROUBLESHOOTING</span>
+<h1>Business Central API Error Handling: 400, 401, 403, 404, 409 &amp; 429 Explained</h1>
+<p class="meta">Dynexal • Beginner to Intermediate • 16 min read</p>
+<p class="intro">Business Central integrations rarely fail because of one mysterious problem. Most API failures can be understood quickly when you identify the HTTP status code, inspect the response body, verify authentication and permissions, and then apply the right retry or correction strategy.</p>
+<div class="hero-note"><strong>What you will learn:</strong> how to diagnose 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 405 Method Not Allowed, 409 conflict-style failures, 429 throttling, 500-series failures, response bodies, AL error handling, retries and production troubleshooting.</div>
+
+<h2>Why API error handling matters</h2>
+<p>A successful HTTP connection does not automatically mean a successful business operation. An external system can return a valid HTTP response with a client or server error status, while Business Central can also report AL runtime or application errors.</p>
+<p>A reliable integration should therefore separate three questions: did the HTTP request get sent, did the server return a successful status, and did the response contain the expected business data?</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/webservices/dynamics-error-codes">Microsoft Learn: Troubleshooting REST API/OData calls</a></p>
+
+<h2>Business Central API HTTP status codes at a glance</h2>
+<ul>
+<li><strong>200 OK:</strong> the operation completed successfully and normally returned a response body.</li>
+<li><strong>201 Created:</strong> a resource was created successfully when supported by the endpoint.</li>
+<li><strong>204 No Content:</strong> the operation succeeded without a response body.</li>
+<li><strong>400 Bad Request:</strong> the request is malformed, invalid, or contains unacceptable data.</li>
+<li><strong>401 Unauthorized:</strong> authentication is missing, invalid, expired, or otherwise unacceptable.</li>
+<li><strong>403 Forbidden:</strong> the identity is authenticated but does not have the required permission.</li>
+<li><strong>404 Not Found:</strong> the endpoint or requested resource cannot be found.</li>
+<li><strong>405 Method Not Allowed:</strong> the HTTP method is not supported for that resource.</li>
+<li><strong>409 Conflict:</strong> the operation conflicts with the current resource or business state; inspect the endpoint response because the exact conflict behavior depends on the API.</li>
+<li><strong>429 Too Many Requests:</strong> the client has exceeded API limits and should back off before retrying.</li>
+<li><strong>500/503:</strong> a server-side or temporary service problem; investigate the response and retry only when appropriate.</li>
+<li><strong>504 Gateway Timeout:</strong> the request took too long and should usually be redesigned or split rather than blindly retried.</li>
+</ul>
+<p>Microsoft specifically documents 4xx responses as client errors and recommends using HTTP status codes, telemetry, error codes and the AL debugger when troubleshooting REST API/OData calls.</p>
+
+<h2>400 Bad Request</h2>
+<p>A 400 response usually means the request itself needs correction. Common causes include an invalid URL, malformed JSON, invalid property names, wrong data types, unsupported query syntax or business validation failures.</p>
+<h3>Example troubleshooting checklist</h3>
+<ol>
+<li>Check the exact endpoint URL.</li>
+<li>Validate the JSON structure and property names.</li>
+<li>Check required fields and data types.</li>
+<li>Review <code>$filter</code>, <code>$select</code> and other query parameters.</li>
+<li>Read the response body instead of looking only at the status number.</li>
+</ol>
+<div class="tip"><strong>Tip:</strong> never replace a useful 400 response with a generic message such as “API failed.” Log the status code and a safe version of the response so the real problem can be diagnosed.</div>
+
+<h2>401 Unauthorized</h2>
+<p>HTTP 401 usually points to authentication. Check the access token, token expiration, audience or scope, tenant, client credentials and the Authorization header.</p>
+<pre><code>Headers := Request.GetHeaders();
+Headers.Add('Authorization', 'Bearer ' + AccessToken);
+
+if not Client.Send(Request, Response) then
+    Error('HTTP request could not be sent.');
+
+if Response.HttpStatusCode() = 401 then
+    Error('Authentication failed. Check the access token, tenant and scope.');</code></pre>
+<p>Do not hard-code production secrets in AL source code. Use the authentication and secret-management approach appropriate to the integration.</p>
+
+<h2>403 Forbidden</h2>
+<p>A 403 response normally means the server understood the identity but that identity is not allowed to perform the requested operation. In Business Central, review users, permission sets, table permissions, API page permissions and the permissions of the application identity being used.</p>
+<p>This is an important distinction: obtaining a valid token does not automatically grant access to every Business Central company, API or operation.</p>
+
+<h2>404 Not Found</h2>
+<p>Check both the route and the resource identifier. A 404 can come from a wrong environment, company ID, API version, publisher/group/entity name, record ID or endpoint path.</p>
+<pre><code>ApiUrl :=
+    BaseUrl + '/v2.0/' + Tenant +
+    '/api/dynexal/integration/v1.0/companies(' +
+    CompanyId + ')/customers';</code></pre>
+<p>For custom APIs, verify <code>APIPublisher</code>, <code>APIGroup</code>, <code>APIVersion</code>, entity set naming and the company segment. A single URL character can produce a 404.</p>
+
+<h2>405 Method Not Allowed</h2>
+<p>When you receive 405, the endpoint exists but the operation is not allowed for that resource or HTTP method. For example, an endpoint may support GET but not DELETE, or a read-only API query may not support write operations.</p>
+<p>Compare the method with the API contract before changing authentication or permissions.</p>
+
+<h2>409 Conflict</h2>
+<p>A conflict means the requested operation cannot be completed in the current state. In integration scenarios this can happen when another process has changed the resource, when a duplicate or conflicting business record exists, or when the endpoint's concurrency rules reject the request.</p>
+<p>Do not blindly retry every 409. Read the response, determine whether the conflict is temporary or requires a business decision, and then refresh or reconcile the data when appropriate.</p>
+
+<h2>429 Too Many Requests</h2>
+<p>HTTP 429 means throttling has occurred because API limits have been exceeded. The correct response is controlled retry logic with a cool-off period rather than immediately sending the same request repeatedly.</p>
+<pre><code>if Response.HttpStatusCode() = 429 then begin
+    // Read Retry-After when supplied by the service.
+    // Apply a bounded backoff before retrying.
+    // Consider queueing the work instead of blocking the user.
+end;</code></pre>
+<p>For high-volume integrations, use queues, batching, filtering, smaller payloads and controlled concurrency. Microsoft recommends retry strategies such as regular intervals, incremental intervals, exponential backoff and randomization for throttling scenarios.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/api-reference/v2.0/dynamics-rate-limits">Microsoft Learn: Working with API limits in Business Central</a></p>
+
+<h2>500, 503 and 504: server-side and timeout problems</h2>
+<p>5xx errors indicate that the server or an upstream service could not complete the request. A temporary 503 can be retried with backoff, but a 500 should also be investigated because repeated retries may simply reproduce the same failure.</p>
+<p>A 504 Gateway Timeout is different: if the operation consistently takes too long, redesign the integration by splitting large requests, reducing the data returned, filtering earlier, or moving long-running work to an asynchronous pattern.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/webservices/web-service-performance">Microsoft Learn: Web service performance</a></p>
+
+<h2>Always check both HttpClient result and HTTP status</h2>
+<p>When calling an external API from AL, check whether the HTTP operation itself succeeded and then inspect the returned status code.</p>
+<pre><code>if not Client.Send(Request, Response) then
+    Error('The HTTP request could not be completed.');
+
+if not Response.IsSuccessStatusCode() then begin
+    Response.Content().ReadAs(ResponseText);
+    Error(
+        'API failed. HTTP %1. Response: %2',
+        Response.HttpStatusCode(),
+        ResponseText);
+end;</code></pre>
+<p>This distinction is important because <code>HttpClient.Send</code> can fail before a normal HTTP response is available, while a response such as 400 or 429 means the remote service did answer your request.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-send-method">Microsoft Learn: HttpClient.Send</a></p>
+
+<h2>Build a reusable API error handler</h2>
+<p>For a larger extension, avoid duplicating the same status-code checks in every integration procedure. Centralize the response inspection and return a structured error or an <code>ErrorInfo</code> object to the calling code.</p>
+<pre><code>local procedure EnsureSuccess(Response: HttpResponseMessage)
+var
+    ResponseText: Text;
+begin
+    if Response.IsSuccessStatusCode() then
+        exit;
+
+    Response.Content().ReadAs(ResponseText);
+
+    Error(
+        'External API failed. HTTP %1. Response: %2',
+        Response.HttpStatusCode(),
+        ResponseText);
+end;</code></pre>
+<p>In production code, consider logging the endpoint category, status code, correlation information and a sanitized response while avoiding access tokens, passwords and other secrets.</p>
+
+<h2>Using TryFunction for recoverable AL errors</h2>
+<p>For AL operations where an error should be handled by the caller instead of immediately stopping execution, a TryFunction can be useful. The result should be evaluated so the error is caught as intended.</p>
+<pre><code>[TryFunction]
+local procedure CallExternalService(): Boolean
+begin
+    // Perform an operation that may raise an AL error.
+end;
+
+if not CallExternalService() then begin
+    // Handle the failure and continue safely.
+end;</code></pre>
+<p>Try methods are one part of AL error handling; they do not replace HTTP status-code handling. An API returning 401 or 429 is still an HTTP response that your integration should interpret explicitly.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-handling-errors-using-try-methods">Microsoft Learn: Handling errors using try methods</a></p>
+
+<h2>Production best practices</h2>
+<ul>
+<li>Always check HTTP status codes.</li>
+<li>Read and sanitize error response bodies.</li>
+<li>Never log access tokens or secrets.</li>
+<li>Use exponential backoff for retryable 429/503 scenarios.</li>
+<li>Do not blindly retry validation errors such as most 400 responses.</li>
+<li>Use queues for high-volume or non-interactive integrations.</li>
+<li>Keep external API calls out of long-running interactive UI operations when possible.</li>
+<li>Record enough telemetry or application logging to diagnose failures.</li>
+<li>Test expired tokens, missing permissions, invalid payloads, missing records and throttling.</li>
+<li>Document which errors are retryable and which require manual intervention.</li>
+</ul>
+
+<h2>Quick troubleshooting decision tree</h2>
+<ol>
+<li><strong>Did the AL HTTP call itself fail?</strong> Check URI, DNS, certificate, timeout and outbound HttpClient permission.</li>
+<li><strong>Did you receive an HTTP response?</strong> Read the status code.</li>
+<li><strong>4xx?</strong> Correct the request, authentication, permissions, route or resource state.</li>
+<li><strong>429?</strong> Back off and retry according to the service limits.</li>
+<li><strong>5xx?</strong> Check service availability and retry only when appropriate.</li>
+<li><strong>504 repeatedly?</strong> Redesign the request rather than increasing retries.</li>
+<li><strong>Still failing?</strong> Inspect telemetry, response details and the AL debugger.</li>
+</ol>
+
+<div class="article-links"><strong>Continue learning:</strong><br>
+<a href="httpclient-business-central-al.html">HttpClient in Business Central AL</a> ·
+<a href="json-handling-business-central-al.html">JSON Handling in AL</a> ·
+<a href="oauth-2-authentication-business-central-al.html">OAuth 2.0 Authentication</a> ·
+<a href="business-central-api-rate-limits-throttling.html">API Rate Limits &amp; Throttling</a> ·
+<a href="business-central-custom-api-page.html">Custom API Page</a>
+</div>
+
+<div class="article-footer"><p><strong>Microsoft Learn references:</strong> <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/webservices/dynamics-error-codes">REST/OData troubleshooting</a>, <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/api-reference/v2.0/dynamics-rate-limits">API limits</a>, <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/webservices/web-service-performance">web service performance</a>, <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/httpclient/httpclient-send-method">HttpClient.Send</a>, and <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-handling-errors-using-try-methods">Try methods</a>.</p></div>
+</main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js?v=20260909-2"></script>
+</body>
+</html>
