@@ -224,7 +224,6 @@ Do not invent technical facts. If uncertain, clearly say that you are uncertain.
             }
           ],
           generationConfig: {
-            temperature: 0.3,
             maxOutputTokens: 900
           }
         })
