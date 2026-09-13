@@ -80,7 +80,7 @@ jobs:
         run: |
           git config user.name "Dynexal AI"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add articles tutorials.html sitemap.xml api/knowledge.json content-queue.json
+          git add articles tutorials.html sitemap.xml api/knowledge.json content-queue.json assets/tutorial-diagrams
           git commit -m "Auto-publish Dynexal AI article"
           git push origin main
 
