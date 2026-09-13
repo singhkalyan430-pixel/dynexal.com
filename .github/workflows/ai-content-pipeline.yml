@@ -1,0 +1,76 @@
+name: Dynexal AI Content Pipeline
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '30 3 * * *'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: dynexal-content-pipeline
+  cancel-in-progress: false
+
+jobs:
+  generate-and-publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate article with Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/generate-article.mjs
+
+      - name: Check for generated changes
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No new article was generated."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "Generated content changes detected."
+          fi
+
+      - name: Validate generated site files
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          node --check scripts/generate-article.mjs
+          node --check scripts/build-site-index.mjs
+          test -s sitemap.xml
+          test -s tutorials.html
+          echo "Site validation passed."
+
+      - name: Commit generated content
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          git config user.name "Dynexal AI"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add articles tutorials.html sitemap.xml api/knowledge.json content-queue.json
+          git commit -m "Auto-publish Dynexal AI article"
+          git push origin main
+
+      - name: Configure GitHub Pages
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        if: steps.changes.outputs.changed == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - name: Deploy to GitHub Pages
+        if: steps.changes.outputs.changed == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
