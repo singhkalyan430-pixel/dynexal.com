@@ -163,12 +163,14 @@
     #dynexal-ai-messages{flex:1;overflow-y:auto;padding:14px}
     .dynexal-ai-msg{max-width:86%;padding:10px 12px;margin:0 0 10px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
     .dynexal-ai-bot{background:#13223a;border:1px solid #243c60;margin-right:auto}.dynexal-ai-user{background:#1d4ed8;color:#fff;margin-left:auto}
+    .dynexal-ai-sources{max-width:86%;margin:0 0 12px 0;padding:9px 10px;border-left:2px solid #3b82f6;background:#101c31;border-radius:8px;font-size:11px}
+    .dynexal-ai-sources-title{font-weight:800;color:#bcd5ff;margin-bottom:6px}.dynexal-ai-source{display:block;color:#7db2ff;text-decoration:none;margin:4px 0;line-height:1.35}.dynexal-ai-source:hover{text-decoration:underline}
     #dynexal-ai-quick{display:flex;gap:7px;overflow-x:auto;padding:0 12px 10px;scrollbar-width:thin}
     .dynexal-ai-q{white-space:nowrap;border:1px solid #2a4267;background:#101c31;color:#cfe0f8;border-radius:999px;padding:7px 10px;font-size:11px;cursor:pointer}
     .dynexal-ai-q:hover{background:#172a46}
     #dynexal-ai-form{display:flex;gap:8px;padding:12px;border-top:1px solid #263a5b;background:#0a111e}
     #dynexal-ai-input{min-width:0;flex:1;border:1px solid #2a4267;border-radius:12px;background:#111c2e;color:#fff;padding:10px 11px;outline:none}
-    #dynexal-ai-input:focus{border-color:#3b82f6}.dynexal-ai-input::placeholder{color:#8091ab}
+    #dynexal-ai-input:focus{border-color:#3b82f6}
     #dynexal-ai-send{border:0;border-radius:12px;background:#2563eb;color:#fff;padding:0 14px;font-weight:700;cursor:pointer}
     #dynexal-ai-send:disabled{opacity:.6;cursor:wait}
     @media(max-width:600px){#dynexal-ai-launcher{right:14px;bottom:14px}#dynexal-ai-panel{right:10px;bottom:68px;width:calc(100vw - 20px);height:min(70vh,600px)}}
@@ -220,6 +222,28 @@
     return element;
   }
 
+  function addSources(sources){
+    if(!Array.isArray(sources)||!sources.length) return;
+    const box=document.createElement('div');
+    box.className='dynexal-ai-sources';
+    const title=document.createElement('div');
+    title.className='dynexal-ai-sources-title';
+    title.textContent='📚 Related Dynexal tutorials';
+    box.appendChild(title);
+    sources.forEach(source=>{
+      if(!source||!source.url||!source.title) return;
+      const link=document.createElement('a');
+      link.className='dynexal-ai-source';
+      link.href=source.url;
+      link.target='_blank';
+      link.rel='noopener noreferrer';
+      link.textContent=source.title+' →';
+      box.appendChild(link);
+    });
+    messages.appendChild(box);
+    messages.scrollTop=messages.scrollHeight;
+  }
+
   addMessage('Hi! I\'m Dynexal AI 👋\n\nAsk me about Microsoft Dynamics 365 Business Central, AL, APIs, integrations, RDLC, Shopify or AI.','bot');
 
   launcher.addEventListener('click',()=>{
@@ -263,6 +287,7 @@
       if(!response.ok) throw new Error(data.error||'AI request failed.');
 
       addMessage(data.answer||'Sorry, I could not generate an answer.','bot');
+      addSources(data.sources);
     }catch(error){
       loading.textContent='Sorry, the AI assistant is temporarily unavailable. Please try again.';
       console.error('Dynexal AI error:',error);
