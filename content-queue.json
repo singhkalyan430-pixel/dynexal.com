@@ -21,7 +21,9 @@
         "AL API pagination",
         "API performance"
       ],
-      "status": "ready"
+      "status": "published",
+      "publishedAt": "2026-09-13",
+      "url": "https://dynexal.com/articles/mastering-business-central-api-pagination-performance.html"
     },
     {
       "topic": "Business Central API Authentication with Microsoft Entra ID",

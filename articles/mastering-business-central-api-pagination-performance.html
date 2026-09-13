@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn how to optimize Dynamics 365 Business Central API performance and handle large-scale data synchronization using AL pagination strategies.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/mastering-business-central-api-pagination-performance.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/mastering-business-central-api-pagination-performance.html">
+<meta property="og:title" content="Mastering Business Central API Pagination and Performance in AL">
+<meta property="og:description" content="Learn how to optimize Dynamics 365 Business Central API performance and handle large-scale data synchronization using AL pagination strategies.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mastering Business Central API Pagination and Performance in AL">
+<meta name="twitter:description" content="Learn how to optimize Dynamics 365 Business Central API performance and handle large-scale data synchronization using AL pagination strategies.">
+<title>Mastering Business Central API Pagination and Performance in AL | Dynexal</title>
+<link rel="stylesheet" href="../styles.css?v=20260913">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Mastering Business Central API Pagination and Performance in AL","description":"Learn how to optimize Dynamics 365 Business Central API performance and handle large-scale data synchronization using AL pagination strategies.","author":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"publisher":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"datePublished":"2026-09-13","dateModified":"2026-09-13","mainEntityOfPage":"https://dynexal.com/articles/mastering-business-central-api-pagination-performance.html"}</script>
+<style>.article-page{padding:72px 20px 100px}.article-wrap{max-width:900px;margin:auto}.article-head{margin-bottom:38px}.article-head h1{font-size:48px;line-height:1.12;margin:12px 0 16px}.article-meta{color:#718096;font-size:14px}.article-body{font-size:17px;line-height:1.8;color:#27364a}.article-body h2{font-size:30px;line-height:1.25;margin:42px 0 14px;color:#172033}.article-body h3{font-size:23px;margin:28px 0 10px;color:#20304a}.article-body pre{overflow:auto;background:#0b1220;color:#eaf2ff;padding:18px;border-radius:12px;line-height:1.55;font-size:14px}.article-body code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.article-body a{color:#315fc9;font-weight:700}.article-body li{margin:7px 0}.article-tags{color:#426ee5;font-size:12px;font-weight:800;letter-spacing:.5px}.tutorial-visual{margin:28px 0 34px;padding:16px;border:1px solid #dfe6ef;border-radius:14px;background:#f8fafc}.tutorial-visual img{display:block;width:100%;height:auto;border-radius:10px}.tutorial-visual figcaption{margin-top:10px;font-size:13px;color:#607087;text-align:center;font-weight:700}</style>
+<style>.dynexal-tutorial-visual{margin:0 0 34px;padding:20px;border:1px solid #dfe6ef;border-radius:16px;background:#f7f9fc}.dynexal-tutorial-visual h2{margin:0 0 14px!important;font-size:24px!important}.dynexal-tutorial-visual figure{margin:0}.dynexal-tutorial-visual img{display:block;width:100%;height:auto;border-radius:12px}.dynexal-tutorial-visual figcaption{margin-top:8px;text-align:center;color:#718096;font-size:12px}</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<main class="article-page"><div class="article-wrap"><header class="article-head"><span class="section-label">DYNEXAL TECHNICAL GUIDE</span><div class="article-tags">Integration • Performance • AL Development</div><h1>Mastering Business Central API Pagination and Performance in AL</h1><p class="article-meta">Published 2026-09-13 · Dynexal</p></header><article class="article-body">
+<section class="dynexal-tutorial-visual" data-dynexal-visual="../assets/tutorial-diagrams/api-flow.svg">
+  <h2>How the API flow works</h2>
+  <figure><img src="../assets/tutorial-diagrams/api-flow.svg" alt="Business Central API request flow diagram" loading="lazy" decoding="async"><figcaption>Visual guide — Dynexal</figcaption></figure>
+</section>
+<h2>The Problem: Large Datasets and API Timeouts</h2><p>In modern enterprise architectures, integrations are expected to sync high volumes of records between Microsoft Dynamics 365 Business Central and external systems like CRMs, data warehouses, and e-commerce platforms. However, querying thousands of records in a single synchronous call is one of the most common causes of system performance degradation, memory exhaustion, and HTTP 504 Gateway Timeouts.</p><p>When an integration requests a large volume of data without limits, the Business Central middle-tier service (NST) must fetch all matching records from the SQL database, load them into memory, serialize them into a JSON payload, and stream them over the network. This process locks database resources, blocks standard transaction execution threads, and consumes excessive active memory on the container hosting the environment. If the execution time exceeds standard server thresholds, Business Central abruptly terminates the connection, causing integration failures.</p><p>To solve this resource bottleneck, developers must design and implement robust strategies around <strong>business central api pagination</strong> and general <strong>API performance</strong> using AL. Correctly managing how data is partitioned and retrieved ensures that your APIs remain responsive, performant, and safe for high-throughput transactional databases.</p><h2>Understanding OData Pagination in Business Central</h2><p>Dynamics 365 Business Central utilizes OData v4 for web services, which natively supports server-driven and client-driven pagination. Understanding the mechanical differences between these two pagination styles is critical to writing performant integration endpoints.</p><h3>Client-Driven Pagination ($top and $skip)</h3><p>In client-driven pagination, the consumer controls the size and offset of the dataset using the <code>$top</code> and <code>$skip</code> query parameters. For example, to fetch the second page of 50 records, the client requests:</p><pre><code>GET https://api.businesscentral.dynamics.com/v2.0/tenant/environment/api/dynexal/logistics/v2.0/customItems?$top=50&amp;$skip=50</code></pre><p>While this approach seems clean, it has a major performance drawback inside the database engine. On SQL Server, the <code>$skip</code> operator translates into an <code>OFFSET FETCH</code> statement. As the skip value grows larger (e.g., skipping 50,000 records), the database engine must still scan and discard all preceding records before returning the targeted subset. The operational complexity is O(N), leading to severe performance degradation on deep paging actions.</p><h3>Server-Driven Pagination ($skiptoken)</h3><p>Server-driven pagination relies on a cursor-based approach managed by the Business Central server. When a request matches a dataset that exceeds the server&#39;s page size limit (by default, 20,000 records in Business Central SaaS) or when the client requests a specific page size using the <code>odata.maxpagesize</code> header, Business Central appends a cursor token inside the payload named <code>@odata.nextLink</code>.</p><p>The <code>@odata.nextLink</code> contains a system-generated <code>$skiptoken</code> parameter. This token is an encoded identifier representing the position of the last retrieved record. When the client makes a call to the nextLink URI, Business Central resumes scanning from that specific index rather than scanning from the beginning. This reduces operational complexity to O(1) or O(log N), keeping queries extremely fast regardless of the depth of the page.</p><h2>Architecture of Efficient API Pagination</h2><figure class="tutorial-visual"><img src="../assets/tutorial-diagrams/mastering-business-central-api-pagination-performance-1.svg" alt="Architectural diagram showing client-server interaction during paginated Business Central API calls using OData nextLink." loading="lazy"><figcaption>API Pagination Lifecycle and Cursor Navigation</figcaption></figure><p>To design an enterprise-ready pagination strategy, you must understand how data traverses the different layers of the Dynamics 365 stack. By combining proper database indexes, appropriate AL properties, and cursor management, you achieve optimal throughput.</p><p>The system execution relies on passing a stateful cursor through successive HTTP loops. The transaction isolation level must also be carefully managed on the AL page properties to ensure database locks are not held during paginated loops, which would otherwise degrade interactive user performance on client sessions.</p><h2>Designing a Custom API Page in AL with Pagination Support</h2><p>When developing a custom API in AL, you must choose properties that optimize read performance and prepare the underlying system query generator for efficient execution plans. The most important properties for read-heavy APIs are <code>DataAccessIntent</code> and correct indexing on the source table.</p><p>Setting <code>DataAccessIntent = ReadOnly</code> instructs Business Central to route the SQL queries directly to a secondary read-only database replica (if available in the SaaS environment), completely bypassing the primary transactional node. This significantly reduces locks on your active tables.</p><p>The following example demonstrates how to build a highly optimized API page for custom inventory records:</p><pre><code>page 50120 "CustomItemApi"
+{
+    PageType = API;
+    Caption = &#39;customItemApi&#39;;
+    APIPublisher = &#39;dynexal&#39;;
+    APIGroup = &#39;logistics&#39;;
+    APIVersion = &#39;v2.0&#39;;
+    EntityName = &#39;customItem&#39;;
+    EntitySetName = &#39;customItems&#39;;
+    SourceTable = Item;
+    DelayedInsert = true;
+    DataAccessIntent = ReadOnly;
+    ODataKeyFields = SystemId;
+
+    layout
+    {
+        area(Content)
+        {
+            repeater(GroupName)
+            {
+                field(id; Rec.SystemId)
+                {
+                    Caption = &#39;Id&#39;;
+                }
+                field(number; Rec."No.")
+                {
+                    Caption = &#39;No.&#39;;
+                }
+                field(description; Rec.Description)
+                {
+                    Caption = &#39;Description&#39;;
+                }
+                field(baseUnitOfMeasure; Rec."Base Unit of Measure")
+                {
+                    Caption = &#39;Base Unit Of Measure&#39;;
+                }
+                field(inventory; Rec.Inventory)
+                {
+                    Caption = &#39;Inventory&#39;;
+                }
+            }
+        }
+    }
+}</code></pre><p>In this AL declaration, we map <code>ODataKeyFields</code> to <code>SystemId</code>. This ensures that the primary system index is leveraged for OData queries, guaranteeing fast operations. We also avoid writing complex calculations inside trigger procedures like <code>OnAfterGetRecord</code>, which would destroy performance during paginated table scans.</p><h2>Implementing Client-Side Consumption of Paginated AL APIs</h2><p>When consuming standard or custom Business Central endpoints from another AL extension (e.g., when building a data-hub extension inside Business Central that pulls records from another environment), your code must explicitly look for and follow the <code>@odata.nextLink</code> property.</p><p>The following implementation demonstrates a robust pattern for recursively calling an external Business Central API using <strong>AL API pagination</strong> patterns, processing records iteratively in small memory batches:</p><pre><code>codeunit 50125 "ApiFetchManager"
+{
+    procedure FetchAllPaginatedItems()
+    var
+        Client: HttpClient;
+        Response: HttpResponseMessage;
+        RequestUrl: Text;
+        Payload: Text;
+        NextLink: Text;
+    begin
+        // Define the initial endpoint with a strict, reasonable page size limit
+        RequestUrl := &#39;https://api.businesscentral.dynamics.com/v2.0/tenant/production/api/dynexal/logistics/v2.0/customItems?$top=100&#39;;
+
+        while RequestUrl &lt;&gt; &#39;&#39; do begin
+            if Client.Get(RequestUrl, Response) then begin
+                if Response.IsSuccessStatusCode() then begin
+                    Response.Content().AsText(Payload);
+                    // Process the current page payload
+                    ProcessBatchPayload(Payload);
+
+                    // Extract the next page pointer if it exists
+                    RequestUrl := GetNextPageUrl(Payload);
+                end else
+                    Error(&#39;API Request failed with status code %1&#39;, Response.HttpStatusCode());
+            end else
+                Error(&#39;Unable to connect to the targeted API gateway.&#39;);
+        end;
+    end;
+
+    local procedure ProcessBatchPayload(Payload: Text)
+    var
+        JObject: JsonObject;
+        JToken: JsonToken;
+        JArray: JsonArray;
+        I: Integer;
+        RecordToken: JsonToken;
+    begin
+        if not JObject.ReadFrom(Payload) then
+            exit;
+
+        if JObject.Get(&#39;value&#39;, JToken) and JToken.IsArray() then begin
+            JArray := JToken.AsArray();
+            for I := 0 to JArray.Count() - 1 do begin
+                JArray.Get(I, RecordToken);
+                // Execute record insertion/updates here locally
+            end;
+        end;
+    end;
+
+    local procedure GetNextPageUrl(Payload: Text): Text
+    var
+        JObject: JsonObject;
+        JToken: JsonToken;
+    begin
+        if not JObject.ReadFrom(Payload) then
+            exit(&#39;&#39;);
+
+        if JObject.Get(&#39;@odata.nextLink&#39;, JToken) then
+            exit(JToken.AsValue().AsText());
+
+        exit(&#39;&#39;); // No more pages left to fetch
+    end;
+}</code></pre><p>Using this loop-bound architecture keeps the memory footprint on the caller side low. Memory is garbage-collected after every cycle, preventing the service tier from allocating enormous heaps to contain hundreds of thousands of JSON nodes at once.</p><h2>Performance Tuning for Paginated APIs in AL</h2><p>Improving your <strong>API performance</strong> in Business Central goes beyond adding a loop. You must optimize the database layer to cooperate with pagination. The following strategies must be enforced by lead AL architects:</p><ul>
+    <li><strong>Avoid FlowFields in API Pages:</strong> FlowFields (like <code>Inventory</code> or <code>Balance (LCY)</code>) require sub-queries or joins on historical ledger tables. Evaluating FlowFields on large lists during pagination scans triggers repetitive aggregate database calls. If a calculation is strictly required, expose it on a separate specialized page, or use indexed physical tables updated asynchronously.</li>
+    <li><strong>Set explicit $select queries:</strong> Teach external integration systems to only request fields that are strictly necessary using <code>$select=number,description</code>. This minimizes payload size, reducing JSON serialization CPU processing times on the Middle Tier.</li>
+    <li><strong>Establish SQL Indexes for Custom Keys:</strong> If your integration filters records using parameters other than the Primary Key (such as filtering custom item cards by a status code), you must define a key in your table declaration. For example: <code>key(ApiKey1; Status, "Last Modified Date-Time")</code>. Without explicit indexes, pagination requires SQL table scans, making pages slow.</li>
+    <li><strong>Leverage Change Tracking via OData Delta Links:</strong> Instead of repeatedly paging through thousands of static records to look for updates, implement Change Tracking. This mechanism generates delta tokens, allowing external processes to query only modified or added records since the previous execution checkpoint.</li>
+</ul><h2>Common Errors and How to Troubleshoot Them</h2><p>When executing high-frequency API paginations, you are highly likely to encounter specific errors on production systems. Knowing their causes helps you troubleshoot systems swiftly.</p><h3>1. HTTP 429 Too Many Requests</h3><p>This is a rate-limiting mechanism implemented by the Business Central SaaS environment to maintain system-wide performance and fair usage. If an integration spawns multiple asynchronous threads, all paginating rapidly, the server blocks incoming traffic from that tenant endpoint. Solve this by implementing back-off algorithms and retry-after logic in the client consuming the API.</p><h3>2. OData Pagination Token Invalid / Expired</h3><p>The <code>$skiptoken</code> is stateful and generated dynamically. If the client takes too long between fetching one page and requesting the next (typically over the standard IIS/OData timeout boundaries), the cursor token expires. When requested, the server returns an HTTP 400 Bad Request. Ensure your integration client requests the next page immediately after parsing the current batch, without waiting for long-running downstream processes to complete.</p><h3>3. SQL Server Lock Timeout (HTTP 500/504)</h3><p>If your API page doesn&#39;t utilize <code>DataAccessIntent = ReadOnly</code>, the pagination queries can block tables while interactive ERP users write journal lines or post orders. The database engine blocks the pagination query to prevent deadlock. If the blocked query exceeds SQL timeout values, a Gateway Timeout or internal server error is thrown. Ensuring read-only routing eliminates this block.</p><h2>Frequently Asked Questions</h2><h3>What is the maximum page size supported by Business Central APIs?</h3><p>By default, Business Central SaaS limits page responses to 20,000 records. While you can request smaller pages using the <code>odata.maxpagesize</code> header, requesting a page size larger than 20,000 will be overridden by the server-side safety limit of 20,000.</p><h3>Should I use $skip or $skiptoken for paging in custom solutions?</h3><p>You should always prefer <code>$skiptoken</code> (server-driven cursor pagination) over <code>$skip</code> (offset pagination). While <code>$skip</code> is easier to test manually on small datasets, its query complexity is linear and degrades significantly when accessing high numbers of records, causing database bottlenecks.</p><h3>Does DataAccessIntent = ReadOnly always prevent database locks?</h3><p>Yes, <code>DataAccessIntent = ReadOnly</code> attempts to target the secondary read-only database replica. This eliminates database locks on the primary transactional database, though developers must keep in mind that replica sync delays mean data might be slightly delayed (by fractions of a second).</p><h3>How can I track the performance of paginated API queries in production?</h3><p>You should configure telemetry logging inside the Dynamics 365 Business Central Administration Center to stream performance telemetry directly to Azure Application Insights. This logs OData query metrics, execution times, and lock details, allowing you to identify slow-running API tables and long-running queries.<h2>Related Dynexal Learning</h2><p>Explore more practical Business Central and AL development tutorials on the <a href="../tutorials.html">Dynexal Tutorials hub</a>.</p></article></div></main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js?v=20260913"></script>
+</body></html>
