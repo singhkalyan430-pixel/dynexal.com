@@ -152,6 +152,8 @@
 
   const API_URL='https://dynexal-ai-assistant.vercel.app/api/chat';
   const MAX_RETRIES=2;
+  const MAX_HISTORY=6;
+  const history=[];
 
   const style=document.createElement('style');
   style.textContent=`
@@ -160,13 +162,15 @@
     #dynexal-ai-panel{position:fixed;right:22px;bottom:78px;width:min(390px,calc(100vw - 28px));height:min(600px,calc(100vh - 110px));z-index:9999;display:none;flex-direction:column;background:#0b1220;color:#eaf2ff;border:1px solid #263a5b;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.45);overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif}
     #dynexal-ai-head{display:flex;align-items:center;justify-content:space-between;padding:15px 16px;background:linear-gradient(135deg,#101d36,#0e2942);border-bottom:1px solid #263a5b}
     #dynexal-ai-head strong{font-size:15px}.dynexal-ai-sub{font-size:11px;color:#91a4c2;margin-top:3px}
+    #dynexal-ai-actions{display:flex;align-items:center;gap:6px}
+    #dynexal-ai-reset{border:1px solid #2a4267;background:#101c31;color:#bcd5ff;border-radius:8px;padding:5px 8px;font-size:10px;cursor:pointer}
+    #dynexal-ai-reset:hover{background:#172a46}
     #dynexal-ai-close{border:0;background:transparent;color:#b9c7dc;font-size:20px;cursor:pointer}
     #dynexal-ai-messages{flex:1;overflow-y:auto;padding:14px}
     .dynexal-ai-msg{max-width:86%;padding:10px 12px;margin:0 0 10px;border-radius:14px;font-size:13px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
     .dynexal-ai-bot{background:#13223a;border:1px solid #243c60;margin-right:auto}.dynexal-ai-user{background:#1d4ed8;color:#fff;margin-left:auto}
     .dynexal-ai-sources{max-width:86%;margin:0 0 12px 0;padding:9px 10px;border-left:2px solid #3b82f6;background:#101c31;border-radius:8px;font-size:11px}
     .dynexal-ai-sources-title{font-weight:800;color:#bcd5ff;margin-bottom:6px}.dynexal-ai-source{display:block;color:#7db2ff;text-decoration:none;margin:4px 0;line-height:1.35}.dynexal-ai-source:hover{text-decoration:underline}
-    .dynexal-ai-retry{font-size:11px;color:#91a4c2;margin-top:-5px;margin-bottom:10px;padding-left:4px}
     #dynexal-ai-quick{display:flex;gap:7px;overflow-x:auto;padding:0 12px 10px;scrollbar-width:thin}
     .dynexal-ai-q{white-space:nowrap;border:1px solid #2a4267;background:#101c31;color:#cfe0f8;border-radius:999px;padding:7px 10px;font-size:11px;cursor:pointer}
     .dynexal-ai-q:hover{background:#172a46}
@@ -191,7 +195,10 @@
   panel.innerHTML=`
     <div id="dynexal-ai-head">
       <div><strong>🤖 Dynexal AI</strong><div class="dynexal-ai-sub">Business Central • AL • Integrations • AI</div></div>
-      <button id="dynexal-ai-close" type="button" aria-label="Close Dynexal AI">×</button>
+      <div id="dynexal-ai-actions">
+        <button id="dynexal-ai-reset" type="button">New Chat</button>
+        <button id="dynexal-ai-close" type="button" aria-label="Close Dynexal AI">×</button>
+      </div>
     </div>
     <div id="dynexal-ai-messages"></div>
     <div id="dynexal-ai-quick">
@@ -213,6 +220,7 @@
   const input=panel.querySelector('#dynexal-ai-input');
   const form=panel.querySelector('#dynexal-ai-form');
   const close=panel.querySelector('#dynexal-ai-close');
+  const reset=panel.querySelector('#dynexal-ai-reset');
   const send=panel.querySelector('#dynexal-ai-send');
 
   function addMessage(text,type){
@@ -246,14 +254,21 @@
     messages.scrollTop=messages.scrollHeight;
   }
 
-  async function requestWithRetry(message,loading){
+  function resetChat(){
+    history.length=0;
+    messages.innerHTML='';
+    addMessage('Hi! I\'m Dynexal AI 👋\n\nAsk me about Microsoft Dynamics 365 Business Central, AL, APIs, integrations, RDLC, Shopify or AI.','bot');
+    input.focus();
+  }
+
+  async function requestWithRetry(message,loading,conversationHistory){
     let lastError=null;
     for(let attempt=0;attempt<=MAX_RETRIES;attempt++){
       try{
         const response=await fetch(API_URL,{
           method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({message})
+          body:JSON.stringify({message,history:conversationHistory})
         });
 
         const data=await response.json().catch(()=>({}));
@@ -287,12 +302,12 @@
     panel.style.display='none';
   });
 
-  panel.querySelectorAll('.dynexal-ai-q').forEach(button=>{
-    button.addEventListener('click',()=>{
-      input.value=button.textContent.trim();
-      form.requestSubmit();
-    });
-  });
+  reset.addEventListener('click',resetChat);
+
+  panel.querySelectorAll('.dynexal-ai-q').forEach(button=>button.addEventListener('click',()=>{
+    input.value=button.textContent.trim();
+    form.requestSubmit();
+  }));
 
   form.addEventListener('submit',async event=>{
     event.preventDefault();
@@ -307,10 +322,16 @@
     const loading=addMessage('Thinking…','bot');
 
     try{
-      const data=await requestWithRetry(message,loading);
+      const prior=history.slice(-MAX_HISTORY);
+      const data=await requestWithRetry(message,loading,prior);
       loading.remove();
-      addMessage(data.answer||'Sorry, I could not generate an answer.','bot');
+      const answer=data.answer||'Sorry, I could not generate an answer.';
+      addMessage(answer,'bot');
       addSources(data.sources);
+
+      history.push({role:'user',text:message});
+      history.push({role:'model',text:answer});
+      if(history.length>MAX_HISTORY) history.splice(0,history.length-MAX_HISTORY);
     }catch(error){
       loading.textContent='Sorry, the AI assistant is temporarily unavailable. Please try again.';
       console.error('Dynexal AI error:',error);
