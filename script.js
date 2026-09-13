@@ -151,6 +151,7 @@
   if(document.getElementById('dynexal-ai-launcher')) return;
 
   const API_URL='https://dynexal-ai-assistant.vercel.app/api/chat';
+  const MAX_RETRIES=2;
 
   const style=document.createElement('style');
   style.textContent=`
@@ -165,6 +166,7 @@
     .dynexal-ai-bot{background:#13223a;border:1px solid #243c60;margin-right:auto}.dynexal-ai-user{background:#1d4ed8;color:#fff;margin-left:auto}
     .dynexal-ai-sources{max-width:86%;margin:0 0 12px 0;padding:9px 10px;border-left:2px solid #3b82f6;background:#101c31;border-radius:8px;font-size:11px}
     .dynexal-ai-sources-title{font-weight:800;color:#bcd5ff;margin-bottom:6px}.dynexal-ai-source{display:block;color:#7db2ff;text-decoration:none;margin:4px 0;line-height:1.35}.dynexal-ai-source:hover{text-decoration:underline}
+    .dynexal-ai-retry{font-size:11px;color:#91a4c2;margin-top:-5px;margin-bottom:10px;padding-left:4px}
     #dynexal-ai-quick{display:flex;gap:7px;overflow-x:auto;padding:0 12px 10px;scrollbar-width:thin}
     .dynexal-ai-q{white-space:nowrap;border:1px solid #2a4267;background:#101c31;color:#cfe0f8;border-radius:999px;padding:7px 10px;font-size:11px;cursor:pointer}
     .dynexal-ai-q:hover{background:#172a46}
@@ -244,6 +246,36 @@
     messages.scrollTop=messages.scrollHeight;
   }
 
+  async function requestWithRetry(message,loading){
+    let lastError=null;
+    for(let attempt=0;attempt<=MAX_RETRIES;attempt++){
+      try{
+        const response=await fetch(API_URL,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({message})
+        });
+
+        const data=await response.json().catch(()=>({}));
+
+        if(response.ok) return data;
+
+        lastError=new Error(data.error||`AI request failed (${response.status}).`);
+        const retryable=response.status===429||response.status===500||response.status===502||response.status===503||response.status===504;
+        if(!retryable||attempt===MAX_RETRIES) throw lastError;
+      }catch(error){
+        lastError=error;
+        if(attempt===MAX_RETRIES) throw error;
+      }
+
+      const waitMs=1200*(attempt+1);
+      loading.textContent=`Thinking… retrying (${attempt+1}/${MAX_RETRIES})`;
+      await new Promise(resolve=>setTimeout(resolve,waitMs));
+      loading.textContent='Thinking…';
+    }
+    throw lastError||new Error('AI request failed.');
+  }
+
   addMessage('Hi! I\'m Dynexal AI 👋\n\nAsk me about Microsoft Dynamics 365 Business Central, AL, APIs, integrations, RDLC, Shopify or AI.','bot');
 
   launcher.addEventListener('click',()=>{
@@ -275,17 +307,8 @@
     const loading=addMessage('Thinking…','bot');
 
     try{
-      const response=await fetch(API_URL,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({message})
-      });
-
-      const data=await response.json();
+      const data=await requestWithRetry(message,loading);
       loading.remove();
-
-      if(!response.ok) throw new Error(data.error||'AI request failed.');
-
       addMessage(data.answer||'Sorry, I could not generate an answer.','bot');
       addSources(data.sources);
     }catch(error){
