@@ -31,6 +31,9 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set +e
+          # Gemini 3.8 is currently returning intermittent 503 capacity errors.
+          # Use the stable Gemini 3.5 Flash endpoint for this publishing pipeline.
+          sed -i 's/gemini-3.8-flash/gemini-3.5-flash/g' scripts/generate-article.mjs
           for attempt in 1 2 3 4 5; do
             echo "Gemini generation attempt $attempt/5"
             node scripts/generate-article.mjs
