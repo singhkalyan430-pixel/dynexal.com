@@ -1,0 +1,98 @@
+[
+  {
+    "title": "Getting Started with AL Development in Business Central",
+    "url": "https://dynexal.com/articles/getting-started-with-al.html",
+    "keywords": ["al", "getting started", "development", "extension"],
+    "content": ""
+  },
+  {
+    "title": "AL Tables in Business Central: Complete Beginner Guide",
+    "url": "https://dynexal.com/articles/al-tables-business-central.html",
+    "keywords": ["table", "tables", "record", "field"],
+    "content": ""
+  },
+  {
+    "title": "Creating List and Card Pages in AL",
+    "url": "https://dynexal.com/articles/creating-list-and-card-pages-al.html",
+    "keywords": ["list page", "card page", "page"],
+    "content": ""
+  },
+  {
+    "title": "Page Extensions in Business Central",
+    "url": "https://dynexal.com/articles/page-extensions-business-central.html",
+    "keywords": ["page extension", "page extensions", "extend page"],
+    "content": ""
+  },
+  {
+    "title": "Codeunits in Business Central: Complete Beginner Guide",
+    "url": "https://dynexal.com/articles/codeunits-business-central.html",
+    "keywords": ["codeunit", "codeunits"],
+    "content": ""
+  },
+  {
+    "title": "AL Event Subscribers in Business Central: Complete Guide",
+    "url": "https://dynexal.com/articles/al-event-subscribers-business-central.html",
+    "keywords": ["event subscriber", "event subscribers", "subscriber", "integration event", "event"],
+    "content": ""
+  },
+  {
+    "title": "Business Central API Integration: Complete Beginner Guide",
+    "url": "https://dynexal.com/articles/business-central-api-integration.html",
+    "keywords": ["api", "rest", "integration", "crud", "odata"],
+    "content": ""
+  },
+  {
+    "title": "Business Central Custom API Page",
+    "url": "https://dynexal.com/articles/business-central-custom-api-page.html",
+    "keywords": ["custom api", "api page", "page type api", "apiversion", "entitysetname"],
+    "content": ""
+  },
+  {
+    "title": "HttpClient in Business Central AL: REST API Integration Guide",
+    "url": "https://dynexal.com/articles/httpclient-business-central-al.html",
+    "keywords": ["httpclient", "http client", "get", "post", "patch", "delete"],
+    "content": ""
+  },
+  {
+    "title": "JSON Handling in Business Central AL: Complete Guide",
+    "url": "https://dynexal.com/articles/json-handling-business-central-al.html",
+    "keywords": ["json", "jsonobject", "jsonarray", "jsontoken", "jsonvalue"],
+    "content": ""
+  },
+  {
+    "title": "OAuth 2.0 Authentication in Business Central AL",
+    "url": "https://dynexal.com/articles/oauth-2-authentication-business-central-al.html",
+    "keywords": ["oauth", "oauth 2", "authentication", "entra", "access token", "client credentials"],
+    "content": ""
+  },
+  {
+    "title": "Business Central Webhooks: Complete Integration Guide",
+    "url": "https://dynexal.com/articles/business-central-webhooks.html",
+    "keywords": ["webhook", "webhooks", "subscription", "validationtoken", "notification"],
+    "content": ""
+  },
+  {
+    "title": "Shopify and Business Central Integration: Complete Guide",
+    "url": "https://dynexal.com/articles/shopify-business-central-integration.html",
+    "keywords": ["shopify", "e-commerce", "ecommerce", "orders", "inventory"],
+    "content": ""
+  },
+  {
+    "title": "RDLC Reports in Business Central: Complete Beginner Guide",
+    "url": "https://dynexal.com/articles/rdlc-reports-business-central.html",
+    "keywords": ["rdlc", "report", "reports", "report builder", "dataset", "dataitem"],
+    "content": ""
+  },
+  {
+    "title": "AI in Business Central: Complete Beginner Guide",
+    "url": "https://dynexal.com/articles/ai-business-central-complete-guide.html",
+    "keywords": ["ai", "copilot", "azure openai", "mcp", "ai agent", "ai agents"],
+    "content": ""
+  },
+  {
+    "title": "Interfaces in Business Central AL: Complete Beginner Guide",
+    "url": "https://dynexal.com/articles/interfaces-business-central-al.html",
+    "keywords": ["interface", "interfaces", "implements", "polymorphism"],
+    "content": ""
+  }
+]
