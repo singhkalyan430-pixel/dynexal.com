@@ -1,0 +1,44 @@
+name: Dynexal Website Automation
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'api/knowledge.json'
+      - 'sitemap.xml'
+  schedule:
+    - cron: '0 22 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  maintain-site:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build AI knowledge index and sitemap
+        run: node scripts/build-site-index.mjs
+
+      - name: Commit generated files
+        run: |
+          git config user.name "dynexal-automation"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add api/knowledge.json sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No generated changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: auto-update site index and sitemap"
+          git push
