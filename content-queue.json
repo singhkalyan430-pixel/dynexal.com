@@ -3,19 +3,34 @@
     {
       "topic": "Business Central API Error Handling in AL",
       "category": "INTEGRATION",
-      "keywords": ["business central api error handling", "AL API error handling", "HttpClient errors", "REST API errors"],
-      "status": "ready"
+      "keywords": [
+        "business central api error handling",
+        "AL API error handling",
+        "HttpClient errors",
+        "REST API errors"
+      ],
+      "status": "published",
+      "publishedAt": "2026-09-13",
+      "url": "https://dynexal.com/articles/business-central-api-error-handling-al.html"
     },
     {
       "topic": "Business Central API Pagination and Performance in AL",
       "category": "INTEGRATION",
-      "keywords": ["business central api pagination", "AL API pagination", "API performance"],
+      "keywords": [
+        "business central api pagination",
+        "AL API pagination",
+        "API performance"
+      ],
       "status": "ready"
     },
     {
       "topic": "Business Central API Authentication with Microsoft Entra ID",
       "category": "INTEGRATION",
-      "keywords": ["business central api authentication", "Microsoft Entra ID", "AL OAuth"],
+      "keywords": [
+        "business central api authentication",
+        "Microsoft Entra ID",
+        "AL OAuth"
+      ],
       "status": "ready"
     }
   ]

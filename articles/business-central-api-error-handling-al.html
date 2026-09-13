@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Master AL API error handling in Business Central. Learn to manage HttpClient errors, parse REST API errors, handle timeouts, and implement resilient retry patterns.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-api-error-handling-al.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-api-error-handling-al.html">
+<meta property="og:title" content="Advanced Business Central API Error Handling in AL: A Production-Ready Guide">
+<meta property="og:description" content="Master AL API error handling in Business Central. Learn to manage HttpClient errors, parse REST API errors, handle timeouts, and implement resilient retry patterns.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Advanced Business Central API Error Handling in AL: A Production-Ready Guide">
+<meta name="twitter:description" content="Master AL API error handling in Business Central. Learn to manage HttpClient errors, parse REST API errors, handle timeouts, and implement resilient retry patterns.">
+<title>Advanced Business Central API Error Handling in AL: A Production-Ready Guide | Dynexal</title>
+<link rel="stylesheet" href="../styles.css?v=20260913">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Advanced Business Central API Error Handling in AL: A Production-Ready Guide","description":"Master AL API error handling in Business Central. Learn to manage HttpClient errors, parse REST API errors, handle timeouts, and implement resilient retry patterns.","author":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"publisher":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"datePublished":"2026-09-13","dateModified":"2026-09-13","mainEntityOfPage":"https://dynexal.com/articles/business-central-api-error-handling-al.html"}</script>
+<style>.article-page{padding:72px 20px 100px}.article-wrap{max-width:900px;margin:auto}.article-head{margin-bottom:38px}.article-head h1{font-size:48px;line-height:1.12;margin:12px 0 16px}.article-meta{color:#718096;font-size:14px}.article-body{font-size:17px;line-height:1.8;color:#27364a}.article-body h2{font-size:30px;line-height:1.25;margin:42px 0 14px;color:#172033}.article-body h3{font-size:23px;margin:28px 0 10px;color:#20304a}.article-body pre{overflow:auto;background:#0b1220;color:#eaf2ff;padding:18px;border-radius:12px;line-height:1.55;font-size:14px}.article-body code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.article-body a{color:#315fc9;font-weight:700}.article-body li{margin:7px 0}.article-tags{color:#426ee5;font-size:12px;font-weight:800;letter-spacing:.5px}</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<main class="article-page"><div class="article-wrap"><header class="article-head"><span class="section-label">DYNEXAL TECHNICAL GUIDE</span><div class="article-tags">integration • api • error-handling • al-development</div><h1>Advanced Business Central API Error Handling in AL: A Production-Ready Guide</h1><p class="article-meta">Published 2026-09-13 · Dynexal</p></header><article class="article-body"><h2>The Challenge of Integration Error Handling in AL</h2>
+<p>Building integrations in Dynamics 365 Business Central is a core requirement for modern cloud ecosystems. However, consuming third-party APIs using AL's native <code>HttpClient</code> introduces a complex layer of failure points. In a production environment, integrations fail for dozens of reasons: DNS resolution failures, transient network drops, rate limiting (HTTP 429), expired authorization tokens, or malformed payloads returning HTTP 400 Bad Request.</p>
+<p>If your AL code does not gracefully implement <strong>business central api error handling</strong>, these failures manifest as unhandled runtime exceptions. For interactive users, this causes unexpected screen crashes, uncommitted database transactions, and data inconsistency. For background processes like Job Queue tasks, unhandled errors immediately put the job in an 'Error' state, stalling critical business workflows. To build resilient integrations, you must master defensive <strong>AL API error handling</strong> patterns.</p>
+
+<h2>The Multi-Layered Architecture of an API Request</h2>
+<p>To implement proper error handling, you must understand that an outbound HTTP request can fail at several distinct stages. An effective AL implementation tests and responds to errors at each layer of this execution lifecycle:</p>
+<ol>
+  <li><strong>The Transport/Network Layer:</strong> The physical connection to the remote endpoint. If the server is offline, the DNS cannot be resolved, or the SSL handshake fails, <code>HttpClient.Send</code> returns a boolean <code>false</code>. No HTTP status code is generated because no connection was established.</li>
+  <li><strong>The HTTP Protocol Layer:</strong> The server receives the request and returns a response, but the HTTP status code indicates a failure (e.g., 401 Unauthorized, 404 Not Found, 429 Too Many Requests, or 503 Service Unavailable).</li>
+  <li><strong>The Application Layer:</strong> The response returns a successful HTTP status code (such as 200 OK or 201 Created), but the JSON payload contains domain-level errors, validation issues, or unexpected data structures.</li>
+  <li><strong>The AL Database Layer:</strong> The external call is successful, but inserting or modifying records inside Business Central fails due to locks, validation rules, or database constraints, triggering a rollback.</li>
+</ol>
+
+<h2>The Outbound API Transaction Dilemma</h2>
+<p>One of the most dangerous anti-patterns in AL development is mixing write transactions with external HTTP requests. Under Business Central's transactional integrity rules, if a database write has occurred in the active transaction, and a subsequent HTTP request fails (triggering an <code>Error()</code> statement), Business Central rolls back the database changes.</p>
+<p>However, if the HTTP request was *successful* and modified state on the remote server, but a subsequent local AL process failed, Business Central rolls back the local database, leaving the two systems completely out of sync. This is known as a "split-brain" state.</p>
+<p>To avoid this, always follow these rules:</p>
+<ul>
+  <li>Perform HTTP operations *before* writing to the database, or isolated within separate transactions.</li>
+  <li>Use <code>Commit()</code> before initiating an HTTP request if you must save local data first. Note that calling <code>Commit()</code> inside an active page session can block database tables, so utilize background tasks or the Job Queue for extensive processes.</li>
+  <li>Implement transactional safe guards or staging tables to record integration state before transmission.</li>
+</ul>
+
+<h2>Complete Implementation: A Resilient HTTP Client Wrapper</h2>
+<p>Below is a production-grade AL codeunit that demonstrates best practices for managing <strong>HttpClient errors</strong> and parsing standard <strong>REST API errors</strong>. It demonstrates proper transport-level error checking, HTTP status code evaluation, and RFC 7807 problem detail parsing.</p>
+
+<pre><code>codeunit 50120 "API Integration Manager"
+{
+    Access = Public;
+
+    procedure SendPostRequest(TargetUrl: Text; Payload: Text) ResponsePayload: Text
+    var
+        Client: HttpClient;
+        Request: HttpRequestMessage;
+        Response: HttpResponseMessage;
+        Content: HttpContent;
+        Headers: HttpHeaders;
+    begin
+        // Setup request properties
+        Request.SetRequestUri(TargetUrl);
+        Request.Method := 'POST';
+
+        // Set content and content headers
+        Content.WriteFrom(Payload);
+        Content.GetHeaders(Headers);
+        if Headers.Contains('Content-Type') then
+            Headers.Remove('Content-Type');
+        Headers.Add('Content-Type', 'application/json');
+        Request.Content := Content;
+
+        // 1. Transport Layer Error Handling
+        if not Client.Send(Request, Response) then
+            HandleTransportFailure(TargetUrl);
+
+        // 2. Protocol and Application Layer Error Handling
+        if not Response.IsSuccessStatusCode() then
+            HandleProtocolFailure(Response);
+
+        // Success path: Extract content
+        Response.Content().ReadAs(ResponsePayload);
+    end;
+
+    local procedure HandleTransportFailure(TargetUrl: Text)
+    var
+        TransportError: Text;
+    begin
+        TransportError := GetLastErrorText();
+        // Log detailed error to telemetry for administrators
+        Session.LogMessage('INT-001', StrSubstNo('Network transport failure calling URL %1. Details: %2', TargetUrl, TransportError), Verbosity::Error, DataClassification::SystemMetadata, TelemetryScope::ExtensionPublisher, 'Category', 'API-Integration');
+        
+        // Throw user-friendly error to prevent database rollback with cryptic messages
+        Error('The integration service is currently unreachable. Please verify your internet connection or contact support.');
+    end;
+
+    local procedure HandleProtocolFailure(var Response: HttpResponseMessage)
+    var
+        ResponseText: Text;
+        ParsedErrorMessage: Text;
+    begin
+        Response.Content().ReadAs(ResponseText);
+        
+        // Parse the error payload (common formats: RFC 7807, OData error, or custom JSON)
+        ParsedErrorMessage := ParseJsonErrorMessage(ResponseText, Response.HttpStatusCode());
+
+        // Log full details for debugging
+        Session.LogMessage('INT-002', StrSubstNo('HTTP Call Failed. Status: %1 (%2). Body: %3', Response.HttpStatusCode(), Response.ReasonPhrase(), ResponseText), Verbosity::Warning, DataClassification::CustomerContent, TelemetryScope::ExtensionPublisher, 'Category', 'API-Integration');
+
+        // Handle transient errors dynamically (e.g., rate limits or gateway issues)
+        case Response.HttpStatusCode() of
+            429:
+                Error('The remote system is busy. We have sent too many requests. Please retry in a few minutes.');
+            401, 403:
+                Error('Integration Authentication failed. Please verify API credentials in Setup.');
+            502, 503, 504:
+                Error('The remote service is temporarily unavailable (Status %1). Please try again later.', Response.HttpStatusCode());
+            else
+                Error('API Error: %1', ParsedErrorMessage);
+        end;
+    end;
+
+    local procedure ParseJsonErrorMessage(RawPayload: Text; StatusCode: Integer): Text
+    var
+        JObject: JsonObject;
+        JToken: JsonToken;
+        ErrorDetails: Text;
+    begin
+        if RawPayload = '' then
+            exit(StrSubstNo('HTTP Status %1 without details.', StatusCode));
+
+        if not JObject.ReadFrom(RawPayload) then
+            exit(CopyStr(RawPayload, 1, 250)); // Return raw response fragment if not valid JSON
+
+        // Try parsing RFC 7807 (Problem Details) - Standard structure used by modern APIs
+        if JObject.SelectToken('$.detail', JToken) then
+            exit(JToken.AsValue().AsText());
+            
+        if JObject.SelectToken('$.title', JToken) then
+            exit(JToken.AsValue().AsText());
+
+        // Try parsing standard OData v4 Error Details
+        if JObject.SelectToken('$.error.message', JToken) then
+            exit(JToken.AsValue().AsText());
+
+        // Try common custom error properties
+        if JObject.SelectToken('$.message', JToken) then
+            exit(JToken.AsValue().AsText());
+
+        exit(StrSubstNo('Error occurred (Status Code %1). Raw response payload: %2', StatusCode, CopyStr(RawPayload, 1, 150)));
+    end;
+}</code></pre>
+
+<h2>Designing a Resilient Retry Mechanism (Exponential Backoff)</h2>
+<p>For transient errors like HTTP 503 (Service Unavailable) or HTTP 429 (Too Many Requests), throwing an immediate AL error is counterproductive. Instead, implementing an exponential backoff retry loop allows your system to self-heal without interrupting the user.</p>
+<p>Be careful when pausing execution in active user sessions. Using <code>Sleep()</code> blocks the current client thread, deteriorating UX. Retry mechanisms are highly recommended for non-interactive backgrounds tasks executed through the Job Queue.</p>
+
+<pre><code>procedure ExecuteWithRetry(TargetUrl: Text; Payload: Text) ResponseText: Text
+var
+    Attempt: Integer;
+    MaxAttempts: Integer;
+    DelayDuration: Integer;
+    Success: Boolean;
+begin
+    MaxAttempts := 3;
+    DelayDuration := 1000; // Starting delay of 1 second
+    
+    for Attempt := 1 to MaxAttempts do begin
+        clearLastError();
+        Success := TrySendRequest(TargetUrl, Payload, ResponseText);
+        
+        if Success then
+            exit(ResponseText);
+            
+        if Attempt &lt; MaxAttempts then begin
+            Sleep(DelayDuration);
+            DelayDuration := DelayDuration * 2; // Double the delay time for exponential backoff
+        end;
+    end;
+    
+    Error('Failed to call API after %1 attempts. Final Error: %2', MaxAttempts, GetLastErrorText());
+end;
+
+[TryFunction]
+local procedure TrySendRequest(TargetUrl: Text; Payload: Text; var ResponseText: Text)
+var
+    IntegrationManager: Codeunit "API Integration Manager";
+begin
+    ResponseText := IntegrationManager.SendPostRequest(TargetUrl, Payload);
+end;</code></pre>
+
+<h2>Handling Inbound API Errors in Custom OData v4 / API Services</h2>
+<p>When you are publishing custom APIs from Business Central (using page type <code>API</code> or <code>Bound Actions</code>), error handling works in reverse. Here, external consumers call Business Central, and you must design your AL code to return meaningful REST API errors.</p>
+<p>By default, if an AL error occurs during an API transaction (e.g., validation rules triggered inside <code>OnInsertRecord</code> or <code>OnModifyRecord</code>), Business Central automatically interrupts execution, rolls back the transaction, and returns a standard OData HTTP 400 Bad Request or HTTP 500 Internal Server Error. The raw AL exception message is packed into the JSON <code>error.message</code> block.</p>
+<h3>Best Practices for Inbound API Validation:</h3>
+<ul>
+  <li><strong>Use Error() Intelligently:</strong> Throw explicit descriptive errors instead of allowing implicit system exceptions (e.g., division by zero or index out of bounds) to reach the caller.</li>
+  <li><strong>Avoid Dialogs:</strong> Never invoke <code>Message()</code>, <code>Confirm()</code>, or interactive Pages in API context execution paths. Doing so throws a runtime exception that forces an immediate HTTP 500 error. Utilize <code>GuiAllowed</code> checks to guard UI interactions.</li>
+</ul>
+
+<h2>Practical Best Practices Checklist</h2>
+<ul>
+  <li><strong>Set Explicit Timeouts:</strong> By default, AL <code>HttpClient</code> calls use the system-defined timeout. Always specify a reasonable timeout limit on your <code>HttpClient</code> (using <code>Client.Timeout(15000)</code> for a 15-second timeout) to ensure slow external servers do not freeze your active sessions.</li>
+  <li><strong>Use TryFunctions with Care:</strong> A <code>TryFunction</code> returns a boolean indicating success or failure without raising a runtime error. Remember that database writes inside a TryFunction are not allowed, and if a database transaction has already started, you cannot invoke a TryFunction.</li>
+  <li><strong>Leverage Telemetry:</strong> Keep the UI-facing errors simple ("Authentication failed. Please verify setup.") but dump raw, exact payloads, header configurations, and HTTP status code details directly into Application Insights using <code>Session.LogMessage</code>. This dramatically accelerates production troubleshooting.</li>
+</ul>
+
+<h2>Frequently Asked Questions</h2>
+<h3>Q1: Why does HttpClient.Send return false even though my endpoint is up?</h3>
+<p>This typically occurs due to transport-level negotiation issues. Common culprits include invalid SSL/TLS certificate chains, network routing problems (such as firewalls blocking outbound ports from your Business Central Cloud instance), or DNS configuration errors on the target hosting server.</p>
+
+<h3>Q2: How can I debug REST API errors occurring inside background Job Queues?</h3>
+<p>Use the Telemetry Log or check the Job Queue Log Entries. For deeply nested payload errors, standard logging may truncate long responses. Build a custom error log table within Business Central to store raw JSON payloads returned by remote APIs when integrations fail.</p>
+
+<h3>Q3: Does calling Commit() inside API handlers cause locks?</h3>
+<p>Yes. Calling <code>Commit()</code> manually inside AL code forces writes to disk and releases database locks. If called too frequently or in high-concurrency environments (like synchronous incoming API requests), it can lead to deadlocks and database degradation. Use background task queue setups instead of synchronous processing whenever possible.</p><h2>Related Dynexal Learning</h2><p>Explore more practical Business Central and AL development tutorials on the <a href="../tutorials.html">Dynexal Tutorials hub</a>.</p></article></div></main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js?v=20260913"></script>
+</body></html>
