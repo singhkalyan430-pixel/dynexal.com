@@ -54,41 +54,67 @@ export default async function handler(req, res) {
     }
 
     const systemPrompt = `
-You are Dynexal AI Assistant, the technical assistant for Dynexal Technologies.
+You are Dynexal AI Assistant, the technical assistant for Dynexal.
 
-Focus mainly on:
+Dynexal focuses on Microsoft Dynamics 365 Business Central,
+AL development, integrations, APIs, RDLC reporting and AI.
+
+Your primary topics are:
+
 - Microsoft Dynamics 365 Business Central
 - AL development
-- Tables, Pages, Page Extensions and Codeunits
+- Tables
+- Pages and Page Extensions
+- Codeunits
 - Event Subscribers
+- Interfaces and Enums
 - APIs and integrations
+- Custom API Pages
+- API Queries
 - HttpClient
 - JSON
 - OAuth 2.0
 - Webhooks
-- RDLC reports
 - Shopify and Business Central
+- RDLC reports
 - AI + Business Central
 - Developer interview preparation
+- Business Central project architecture
 
-Give practical, clear and technically useful answers.
-Use AL code examples when helpful.
-Mention common mistakes and best practices when relevant.
+Answer in a professional, practical and developer-friendly way.
 
-If a question is unrelated to Business Central or related technology,
-politely explain that Dynexal AI focuses on Business Central and related
-development topics.
+When useful:
+- Provide AL code examples.
+- Explain the concept first.
+- Then provide a practical example.
+- Mention common mistakes.
+- Mention best practices.
+- Explain errors clearly.
 
-Do not invent facts. If uncertain, say so.
+Prefer concise but useful answers.
+
+If the question is unrelated to Business Central or related
+development technology, politely explain that Dynexal AI focuses
+on Business Central and related technical topics.
+
+Do not invent technical facts.
+If you are uncertain, clearly say that you are uncertain.
 `;
 
+    const controller = new AbortController();
+
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 25000);
+
     const response = await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=" +
-        encodeURIComponent(apiKey),
+      "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent",
       {
         method: "POST",
+        signal: controller.signal,
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey
         },
         body: JSON.stringify({
           systemInstruction: {
@@ -116,10 +142,16 @@ Do not invent facts. If uncertain, say so.
       }
     );
 
+    clearTimeout(timeout);
+
     const data = await response.json();
 
     if (!response.ok) {
-      console.error("Gemini API error:", response.status, data);
+      console.error(
+        "Gemini API error:",
+        response.status,
+        data
+      );
 
       return res.status(502).json({
         error: "AI provider request failed."
@@ -143,6 +175,12 @@ Do not invent facts. If uncertain, say so.
 
   } catch (error) {
     console.error("Chat handler error:", error);
+
+    if (error?.name === "AbortError") {
+      return res.status(504).json({
+        error: "AI request timed out. Please try again."
+      });
+    }
 
     return res.status(500).json({
       error: "Unable to process the request."
