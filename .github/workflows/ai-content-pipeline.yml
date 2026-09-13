@@ -51,6 +51,9 @@ jobs:
             fi
           done
 
+      - name: Add useful tutorial visuals
+        run: node scripts/add-tutorial-visuals.mjs
+
       - name: Rebuild AI knowledge index and sitemap
         run: node scripts/build-site-index.mjs
 
@@ -69,6 +72,7 @@ jobs:
         if: steps.changes.outputs.changed == 'true'
         run: |
           node --check scripts/generate-article.mjs
+          node --check scripts/add-tutorial-visuals.mjs
           node --check scripts/build-site-index.mjs
           test -s sitemap.xml
           test -s tutorials.html
