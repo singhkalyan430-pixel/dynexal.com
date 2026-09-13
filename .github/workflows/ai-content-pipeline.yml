@@ -26,10 +26,27 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Generate article with Gemini
+      - name: Generate article with Gemini (with retry)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node scripts/generate-article.mjs
+        run: |
+          set +e
+          for attempt in 1 2 3 4 5; do
+            echo "Gemini generation attempt $attempt/5"
+            node scripts/generate-article.mjs
+            status=$?
+            if [ "$status" -eq 0 ]; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 5 ]; then
+              delay=$((attempt * 15))
+              echo "Gemini request failed. Retrying in ${delay}s..."
+              sleep "$delay"
+            else
+              echo "Gemini generation failed after 5 attempts."
+              exit "$status"
+            fi
+          done
 
       - name: Rebuild AI knowledge index and sitemap
         run: node scripts/build-site-index.mjs
