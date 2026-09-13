@@ -18,9 +18,9 @@ function walk(dir) {
 
 function cleanHtml(html) {
   return html
-    .replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')
-    .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')
-    .replace(/<svg[\\s\\S]*?<\\/svg>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<svg[\s\S]*?<\/svg>/gi, ' ')
     .replace(/<[^>]+>/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
@@ -28,12 +28,12 @@ function cleanHtml(html) {
     .replace(/&gt;/gi, '>')
     .replace(/&#39;/gi, "'")
     .replace(/&quot;/gi, '"')
-    .replace(/\\s+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
 function getTitle(html) {
-  const match = html.match(/<title>([\\s\\S]*?)<\\/title>/i);
+  const match = html.match(/<title>([\s\S]*?)<\/title>/i);
   return match ? cleanHtml(match[1]) : '';
 }
 
@@ -48,7 +48,7 @@ function getCanonical(html) {
 }
 
 function getHeadings(html) {
-  return [...html.matchAll(/<h[1-3][^>]*>([\\s\\S]*?)<\\/h[1-3]>/gi)]
+  return [...html.matchAll(/<h[1-3][^>]*>([\s\S]*?)<\/h[1-3]>/gi)]
     .map(match => cleanHtml(match[1]))
     .filter(Boolean)
     .slice(0, 50);
@@ -103,7 +103,7 @@ const articles = htmlFiles
 fs.mkdirSync(path.join(root, 'api'), { recursive: true });
 fs.writeFileSync(
   path.join(root, 'api', 'knowledge.json'),
-  JSON.stringify(articles, null, 2) + '\\n'
+  JSON.stringify(articles, null, 2) + '\n'
 );
 
 const urls = htmlFiles
@@ -119,7 +119,7 @@ const xml = [
   ...urls.map(item => `  <url><loc>${item.url}</loc><lastmod>${item.lastmod}</lastmod></url>`),
   '</urlset>',
   ''
-].join('\\n');
+].join('\n');
 
 fs.writeFileSync(path.join(root, 'sitemap.xml'), xml);
 console.log(`Dynexal automation: ${articles.length} articles indexed for AI knowledge and ${urls.length} HTML URLs included in sitemap.`);
