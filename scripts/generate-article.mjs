@@ -29,7 +29,15 @@ Return ONLY valid JSON with these keys:
   "description": "150-160 character meta description",
   "excerpt": "2 sentence card excerpt",
   "bodyHtml": "complete article body as HTML fragment",
-  "tags": ["tag1", "tag2", "tag3"]
+  "tags": ["tag1", "tag2", "tag3"],
+  "visuals": [
+    {
+      "afterHeading": "exact heading text from the article",
+      "title": "short visual title",
+      "alt": "descriptive accessible alt text",
+      "steps": ["Step 1", "Step 2", "Step 3"]
+    }
+  ]
 }
 
 Editorial requirements:
@@ -45,6 +53,14 @@ Editorial requirements:
 - Escape HTML-sensitive characters inside code blocks.
 - Do not claim Dynexal has tested something unless the prompt provides that fact.
 - Do not copy wording from other sites.
+
+Visual aid requirements:
+- Add 0-3 visuals only where a diagram materially improves understanding. Do not add visuals just for decoration.
+- Use visuals for architecture, request/response flow, integration flow, lifecycle, troubleshooting flow, or another concept that benefits from a visual explanation.
+- Each visual must reference an exact heading already present in bodyHtml.
+- Each visual should have 3-6 concise steps, suitable for a clean horizontal flow diagram.
+- Do NOT invent UI screenshots, product screenshots, Microsoft logos, or claims about exact screen layouts. These visuals are conceptual technical diagrams.
+- If no visual is genuinely useful, return an empty visuals array.
 `;
 
 const response = await fetch(
@@ -95,6 +111,28 @@ const canonical = `https://dynexal.com/articles/${article.slug}.html`;
 const tags = Array.isArray(article.tags) ? article.tags.slice(0, 8) : [];
 const tagText = tags.length ? tags.join(' • ') : item.category;
 
+const visualDir = path.join(root, 'assets', 'tutorial-diagrams');
+fs.mkdirSync(visualDir, { recursive: true });
+const visualItems = normalizeVisuals(article.visuals);
+const visuals = [];
+for (let i = 0; i < visualItems.length; i++) {
+  const visual = visualItems[i];
+  const fileName = `${article.slug}-${i + 1}.svg`;
+  fs.writeFileSync(path.join(visualDir, fileName), createDiagramSvg(visual.title, visual.steps, visual.alt));
+  visuals.push({ ...visual, fileName });
+}
+
+let bodyHtml = article.bodyHtml;
+for (const visual of visuals) {
+  const figure = `<figure class="tutorial-visual"><img src="../assets/tutorial-diagrams/${visual.fileName}" alt="${escapeAttr(visual.alt)}" loading="lazy"><figcaption>${escapeHtml(visual.title)}</figcaption></figure>`;
+  const headingPattern = new RegExp(`(<h[23]\\b[^>]*>\\s*${escapeRegExp(visual.afterHeading)}\\s*</h[23]>)`, 'i');
+  if (headingPattern.test(bodyHtml)) {
+    bodyHtml = bodyHtml.replace(headingPattern, `$1${figure}`);
+  } else {
+    console.warn(`Visual heading not found: ${visual.afterHeading}`);
+  }
+}
+
 const html = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -125,11 +163,11 @@ const html = `<!DOCTYPE html>
   dateModified: today,
   mainEntityOfPage: canonical
 })}</script>
-<style>.article-page{padding:72px 20px 100px}.article-wrap{max-width:900px;margin:auto}.article-head{margin-bottom:38px}.article-head h1{font-size:48px;line-height:1.12;margin:12px 0 16px}.article-meta{color:#718096;font-size:14px}.article-body{font-size:17px;line-height:1.8;color:#27364a}.article-body h2{font-size:30px;line-height:1.25;margin:42px 0 14px;color:#172033}.article-body h3{font-size:23px;margin:28px 0 10px;color:#20304a}.article-body pre{overflow:auto;background:#0b1220;color:#eaf2ff;padding:18px;border-radius:12px;line-height:1.55;font-size:14px}.article-body code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.article-body a{color:#315fc9;font-weight:700}.article-body li{margin:7px 0}.article-tags{color:#426ee5;font-size:12px;font-weight:800;letter-spacing:.5px}</style>
+<style>.article-page{padding:72px 20px 100px}.article-wrap{max-width:900px;margin:auto}.article-head{margin-bottom:38px}.article-head h1{font-size:48px;line-height:1.12;margin:12px 0 16px}.article-meta{color:#718096;font-size:14px}.article-body{font-size:17px;line-height:1.8;color:#27364a}.article-body h2{font-size:30px;line-height:1.25;margin:42px 0 14px;color:#172033}.article-body h3{font-size:23px;margin:28px 0 10px;color:#20304a}.article-body pre{overflow:auto;background:#0b1220;color:#eaf2ff;padding:18px;border-radius:12px;line-height:1.55;font-size:14px}.article-body code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.article-body a{color:#315fc9;font-weight:700}.article-body li{margin:7px 0}.article-tags{color:#426ee5;font-size:12px;font-weight:800;letter-spacing:.5px}.tutorial-visual{margin:28px 0 34px;padding:16px;border:1px solid #dfe6ef;border-radius:14px;background:#f8fafc}.tutorial-visual img{display:block;width:100%;height:auto;border-radius:10px}.tutorial-visual figcaption{margin-top:10px;font-size:13px;color:#607087;text-align:center;font-weight:700}</style>
 </head>
 <body>
 <header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
-<main class="article-page"><div class="article-wrap"><header class="article-head"><span class="section-label">DYNEXAL TECHNICAL GUIDE</span><div class="article-tags">${escapeHtml(tagText)}</div><h1>${escapeHtml(article.title)}</h1><p class="article-meta">Published ${today} · Dynexal</p></header><article class="article-body">${article.bodyHtml}<h2>Related Dynexal Learning</h2><p>Explore more practical Business Central and AL development tutorials on the <a href="../tutorials.html">Dynexal Tutorials hub</a>.</p></article></div></main>
+<main class="article-page"><div class="article-wrap"><header class="article-head"><span class="section-label">DYNEXAL TECHNICAL GUIDE</span><div class="article-tags">${escapeHtml(tagText)}</div><h1>${escapeHtml(article.title)}</h1><p class="article-meta">Published ${today} · Dynexal</p></header><article class="article-body">${bodyHtml}<h2>Related Dynexal Learning</h2><p>Explore more practical Business Central and AL development tutorials on the <a href="../tutorials.html">Dynexal Tutorials hub</a>.</p></article></div></main>
 <footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js?v=20260913"></script>
 </body></html>`;
 
@@ -158,7 +196,71 @@ item.url = canonical;
 fs.writeFileSync(queuePath, JSON.stringify(queue, null, 2) + '\n');
 
 console.log(`Published ${article.slug}.html`);
+console.log(`Visual aids generated: ${visuals.length}`);
 
+function normalizeVisuals(value) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .filter(v => v && typeof v === 'object')
+    .slice(0, 3)
+    .map(v => ({
+      afterHeading: String(v.afterHeading || '').trim(),
+      title: String(v.title || 'Technical flow').trim().slice(0, 120),
+      alt: String(v.alt || v.title || 'Technical diagram').trim().slice(0, 220),
+      steps: Array.isArray(v.steps) ? v.steps.map(x => String(x).trim()).filter(Boolean).slice(0, 6) : []
+    }))
+    .filter(v => v.afterHeading && v.steps.length >= 3);
+}
+
+function createDiagramSvg(title, steps, alt) {
+  const width = 1200;
+  const height = 210;
+  const gap = 18;
+  const boxWidth = Math.floor((width - 60 - gap * (steps.length - 1)) / steps.length);
+  const parts = [];
+  parts.push(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escapeAttr(alt)}">`);
+  parts.push(`<rect width="${width}" height="${height}" rx="18" fill="#0b1220"/>`);
+  parts.push(`<text x="30" y="35" fill="#9cc3ff" font-family="Arial, sans-serif" font-size="17" font-weight="700">${escapeXml(title)}</text>`);
+  steps.forEach((step, index) => {
+    const x = 30 + index * (boxWidth + gap);
+    const y = 62;
+    parts.push(`<rect x="${x}" y="${y}" width="${boxWidth}" height="112" rx="14" fill="#13223a" stroke="#35527d"/>`);
+    parts.push(`<circle cx="${x + 24}" cy="${y + 27}" r="14" fill="#2563eb"/>`);
+    parts.push(`<text x="${x + 24}" y="${y + 33}" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="700">${index + 1}</text>`);
+    parts.push(`<text x="${x + 48}" y="${y + 32}" fill="#eaf2ff" font-family="Arial, sans-serif" font-size="14" font-weight="700">${escapeXml(wrapSvgText(step, Math.max(12, Math.floor(boxWidth / 8))))}</text>`);
+    if (index < steps.length - 1) {
+      const ax = x + boxWidth + 5;
+      const ay = y + 56;
+      parts.push(`<path d="M ${ax} ${ay} L ${ax + gap - 10} ${ay}" stroke="#5b8def" stroke-width="3" fill="none"/>`);
+      parts.push(`<path d="M ${ax + gap - 15} ${ay - 6} L ${ax + gap - 7} ${ay} L ${ax + gap - 15} ${ay + 6}" stroke="#5b8def" stroke-width="3" fill="none"/>`);
+    }
+  });
+  parts.push('</svg>');
+  return parts.join('');
+}
+
+function wrapSvgText(value, maxChars) {
+  const words = value.split(/\s+/);
+  const lines = [];
+  let line = '';
+  for (const word of words) {
+    if ((line + ' ' + word).trim().length > maxChars && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = (line + ' ' + word).trim();
+    }
+  }
+  if (line) lines.push(line);
+  return lines.slice(0, 4).join(' • ');
+}
+
+function escapeXml(value) {
+  return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&apos;');
+}
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 function escapeHtml(value) {
   return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
 }
