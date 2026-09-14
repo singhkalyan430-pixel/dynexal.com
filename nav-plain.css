@@ -1,26 +1,21 @@
-/* Dynexal global plain navigation + wordmark fix */
-.site-header .logo-mark,
-.footer .logo-mark{display:none!important}
+/* Dynexal global plain navigation + stable wordmark */
+.site-header .logo-mark,.footer .logo-mark{display:none!important;visibility:hidden!important;width:0!important;height:0!important;flex:0 0 0!important}
 .site-header .logo{gap:0!important}
-.site-header .logo-copy{display:flex;flex-direction:column;line-height:1.08}
-.site-header .logo-copy strong{font-size:23px!important;letter-spacing:-.7px}
-.site-header .logo-copy small{display:block;margin-top:5px;font-size:12px;font-weight:500;color:#9eb0c7;letter-spacing:.2px}
-.site-header .logo>span:not(.logo-copy){font-size:0!important}
-.site-header .logo>span:not(.logo-copy)::after{content:'Dynexal Technologies';font-size:23px;font-weight:800;letter-spacing:-.7px}
-
-/* Keep every desktop menu item plain — no hover dropdowns/arrows */
+.site-header .logo-copy,.footer .logo-copy{display:flex!important;flex-direction:column;line-height:1.08}
+.site-header .logo-copy strong{font-size:23px!important;letter-spacing:-.7px!important;color:#fff!important}
+.site-header .logo-copy small{display:block!important;margin-top:5px;font-size:12px!important;font-weight:500!important;color:#9eb0c7!important;letter-spacing:.2px!important}
+.site-header .logo>span:not(.logo-copy),.footer .logo>span:not(.logo-copy){display:none!important}
 @media(min-width:901px){
-  .site-header .nav .has-dropdown{position:static!important;height:82px!important;display:flex!important;align-items:center!important}
-  .site-header .nav .has-dropdown>a{height:82px!important;display:flex!important;align-items:center!important}
-  .site-header .nav .dropdown-menu{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
-  .site-header .nav{font-size:17px!important;gap:30px!important}
+.site-header .nav{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:30px!important;font-size:17px!important;white-space:nowrap!important;overflow:visible!important}
+.site-header .nav>a,.site-header .nav .has-dropdown>a{height:82px!important;display:flex!important;align-items:center!important;color:#cbd5e1!important}
+.site-header .nav>a:hover,.site-header .nav .has-dropdown>a:hover{color:#fff!important}
+.site-header .nav .has-dropdown{position:static!important;height:82px!important;display:flex!important;align-items:center!important}
+.site-header .nav .has-dropdown .dropdown-menu,.site-header .nav .nav-dropdown{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+.site-header .nav .nav-arrow{display:none!important}
 }
-
 @media(max-width:900px){
-  .site-header .logo-copy strong{font-size:20px!important}
-  .site-header .logo-copy small{font-size:10px}
-  .site-header .logo>span:not(.logo-copy)::after{font-size:20px}
+.site-header .logo-copy strong{font-size:20px!important}.site-header .logo-copy small{font-size:10px!important}
+.site-header .nav .has-dropdown{display:block!important;height:auto!important}
+.site-header .nav .has-dropdown .dropdown-menu,.site-header .nav .nav-dropdown{display:none!important}
+.site-header .nav .nav-arrow{display:none!important}
 }
-
-/* Prevent a temporary D/old wordmark from appearing before JavaScript runs */
-.site-header .logo-mark{visibility:hidden!important;width:0!important;flex-basis:0!important}
