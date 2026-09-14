@@ -64,16 +64,18 @@ test('tutorial filters change visible cards', async ({ page }) => {
   expect(total).toBeGreaterThan(10);
 
   await page.locator('.filter', { hasText: 'Reports' }).click();
-  expect(await posts.locator(':visible').count()).toBeGreaterThan(0);
-  expect(await posts.locator('[hidden]').count()).toBeGreaterThan(0);
+  const reportsVisible = await page.locator('.post-grid .post:not([hidden])').count();
+  const reportsHidden = await page.locator('.post-grid .post[hidden]').count();
+  expect(reportsVisible).toBeGreaterThan(0);
+  expect(reportsHidden).toBeGreaterThan(0);
 
   await page.locator('.filter', { hasText: 'AI' }).click();
-  const aiVisible = await posts.locator(':visible').count();
+  const aiVisible = await page.locator('.post-grid .post:not([hidden])').count();
   expect(aiVisible).toBeGreaterThan(0);
   expect(aiVisible).toBeLessThan(total);
 
   await page.locator('.filter', { hasText: 'All Tutorials' }).click();
-  expect(await posts.locator(':visible').count()).toBe(total);
+  expect(await page.locator('.post-grid .post:not([hidden])').count()).toBe(total);
 });
 
 test('services navigation anchors land on real sections', async ({ page }) => {
