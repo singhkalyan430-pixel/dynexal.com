@@ -1,6 +1,6 @@
 // Dynexal global branding
 (function(){
-  document.querySelectorAll('header .logo').forEach(logo=>{
+  document.querySelectorAll('header .logo, footer .logo').forEach(logo=>{
     const text=[...logo.children].find(el=>!el.classList.contains('logo-mark'));
     if(text) text.textContent='Dynexal Technologies';
   });
