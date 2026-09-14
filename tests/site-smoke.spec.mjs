@@ -40,7 +40,7 @@ test('homepage renders without same-origin request failures', async ({ page }) =
   await expect(page.locator('a[href="tutorials.html"]').first()).toBeVisible();
   await expect(page.locator('a[href="services.html"]').first()).toBeVisible();
   await expect(page.locator('.site-header .logo-copy strong')).toHaveText('Dynexal Technologies');
-  await expect(page.locator('.site-header .logo-mark')).toHaveCount(0);
+  await expect(page.locator('.site-header .logo-mark')).toHaveCount(1);
   expect(failed, failed.join('\n')).toEqual([]);
   expect(errors, errors.join('\n')).toEqual([]);
 });
@@ -55,7 +55,7 @@ test('global desktop navigation has stable labels and hover dropdowns', async ({
     'Home', 'Tutorials', 'Services', 'Portfolio', 'Topics', 'About'
   ]);
   await expect(nav.getByText('Contact', { exact: true })).toHaveCount(0);
-  await expect(page.locator('.site-header .logo-mark')).toHaveCount(0);
+  await expect(page.locator('.site-header .logo-mark')).toHaveCount(1);
 
   const tutorials = nav.locator('.has-dropdown > a', { hasText: 'Tutorials' });
   await tutorials.hover();
@@ -63,6 +63,8 @@ test('global desktop navigation has stable labels and hover dropdowns', async ({
   await expect(menu).toBeVisible();
   await expect(menu.locator('a')).toHaveCount(6);
   await expect(menu.getByText('AL Development', { exact: true })).toBeVisible();
+  await expect(menu.getByText('AL Development', { exact: true }).evaluate(el => getComputedStyle(el).display)).resolves.toBe('block');
+  await expect(tutorials).not.toHaveCSS('font-size', '0px');
   await menu.getByText('AL Development', { exact: true }).hover();
   await expect(menu).toBeVisible();
 });
