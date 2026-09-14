@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Apply plain navigation and branding to all HTML pages
+      - name: Apply canonical navigation and text-only branding to all HTML pages
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -47,7 +47,12 @@ jobs:
               text = path.read_text(encoding='utf-8')
               original = text
               text = re.sub(r'<nav class="nav"[^>]*>[\s\S]*?</nav>', nav_for(path), text, count=1)
-              text = re.sub(r'(<header[\s\S]*?<a class="logo"[^>]*>)[\s\S]*?(</a>)', r'\1<span class="logo-mark"></span><span>Dynexal Technologies</span>\2', text, count=1)
+              text = re.sub(
+                  r'(<header[\s\S]*?<a class="logo"[^>]*>)[\s\S]*?(</a>)',
+                  r'\1<span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span>\2',
+                  text,
+                  count=1
+              )
               if text != original:
                   path.write_text(text, encoding='utf-8')
                   changed += 1
