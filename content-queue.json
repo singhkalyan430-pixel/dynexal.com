@@ -33,7 +33,9 @@
         "Microsoft Entra ID",
         "AL OAuth"
       ],
-      "status": "ready"
+      "status": "published",
+      "publishedAt": "2026-09-14",
+      "url": "https://dynexal.com/articles/business-central-api-authentication-entra-id.html"
     }
   ]
 }

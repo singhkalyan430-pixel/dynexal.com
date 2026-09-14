@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Learn how to configure secure Service-to-Service (S2S) OAuth 2.0 authentication for Dynamics 365 Business Central APIs using Microsoft Entra ID and AL.">
+<meta name="author" content="Dynexal">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-api-authentication-entra-id.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-api-authentication-entra-id.html">
+<meta property="og:title" content="Mastering Business Central API Authentication with Microsoft Entra ID">
+<meta property="og:description" content="Learn how to configure secure Service-to-Service (S2S) OAuth 2.0 authentication for Dynamics 365 Business Central APIs using Microsoft Entra ID and AL.">
+<meta property="og:site_name" content="Dynexal">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mastering Business Central API Authentication with Microsoft Entra ID">
+<meta name="twitter:description" content="Learn how to configure secure Service-to-Service (S2S) OAuth 2.0 authentication for Dynamics 365 Business Central APIs using Microsoft Entra ID and AL.">
+<title>Mastering Business Central API Authentication with Microsoft Entra ID | Dynexal</title>
+<link rel="stylesheet" href="../styles.css?v=20260913">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Mastering Business Central API Authentication with Microsoft Entra ID","description":"Learn how to configure secure Service-to-Service (S2S) OAuth 2.0 authentication for Dynamics 365 Business Central APIs using Microsoft Entra ID and AL.","author":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"publisher":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"datePublished":"2026-09-14","dateModified":"2026-09-14","mainEntityOfPage":"https://dynexal.com/articles/business-central-api-authentication-entra-id.html"}</script>
+<style>.article-page{padding:72px 20px 100px}.article-wrap{max-width:900px;margin:auto}.article-head{margin-bottom:38px}.article-head h1{font-size:48px;line-height:1.12;margin:12px 0 16px}.article-meta{color:#718096;font-size:14px}.article-body{font-size:17px;line-height:1.8;color:#27364a}.article-body h2{font-size:30px;line-height:1.25;margin:42px 0 14px;color:#172033}.article-body h3{font-size:23px;margin:28px 0 10px;color:#20304a}.article-body pre{overflow:auto;background:#0b1220;color:#eaf2ff;padding:18px;border-radius:12px;line-height:1.55;font-size:14px}.article-body code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.article-body a{color:#315fc9;font-weight:700}.article-body li{margin:7px 0}.article-tags{color:#426ee5;font-size:12px;font-weight:800;letter-spacing:.5px}.tutorial-visual{margin:28px 0 34px;padding:16px;border:1px solid #dfe6ef;border-radius:14px;background:#f8fafc}.tutorial-visual img{display:block;width:100%;height:auto;border-radius:10px}.tutorial-visual figcaption{margin-top:10px;font-size:13px;color:#607087;text-align:center;font-weight:700}</style>
+<style>.dynexal-tutorial-visual{margin:0 0 34px;padding:20px;border:1px solid #dfe6ef;border-radius:16px;background:#f7f9fc}.dynexal-tutorial-visual h2{margin:0 0 14px!important;font-size:24px!important}.dynexal-tutorial-visual figure{margin:0}.dynexal-tutorial-visual img{display:block;width:100%;height:auto;border-radius:12px}.dynexal-tutorial-visual figcaption{margin-top:8px;text-align:center;color:#718096;font-size:12px}</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<main class="article-page"><div class="article-wrap"><header class="article-head"><span class="section-label">DYNEXAL TECHNICAL GUIDE</span><div class="article-tags">Microsoft Entra ID • business central api authentication • AL OAuth</div><h1>Mastering Business Central API Authentication with Microsoft Entra ID</h1><p class="article-meta">Published 2026-09-14 · Dynexal</p></header><article class="article-body">
+<section class="dynexal-tutorial-visual" data-dynexal-visual="../assets/tutorial-diagrams/api-flow.svg">
+  <h2>How the API flow works</h2>
+  <figure><img src="../assets/tutorial-diagrams/api-flow.svg" alt="Business Central API request flow diagram" loading="lazy" decoding="async"><figcaption>Visual guide — Dynexal</figcaption></figure>
+</section>
+<h2>The Shift to Modern Authentication in Business Central</h2>
+<p>For years, developers and integrators relied on Web Service Access Keys (Basic Authentication) to connect external applications to Microsoft Dynamics 365 Business Central. While simple to implement, Basic Authentication represents a massive security risk, lacking support for multi-factor authentication, granular scoping, and centralized access controls. Microsoft has deprecated Basic Authentication for Business Central Online, making modern authentication via Microsoft Entra ID (formerly Azure Active Directory) the mandatory standard.</p>
+<p>Modern <strong>business central api authentication</strong> relies on the OAuth 2.0 protocol. For background integration tasks, automated synchronization daemons, and middleware platforms (like Power Automate, Azure Apps, or custom ETL tools), the industry-standard approach is the <strong>Service-to-Service (S2S) Client Credentials flow</strong>. This tutorial covers the complete lifecycle of setting up Microsoft Entra ID S2S authentication, configuring security permissions inside Business Central, testing your connections, and executing <strong>AL OAuth</strong> logic directly within your custom AL extensions.</p>
+
+<h2>Understanding Service-to-Service (S2S) Architecture</h2><figure class="tutorial-visual"><img src="../assets/tutorial-diagrams/business-central-api-authentication-entra-id-1.svg" alt="Architectural diagram outlining the flow of OAuth token exchange and API request between external systems, Entra ID, and Business Central." loading="lazy"><figcaption>S2S Authentication Architecture and Lifecycle</figcaption></figure>
+<p>In an S2S scenario, an external application runs in the background without user interaction. To authenticate against the Business Central API, this application interacts directly with the Microsoft Entra ID token endpoint, provides its credentials, and receives a JSON Web Token (JWT). This token is then passed in the Authorization header of every HTTP request sent to Business Central.</p>
+<p>This decoupling ensures that human credentials are never hardcoded or shared. Furthermore, permissions are managed globally within your Entra tenant and mapped precisely to an internal "integration user" within Business Central.</p>
+
+<h2>Step 1: App Registration in Microsoft Entra ID</h2>
+<p>To establish an identity for your external application, you must register it within the Microsoft Entra admin center of the tenant hosting your Business Central environment.</p>
+<ol>
+  <li>Log in to the <strong>Microsoft Entra admin center</strong> (formerly Azure Portal) using an account with at least Application Administrator privileges.</li>
+  <li>Navigate to <strong>Identity &gt; Applications &gt; App registrations</strong> and click <strong>New registration</strong>.</li>
+  <li>Enter a descriptive <strong>Name</strong> (e.g., <code>BC-Integration-Service</code>).</li>
+  <li>Set the <strong>Supported account types</strong> to <em>Accounts in this organizational directory only (Single tenant)</em>.</li>
+  <li>Leave the <strong>Redirect URI</strong> blank, as a background daemon does not require interactive delegation. Click <strong>Register</strong>.</li>
+</ol>
+
+<h3>Configuring API Permissions</h3>
+<p>Once registered, you must grant the application permission to access Business Central APIs.</p>
+<ol>
+  <li>Inside your app registration, select <strong>API permissions</strong> from the left-hand navigation pane, then click <strong>Add a permission</strong>.</li>
+  <li>Select the <strong>Dynamics 365 Business Central</strong> API from the list of commonly used Microsoft APIs.</li>
+  <li>Choose <strong>Application permissions</strong> (this designates that the app runs as a background service without a logged-in user).</li>
+  <li>Check the box for <code>API.ReadWrite.All</code> (which permits reading and writing to the API v2.0 endpoint) and click <strong>Add permissions</strong>.</li>
+  <li><strong>Crucial Step:</strong> An administrator must grant consent. Click the <strong>Grant admin consent for [Tenant Name]</strong> button and confirm the prompt. The status column must display a green checkmark indicating consent has been granted.</li>
+</ol>
+
+<h3>Creating the Client Secret</h3>
+<p>To authorize requests, your external service needs a secure key (credential) associated with the Client ID.</p>
+<ol>
+  <li>Navigate to <strong>Certificates &amp; secrets</strong> and click <strong>New client secret</strong>.</li>
+  <li>Provide a description and select an expiration period (Microsoft recommends a maximum lifetime of 24 months). Click <strong>Add</strong>.</li>
+  <li><strong>Immediately copy the Secret Value.</strong> Once you navigate away from this page, the raw secret value is masked forever. Store this securely in a vault, such as Azure Key Vault.</li>
+</ol>
+
+<h2>Step 2: Mapping the Service Principal inside Business Central</h2>
+<p>Registering the app in Entra ID only establishes its identity globally; Business Central does not yet recognize this application or know what permissions it possesses inside your ERP environments. You must map the Entra App to a special service user within each Business Central environment (Sandbox, Production, etc.).</p>
+<ol>
+  <li>Log into your Business Central environment as an administrator.</li>
+  <li>Use the global search (Alt+Q) and search for <strong>Microsoft Entra Applications</strong> (in older versions, this was labeled <em>Azure Active Directory Applications</em>).</li>
+  <li>Click <strong>New</strong> to create a new card.</li>
+  <li>In the <strong>Client ID</strong> field, paste the Application (client) ID from your Microsoft Entra App Registration. Business Central will automatically populate the description if you tab out, or you can manually enter a friendly name.</li>
+  <li>Change the <strong>State</strong> field from <em>Disabled</em> to <em>Enabled</em>.</li>
+  <li>Scroll down to the <strong>User Permission Sets</strong> FastTab. Here, you define exactly what the external service is allowed to do. For safety, assign the minimal required permissions. For general integration read/write access, assign permission sets like <code>D365 READ</code> and <code>D365 COMMON</code>, or assign custom, scope-specific permission sets designed specifically for your integration. Do not use <code>SUPER</code> unless absolutely necessary.</li>
+</ol>
+
+<h2>Step 3: Authenticating and Testing the Connection</h2>
+<p>With both Entra ID and Business Central configured, you can now obtain an access token and execute your first API request. Let's look at a PowerShell script that demonstrates how to acquire a token and call the Standard Business Central API to fetch the list of customers.</p>
+
+<pre><code># Define authentication parameters
+$TenantId = "your-tenant-id-guid"
+$ClientId = "your-client-id-guid"
+$ClientSecret = "your-client-secret-value"
+$Environment = "Production"
+$CompanyId = "your-company-id-guid"
+
+# Construct the OAuth 2.0 Token Endpoint
+$TokenUrl = "https://login.microsoftonline.com/$TenantId/oauth2/v2.0/token"
+
+# Define token request body
+$Body = @{
+    client_id     = $ClientId
+    scope         = "https://api.businesscentral.dynamics.com/.default"
+    client_secret = $ClientSecret
+    grant_type    = "client_credentials"
+}
+
+# Request the token
+Write-Host "Requesting OAuth Token..."
+$TokenResponse = Invoke-RestMethod -Uri $TokenUrl -Method Post -ContentType "application/x-www-form-urlencoded" -Body $Body
+$AccessToken = $TokenResponse.access_token
+
+# Set up headers for Business Central API Call
+$Headers = @{
+    Authorization = "Bearer $AccessToken"
+    Accept        = "application/json"
+}
+
+# Call the standard Business Central Customers API
+$BCUrl = "https://api.businesscentral.dynamics.com/v2.0/$Environment/api/v2.0/companies($CompanyId)/customers"
+Write-Host "Calling Business Central API..."
+$Response = Invoke-RestMethod -Uri $BCUrl -Method Get -Headers $Headers
+
+# Output Customer data
+$Response.value | Format-Table -Property number, displayName, email</code></pre>
+
+<h2>Step 4: Using AL OAuth to Call External APIs from Business Central</h2>
+<p>While S2S authentication is used by external applications calling *into* Business Central, BC developers frequently need to write code to call *out* to external services requiring OAuth 2.0 authorization. System Application Codeunit 50154 "OAuth2" provides built-in helper methods to acquire access tokens using various grant types, including Client Credentials.</p>
+<p>To maintain high standards of security, never hardcode Client IDs or Secrets inside your AL files. Instead, fetch these credentials from isolated storage or encrypted setup tables using the <code>SecretText</code> data type to prevent sensitive values from being dumped to telemetry or debugger variables.</p>
+
+<p>The following AL codeunit shows how to obtain an OAuth access token using the standard system library and perform an HTTP call securely.</p>
+
+<pre><code>codeunit 50120 "DynexalOAuthIntegration"
+{
+    Access = Internal;
+
+    procedure GetExternalData(): Text
+    var
+        OAuth2: Codeunit "OAuth2";
+        Client: HttpClient;
+        Request: HttpRequestMessage;
+        Response: HttpResponseMessage;
+        Headers: HttpHeaders;
+        Scopes: List of [Text];
+        AccessToken: SecretText;
+        ClientSecret: SecretText;
+        ClientId: Text;
+        AuthURL: Text;
+        ResultText: Text;
+    begin
+        // 1. Initialize variables (In production, load these from an encrypted Setup Table)
+        ClientId := '11111111-2222-3333-4444-555555555555';
+        ClientSecret := ConvertToSecretText('SuperSecretKeyFromSecureStorage');
+        AuthURL := 'https://login.microsoftonline.com/your-tenant-id/oauth2/v2.0/token';
+        
+        // Define the scope for the target external service
+        Scopes.Add('https://api.external-service.com/.default');
+
+        // 2. Request token using standard AL OAuth codeunit
+        if not OAuth2.AcquireTokenWithClientCredentials(
+            ClientId,
+            ClientSecret,
+            AuthURL,
+            '', // Redirect URI is empty for S2S
+            Scopes,
+            AccessToken
+        ) then
+            Error('OAuth token acquisition failed. Check Entra settings.');
+
+        // 3. Prepare the HTTP request with Bearer authentication
+        Request.SetRequestUri('https://api.external-service.com/v1/data');
+        Request.Method := 'GET';
+        Request.GetHeaders(Headers);
+        
+        // Use SecretText in your authorization headers securely
+        Headers.Add('Authorization', AccessToken);
+        Headers.Add('Accept', 'application/json');
+
+        // 4. Send request and process response
+        if Client.Send(Request, Response) then begin
+            if Response.IsSuccessStatusCode() then begin
+                Response.Content().ReadAs(ResultText);
+                exit(ResultText);
+            end else
+                Error('HTTP Error: %1', Response.HttpStatusCode());
+        end else
+            Error('Failed to establish contact with target server.');
+    end;
+
+    local procedure ConvertToSecretText(SecretString: Text): SecretText
+    var
+        SecText: SecretText;
+    begin
+        SecText := SecretString;
+        exit(SecText);
+    end;
+}</code></pre>
+
+<h2>Common Errors and Troubleshooting</h2>
+<p>Configuring Entra ID integrations involves multiple disconnected portals and systems. If you run into issues, check these common failure patterns:</p>
+<ul>
+  <li><strong>401 Unauthorized (Invalid Credentials):</strong> Verify that the Tenant ID, Client ID, and Client Secret in your calling application match the values generated in the Entra ID portal. Ensure you copied the actual client secret <em>Value</em>, not the <em>Secret ID</em>.</li>
+  <li><strong>401 Unauthorized (Empty Roles/Claims):</strong> This occurs when the external application retrieves an access token successfully, but Business Central rejects it. Make sure the Client ID is correctly registered in the Business Central "Microsoft Entra Applications" page and the application user is marked as "Enabled".</li>
+  <li><strong>403 Forbidden (Missing Permissions):</strong> The token is valid and the user is mapped, but the API cannot be reached. Double-check that you have granted permission sets (e.g., <code>D365 READ</code>) to the mapped application user in Business Central and that the Entra Application permission <code>API.ReadWrite.All</code> has been granted "Admin Consent".</li>
+  <li><strong>Invalid Scope Error:</strong> When requesting the token from Entra, ensure the <code>scope</code> parameter is set explicitly to <code>https://api.businesscentral.dynamics.com/.default</code>. For S2S, using any other scopes or specific endpoint paths will cause Entra ID to reject the token request.</li>
+</ul>
+
+<h2>Best Practices for Production Integrations</h2>
+<ul>
+  <li><strong>Principle of Least Privilege:</strong> Never grant <code>SUPER</code> permissions to an integration principal. Analyze what data the integration writes or reads and design custom AL permission sets targeted specifically to those tables and pages.</li>
+  <li><strong>Rotate Secrets Regularly:</strong> Do not create client secrets that never expire. Set an expiration threshold (e.g., 1 year) and implement a policy to rotate secrets.</li>
+  <li><strong>Use Environment Isolation:</strong> Use distinct Entra ID Application Registrations for Development, Sandbox, and Production environments. This prevents developers from accidentally triggering processes or writing test payloads to live production environments.</li>
+  <li><strong>Handle SecretText Carefully in AL:</strong> When building out integration tools inside Business Central, always encapsulate credentials inside the <code>SecretText</code> type. This prevents logs, system messages, and telemetry from exposing keys.</li>
+</ul>
+
+<h2>Frequently Asked Questions</h2>
+<h3>Can I use OAuth 2.0 with Business Central on-premises?</h3>
+<p>Yes, but it requires configuring an identity provider such as Active Directory Federation Services (ADFS) or configuring the on-premises instance to authenticate against Azure AD (Microsoft Entra ID). The setup steps for on-premises require configuring the Business Central Server Instance parameters to accept OAuth keys.</p>
+
+<h3>What is the difference between delegated permissions and application permissions in Entra ID?</h3>
+<p>Delegated permissions are used when a real human user is present. The application acts on behalf of the signed-in user. Application permissions are used for background integrations (S2S) where no user interacts with the app, meaning the integration runs autonomously under its own identity.</p>
+
+<h3>How can I verify the content of the JWT token I received?</h3>
+<p>For debugging purposes, you can copy the raw Base64-encoded access token string received from Microsoft Entra ID and paste it into a secure decoder tool, such as <code>jwt.ms</code> or <code>jwt.io</code>. Here, you can inspect the claims, expiration timestamp, and roles associated with the token to ensure it has the correct resource scope.</p><h2>Related Dynexal Learning</h2><p>Explore more practical Business Central and AL development tutorials on the <a href="../tutorials.html">Dynexal Tutorials hub</a>.</p></article></div></main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark"></span><span>Dynexal</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js?v=20260913"></script>
+</body></html>
