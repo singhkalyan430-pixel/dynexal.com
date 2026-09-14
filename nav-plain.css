@@ -1,0 +1,26 @@
+/* Dynexal global plain navigation + wordmark fix */
+.site-header .logo-mark,
+.footer .logo-mark{display:none!important}
+.site-header .logo{gap:0!important}
+.site-header .logo-copy{display:flex;flex-direction:column;line-height:1.08}
+.site-header .logo-copy strong{font-size:23px!important;letter-spacing:-.7px}
+.site-header .logo-copy small{display:block;margin-top:5px;font-size:12px;font-weight:500;color:#9eb0c7;letter-spacing:.2px}
+.site-header .logo>span:not(.logo-copy){font-size:0!important}
+.site-header .logo>span:not(.logo-copy)::after{content:'Dynexal Technologies';font-size:23px;font-weight:800;letter-spacing:-.7px}
+
+/* Keep every desktop menu item plain — no hover dropdowns/arrows */
+@media(min-width:901px){
+  .site-header .nav .has-dropdown{position:static!important;height:82px!important;display:flex!important;align-items:center!important}
+  .site-header .nav .has-dropdown>a{height:82px!important;display:flex!important;align-items:center!important}
+  .site-header .nav .dropdown-menu{display:none!important;opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+  .site-header .nav{font-size:17px!important;gap:30px!important}
+}
+
+@media(max-width:900px){
+  .site-header .logo-copy strong{font-size:20px!important}
+  .site-header .logo-copy small{font-size:10px}
+  .site-header .logo>span:not(.logo-copy)::after{font-size:20px}
+}
+
+/* Prevent a temporary D/old wordmark from appearing before JavaScript runs */
+.site-header .logo-mark{visibility:hidden!important;width:0!important;flex-basis:0!important}
