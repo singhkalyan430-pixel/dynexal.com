@@ -28,6 +28,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Standardize site-wide branding
+        run: node scripts/standardize-branding.mjs
+
       - name: Build AI knowledge index and sitemap
         run: node scripts/build-site-index.mjs
 
@@ -35,10 +38,10 @@ jobs:
         run: |
           git config user.name "dynexal-automation"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add api/knowledge.json sitemap.xml
+          git add '*.html' api/knowledge.json sitemap.xml
           if git diff --cached --quiet; then
             echo "No generated changes to commit."
             exit 0
           fi
-          git commit -m "chore: auto-update site index and sitemap"
+          git commit -m "chore: standardize site branding and navigation"
           git push
