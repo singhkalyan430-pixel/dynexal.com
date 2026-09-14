@@ -10,6 +10,21 @@
 .hero-bottom-strip{width:100vw;max-width:none;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-radius:0}
 .hero-bottom-strip>div:first-child{padding-left:max(5vw,28px)}
 
+/* Developer watermark background */
+.hero-showcase{background:#040d1b url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=2200&q=80') center right/cover no-repeat}
+.hero-showcase:before{background:linear-gradient(90deg,rgba(2,11,24,.98) 0%,rgba(4,18,38,.93) 42%,rgba(4,18,38,.72) 72%,rgba(2,11,24,.88) 100%),radial-gradient(circle at 72% 42%,rgba(13,102,190,.38),transparent 38%)}
+
+/* Desktop hover dropdown navigation */
+@media(min-width:901px){
+  .nav .has-dropdown{position:relative}
+  .nav .has-dropdown>a{display:flex;align-items:center;gap:7px}
+  .nav .has-dropdown>a:after{content:'⌄';font-size:13px;opacity:.75;transform:translateY(-1px)}
+  .nav .dropdown-menu{position:absolute;top:calc(100% - 2px);left:50%;transform:translate(-50%,8px);min-width:245px;padding:10px;background:rgba(7,18,34,.98);border:1px solid #29415f;border-radius:12px;box-shadow:0 20px 45px rgba(0,0,0,.38);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .18s ease,visibility .18s ease;z-index:100}
+  .nav .dropdown-menu a{display:block;padding:11px 13px;border-radius:8px;color:#cbd8e8;font-size:14px;line-height:1.35;white-space:nowrap}
+  .nav .dropdown-menu a:hover,.nav .dropdown-menu a:focus{background:#123258;color:#fff}
+  .nav .has-dropdown:hover>.dropdown-menu,.nav .has-dropdown:focus-within>.dropdown-menu{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
+}
+
 /* Modern Dynexal wordmark in the site header/footer */
 .site-header .logo{gap:0}
 .site-header .logo-mark{width:235px;height:64px;flex:0 0 235px;border-radius:0;background:url('assets/dynexal-logo.svg') center/contain no-repeat}
@@ -26,6 +41,8 @@
   .site-header .logo-mark{width:205px;flex-basis:205px;height:58px}
 }
 @media(max-width:900px){
+  .hero-showcase{background-position:center center}
+  .hero-showcase:before{background:linear-gradient(180deg,rgba(2,11,24,.97),rgba(4,18,38,.90))}
   .hero-visual{height:530px}
   .dashboard-window{width:78%;height:315px;right:12%;top:65px}
   .code-window{width:68%;height:280px;right:0;top:184px}
