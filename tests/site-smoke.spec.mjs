@@ -94,6 +94,6 @@ test('Dynexal AI launcher opens and closes', async ({ page }) => {
   await launcher.click();
   await expect(panel).toBeVisible();
   await expect(page.locator('#dynexal-ai-input')).toBeVisible();
-  await page.locator('#dynexal-ai-close').click();
+  await page.locator('.ai-close').click();
   await expect(panel).toBeHidden();
 });
