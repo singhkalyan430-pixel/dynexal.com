@@ -18,8 +18,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Synchronize navigation and dropdown URLs
-        run: python3 scripts/sync-navigation.py
+      - name: Synchronize navigation and branding
+        run: |
+          python3 scripts/sync-navigation.py
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          files = [p for p in Path('.').rglob('*.html') if '.git' not in p.parts and 'node_modules' not in p.parts]
+          changed = 0
+          for path in files:
+              text = path.read_text(encoding='utf-8')
+              original = text
+              text = re.sub(r'<span class="logo-mark"[^>]*>.*?</span>', '', text, flags=re.S)
+              if text != original:
+                  path.write_text(text, encoding='utf-8')
+                  changed += 1
+          print(f"Removed standalone D logo mark from {changed} HTML pages.")
+          PY
 
       - name: Commit synchronized HTML
         run: |
@@ -27,7 +42,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A -- '*.html'
           if git diff --cached --quiet; then
-            echo "Navigation already synchronized."
+            echo "Navigation and branding already synchronized."
             exit 0
           fi
           git commit -m "chore: sync navigation"
