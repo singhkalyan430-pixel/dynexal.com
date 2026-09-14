@@ -64,4 +64,12 @@ jobs:
             exit 0
           fi
           git commit -m "chore: sync navigation"
-          git push
+
+          for attempt in 1 2 3; do
+            git fetch origin main
+            git rebase origin/main && git push && exit 0
+            git rebase --abort || true
+            sleep 5
+          done
+          echo "Unable to push navigation changes after 3 attempts."
+          exit 1
