@@ -14,16 +14,26 @@
 .hero-showcase{background:#040d1b url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=2200&q=80') center right/cover no-repeat}
 .hero-showcase:before{background:linear-gradient(90deg,rgba(2,11,24,.98) 0%,rgba(4,18,38,.93) 42%,rgba(4,18,38,.72) 72%,rgba(2,11,24,.88) 100%),radial-gradient(circle at 72% 42%,rgba(13,102,190,.38),transparent 38%)}
 
-/* Desktop hover dropdown navigation */
+/* Desktop hover dropdown navigation — hover only, no arrow/mark */
 @media(min-width:901px){
-  .nav .has-dropdown{position:relative}
-  .nav .has-dropdown>a{display:flex;align-items:center;gap:7px}
-  .nav .has-dropdown>a:after{content:'⌄';font-size:13px;opacity:.75;transform:translateY(-1px)}
-  .nav .dropdown-menu{position:absolute;top:calc(100% - 2px);left:50%;transform:translate(-50%,8px);min-width:245px;padding:10px;background:rgba(7,18,34,.98);border:1px solid #29415f;border-radius:12px;box-shadow:0 20px 45px rgba(0,0,0,.38);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .18s ease,visibility .18s ease;z-index:100}
-  .nav .dropdown-menu a{display:block;padding:11px 13px;border-radius:8px;color:#cbd8e8;font-size:14px;line-height:1.35;white-space:nowrap}
+  .nav .has-dropdown{position:relative;display:flex;align-items:center;height:82px}
+  .nav .has-dropdown>a{display:flex;align-items:center;height:82px;gap:0}
+  .nav .has-dropdown>a:after{display:none!important;content:none!important}
+  .nav .dropdown-menu{position:absolute;top:100%;left:50%;transform:translate(-50%,8px);min-width:245px;padding:10px;background:rgba(7,18,34,.99);border:1px solid #29415f;border-radius:12px;box-shadow:0 20px 45px rgba(0,0,0,.38);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .18s ease,visibility .18s ease;z-index:100}
+  .nav .dropdown-menu a{display:block;height:auto;padding:11px 13px;border-radius:8px;color:#cbd8e8;font-size:14px;line-height:1.35;white-space:nowrap}
   .nav .dropdown-menu a:hover,.nav .dropdown-menu a:focus{background:#123258;color:#fff}
   .nav .has-dropdown:hover>.dropdown-menu,.nav .has-dropdown:focus-within>.dropdown-menu{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
 }
+
+/* Original text branding — no D mark beside the website name */
+.site-header .logo{gap:0}
+.site-header .logo-mark{display:none!important}
+.site-header .logo-copy{display:flex;flex-direction:column;line-height:1.08}
+.site-header .logo-copy strong{font-size:23px;letter-spacing:-.7px}
+.site-header .logo-copy small{margin-top:5px;font-size:13px;font-weight:500;color:#9eb0c7;letter-spacing:.2px}
+.footer .logo{gap:0}
+.footer .logo-mark{display:none!important}
+.footer .logo>span:not(.logo-mark){display:inline!important}
 
 @media(max-width:1200px){
   .dashboard-window{width:74%;right:12%;top:108px}
