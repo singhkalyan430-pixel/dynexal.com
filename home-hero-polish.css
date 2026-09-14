@@ -25,20 +25,11 @@
   .nav .has-dropdown:hover>.dropdown-menu,.nav .has-dropdown:focus-within>.dropdown-menu{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
 }
 
-/* Modern Dynexal wordmark in the site header/footer */
-.site-header .logo{gap:0}
-.site-header .logo-mark{width:235px;height:64px;flex:0 0 235px;border-radius:0;background:url('assets/dynexal-logo.svg') center/contain no-repeat}
-.site-header .logo-copy{display:none}
-.footer .logo{gap:0}
-.footer .logo-mark{width:210px;height:54px;flex:0 0 210px;border-radius:0;background:url('assets/dynexal-logo.svg') center/contain no-repeat}
-.footer .logo>span:not(.logo-mark){display:none}
-
 @media(max-width:1200px){
   .dashboard-window{width:74%;right:12%;top:108px}
   .code-window{width:62%;right:-3%;top:220px}
   .hero-quote{right:3%;font-size:23px;max-width:180px}
   .hero-brand-badge{right:-1%;top:150px;font-size:11px}
-  .site-header .logo-mark{width:205px;flex-basis:205px;height:58px}
 }
 @media(max-width:900px){
   .hero-showcase{background-position:center center}
@@ -49,14 +40,10 @@
   .hero-quote{right:5%;top:8px;font-size:21px;max-width:170px}
   .hero-brand-badge{right:2%;top:108px;font-size:9px}
   .hero-bottom-strip{width:100%;margin-left:0;margin-right:0}
-  .site-header .logo-mark{width:190px;flex-basis:190px;height:55px}
-  .footer .logo-mark{width:185px;flex-basis:185px;height:48px}
 }
 @media(max-width:560px){
   .dashboard-window{width:94%;height:245px;right:3%;top:45px}
   .code-window{width:82%;height:220px;right:-2%;top:165px}
   .hero-quote{font-size:17px;right:5%;top:0;max-width:125px}
   .hero-brand-badge{right:1%;top:55px;font-size:8px}
-  .site-header .logo-mark{width:165px;flex-basis:165px;height:50px}
-  .footer .logo-mark{width:170px;flex-basis:170px;height:45px}
 }
