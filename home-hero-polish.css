@@ -1,0 +1,31 @@
+/* Dynexal home hero final polish — reference-inspired balance */
+.hero-visual{height:650px;min-width:0}
+.dashboard-window{width:69%;height:382px;right:18%;top:102px;transform:rotate(-1deg)}
+.code-window{width:57%;height:322px;right:0;top:226px;transform:rotate(.4deg)}
+.hero-quote{right:6%;top:8px;font-size:27px;line-height:1.12;transform:rotate(-5deg);max-width:205px}
+.hero-quote i{width:120px;height:3px}
+.hero-brand-badge{right:2%;top:157px;font-size:12px;gap:8px}
+.ms-squares{grid-template-columns:9px 9px;grid-template-rows:9px 9px}
+.ms-squares i{width:9px;height:9px}
+.hero-bottom-strip{width:100vw;max-width:none;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-radius:0}
+.hero-bottom-strip>div:first-child{padding-left:max(5vw,28px)}
+@media(max-width:1200px){
+  .dashboard-window{width:74%;right:12%;top:108px}
+  .code-window{width:62%;right:-3%;top:220px}
+  .hero-quote{right:3%;font-size:23px;max-width:180px}
+  .hero-brand-badge{right:-1%;top:150px;font-size:11px}
+}
+@media(max-width:900px){
+  .hero-visual{height:530px}
+  .dashboard-window{width:78%;height:315px;right:12%;top:65px}
+  .code-window{width:68%;height:280px;right:0;top:184px}
+  .hero-quote{right:5%;top:8px;font-size:21px;max-width:170px}
+  .hero-brand-badge{right:2%;top:108px;font-size:9px}
+  .hero-bottom-strip{width:100%;margin-left:0;margin-right:0}
+}
+@media(max-width:560px){
+  .dashboard-window{width:94%;height:245px;right:3%;top:45px}
+  .code-window{width:82%;height:220px;right:-2%;top:165px}
+  .hero-quote{font-size:17px;right:5%;top:0;max-width:125px}
+  .hero-brand-badge{right:1%;top:55px;font-size:8px}
+}
