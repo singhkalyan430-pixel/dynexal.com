@@ -31,14 +31,31 @@ jobs:
       - name: Build AI knowledge index and sitemap
         run: node scripts/build-site-index.mjs
 
+      - name: Apply global plain navigation stylesheet
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          marker = 'nav-plain.css?v=20260915'
+          for path in Path('.').rglob('*.html'):
+              if any(part in {'.git','node_modules'} for part in path.parts):
+                  continue
+              text = path.read_text(encoding='utf-8')
+              if 'nav-plain.css' in text:
+                  continue
+              tag = f'<link rel="stylesheet" href="/{marker}">'
+              if '</head>' in text:
+                  path.write_text(text.replace('</head>', f'  {tag}\n</head>', 1), encoding='utf-8')
+                  print(f'Updated {path}')
+          PY
+
       - name: Commit generated files
         run: |
           git config user.name "dynexal-automation"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add api/knowledge.json sitemap.xml
+          git add api/knowledge.json sitemap.xml '*.html' nav-plain.css
           if git diff --cached --quiet; then
             echo "No generated changes to commit."
             exit 0
           fi
-          git commit -m "chore: auto-update site index and sitemap"
+          git commit -m "chore: sync global plain navigation"
           git push
