@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Dynexal Technologies</title>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b1220;color:#eaf2ff;font:16px system-ui,sans-serif}.box{text-align:center;padding:32px}.box h1{margin:0 0 10px;font-size:28px}.box p{color:#aebbd0}.box a{color:#7db2ff}
+</style>
+</head>
+<body>
+<div class="box"><h1>Page not found</h1><p>Redirecting to the correct Dynexal page…</p><a href="/">Go to Dynexal home</a></div>
+<script>
+(function(){
+  var file=(location.pathname.split('/').pop()||'').toLowerCase();
+  var map={
+    'index.html':'/index.html','tutorials.html':'/tutorials.html','services.html':'/services.html','portfolio.html':'/portfolio.html','about.html':'/about.html','contact.html':'/contact.html',
+    'al-development.html':'/topics/al-development.html','rdlc-business-central.html':'/topics/rdlc-business-central.html','business-central-api.html':'/topics/business-central-api.html',
+    'creating-list-and-card-pages-al.html':'/articles/creating-list-and-card-pages-al.html','ai-business-central-complete-guide.html':'/articles/ai-business-central-complete-guide.html','shopify-business-central-integration.html':'/articles/shopify-business-central-integration.html',
+    'ecommerce-integration.html':'/projects/ecommerce-integration.html','role-center-dashboard.html':'/projects/role-center-dashboard.html','rdlc-reporting-toolkit.html':'/projects/rdlc-reporting-toolkit.html','api-integration.html':'/projects/api-integration.html'
+  };
+  if(map[file]){location.replace(map[file]+(location.hash||''));}
+})();
+</script>
+</body>
+</html>
