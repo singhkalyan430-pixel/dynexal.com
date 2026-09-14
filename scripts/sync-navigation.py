@@ -33,11 +33,12 @@ for path in [p for p in ROOT.rglob('*.html') if '.git' not in p.parts and 'node_
 
     text = re.sub(
         r'(<header[\s\S]*?<a class="logo"[^>]*>)[\s\S]*?(</a>)',
-        r'\1<span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span>\2',
+        r'\1<span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span>\2',
         text,
         count=1,
     )
 
+    text = re.sub(r'<span class="logo-mark"[^>]*>.*?</span>', '', text, flags=re.S)
     text = re.sub(r'<script id="dynexal-nav-href-fix">[\s\S]*?</script>\s*', '', text)
     text = re.sub(
         r'<script\s+src=["\']([^"\']*script\.js)(?:\?[^"\']*)?["\']\s*></script>',
