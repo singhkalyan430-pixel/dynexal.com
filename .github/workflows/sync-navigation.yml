@@ -53,6 +53,7 @@ jobs:
                   text,
                   count=1
               )
+              text = re.sub(r'<script\s+src=["\']([^"\']*script\.js)(?:\?[^"\']*)?["\']\s*></script>', r'<script src="\1?v=20260914-nav3"></script>', text)
               if text != original:
                   path.write_text(text, encoding='utf-8')
                   changed += 1
