@@ -21,6 +21,27 @@
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{if(innerWidth<=800){nav.style.display='none';btn.setAttribute('aria-expanded','false')}}));
 })();
 
+// Desktop hover dropdown menus
+(function(){
+  const nav=document.querySelector('.nav');
+  if(!nav)return;
+  const menus={
+    Tutorials:[['AL Development','topics/al-development.html'],['Tables & Pages','articles/creating-list-and-card-pages-al.html'],['Reports & RDLC','topics/rdlc-business-central.html'],['APIs & Integrations','topics/business-central-api.html'],['AI + Business Central','articles/ai-business-central-complete-guide.html'],['Interview Preparation','tutorials.html']],
+    Services:[['AL Development','services.html#development'],['API & Integrations','services.html#integration'],['Reports & RDLC','services.html#reporting'],['AI & Automation','services.html#ai']],
+    Portfolio:[['E-commerce Integration','projects/ecommerce-integration.html'],['Role Center Dashboard','projects/role-center-dashboard.html'],['RDLC Reporting Toolkit','projects/rdlc-reporting-toolkit.html'],['API Integration','projects/api-integration.html']],
+    Topics:[['AL Development','topics/al-development.html'],['Reports & RDLC','topics/rdlc-business-central.html'],['APIs & Integrations','topics/business-central-api.html'],['E-commerce Projects','articles/shopify-business-central-integration.html'],['AI + Business Central','articles/ai-business-central-complete-guide.html']]
+  };
+  [...nav.querySelectorAll(':scope > a')].forEach(link=>{
+    const label=link.textContent.trim();
+    if(!menus[label]||innerWidth<=900)return;
+    const wrap=document.createElement('div');wrap.className='has-dropdown';
+    link.parentNode.insertBefore(wrap,link);wrap.appendChild(link);
+    const menu=document.createElement('div');menu.className='dropdown-menu';menu.setAttribute('role','menu');
+    menus[label].forEach(([text,href])=>{const a=document.createElement('a');a.href=href;a.textContent=text;a.setAttribute('role','menuitem');menu.appendChild(a)});
+    wrap.appendChild(menu);
+  });
+})();
+
 // Google Analytics 4
 (function(){
   const id='G-M2JGL0B9K1';window.dataLayer=window.dataLayer||[];
