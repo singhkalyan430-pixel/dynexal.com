@@ -29,10 +29,18 @@ for path in [p for p in ROOT.rglob('*.html') if '.git' not in p.parts and 'node_
     text = path.read_text(encoding='utf-8')
     original = text
 
+    # One plain navigation everywhere: no arrows, no dropdowns, no page-specific variants.
     text = re.sub(r'<nav class="nav"[^>]*>[\s\S]*?</nav>', nav_for(path), text, count=1)
 
+    # One consistent wordmark everywhere; do not show the D icon in the header.
     text = re.sub(
         r'(<header[\s\S]*?<a class="logo"[^>]*>)[\s\S]*?(</a>)',
+        r'\1<span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span>\2',
+        text,
+        count=1,
+    )
+    text = re.sub(
+        r'(<footer[\s\S]*?<a class="logo"[^>]*>)[\s\S]*?(</a>)',
         r'\1<span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span>\2',
         text,
         count=1,
