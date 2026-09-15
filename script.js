@@ -1,12 +1,20 @@
-// Dynexal global branding — uploaded AI Business Central logo
+// Dynexal global branding — text-only wordmark
 (function(){
   document.querySelectorAll('header .logo, footer .logo').forEach(logo=>{
-    logo.innerHTML='';
-    const img=document.createElement('img');
-    img.className='dynexal-full-logo';
-    img.src=(location.pathname.includes('/') && !location.pathname.endsWith('/')) ? (location.pathname.includes('/topics/')||location.pathname.includes('/articles/')||location.pathname.includes('/projects/') ? '../assets/dynexal-logo.svg' : 'assets/dynexal-logo.svg') : 'assets/dynexal-logo.svg';
-    img.alt='Dynexal AI Business Central';
-    logo.appendChild(img);
+    const mark=logo.querySelector('.logo-mark');
+    if(mark)mark.remove();
+    let copy=logo.querySelector('.logo-copy');
+    if(!copy){
+      const existing=[...logo.children].find(el=>el.tagName==='SPAN');
+      copy=document.createElement('span');copy.className='logo-copy';
+      if(existing){const text=existing.textContent.trim();existing.remove();copy.innerHTML='<strong></strong><small></small>';copy.querySelector('strong').textContent=text||'Dynexal Technologies'}
+      else copy.innerHTML='<strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small>';
+      logo.appendChild(copy);
+    }
+    const strong=copy.querySelector('strong');
+    const small=copy.querySelector('small');
+    if(strong)strong.textContent='Dynexal Technologies';
+    if(small)small.textContent='Learn | Build | Integrate | Grow';
   });
 })();
 
@@ -16,9 +24,14 @@
   if(!nav)return;
   const style=document.createElement('style');
   style.textContent=`
-  .site-header .logo{gap:0;display:flex;align-items:center;text-decoration:none}
-  .site-header .dynexal-full-logo{display:block;width:76px;height:76px;object-fit:contain;flex:0 0 76px}
-  .footer .dynexal-full-logo{display:block;width:70px;height:70px;object-fit:contain}
+  .site-header .logo{gap:0}
+  .site-header .logo-mark,.footer .logo-mark{display:none!important}
+  .site-header .logo-copy{display:flex;flex-direction:column;line-height:1.08}
+  .site-header .logo-copy strong{font-size:23px;letter-spacing:-.7px}
+  .site-header .logo-copy small{margin-top:5px;font-size:13px;font-weight:500;color:#9eb0c7;letter-spacing:.2px}
+  .footer .logo-copy{display:flex;flex-direction:column;line-height:1.08}
+  .footer .logo-copy strong{font-size:18px}
+  .footer .logo-copy small{margin-top:4px;font-size:10px;color:#91a0b6;font-weight:500}
   @media(min-width:901px){
     .nav{overflow:visible}
     .nav .has-dropdown{position:relative;height:82px;display:flex;align-items:center}
@@ -33,7 +46,8 @@
   @media(max-width:900px){
     .nav{display:none}
     .menu-btn{display:block}
-    .site-header .dynexal-full-logo{width:62px;height:62px;flex-basis:62px}
+    .site-header .logo-copy strong{font-size:20px}
+    .site-header .logo-copy small{font-size:11px}
   }
   `;
   document.head.appendChild(style);
@@ -111,9 +125,9 @@
 // Article topic helper
 (function(){
   if(!location.pathname.includes('/articles/'))return;
-  const path=location.pathname.toLowerCase();let href='../topics/al-development.html';
-  if(path.includes('rdlc'))href='../topics/rdlc-business-central.html';
-  else if(/api|oauth|httpclient|json|webhook/.test(path))href='../topics/business-central-api.html';
+  const path=location.pathname.toLowerCase();let href='../topics/al-development.html',label='AL Development Hub';
+  if(path.includes('rdlc')){href='../topics/rdlc-business-central.html';label='RDLC Reporting Hub'}
+  else if(/api|oauth|httpclient|json|webhook/.test(path)){href='../topics/business-central-api.html';label='Business Central API & Integration Hub'}
   const nav=document.querySelector('.nav');
   if(nav&&!nav.querySelector('[data-topic-hub]')){const a=document.createElement('a');a.href=href;a.textContent='Topic Hubs';a.dataset.topicHub='true';nav.appendChild(a)}
 })();
