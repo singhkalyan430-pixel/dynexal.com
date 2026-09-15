@@ -41,7 +41,8 @@ test('homepage renders without same-origin request failures', async ({ page }) =
   await expect(page.locator('a[href="services.html"]').first()).toBeVisible();
   await expect(page.locator('.site-header .logo-copy strong')).toHaveText('Dynexal Technologies');
   await expect(page.locator('.site-header .logo-mark')).toHaveCount(0);
-  await expect(page.locator('.site-header .logo::before')).toHaveCount(0);
+  const logoPseudo = await page.locator('.site-header .logo').evaluate(el => getComputedStyle(el, '::before').display);
+  expect(logoPseudo).toBe('none');
   expect(failed, failed.join('\n')).toEqual([]);
   expect(errors, errors.join('\n')).toEqual([]);
 });
