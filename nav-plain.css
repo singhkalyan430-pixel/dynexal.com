@@ -1,10 +1,14 @@
-/* Dynexal global plain navigation + stable wordmark */
+/* Dynexal global branding — polished mark + wordmark */
+.site-header .logo{gap:12px!important;align-items:center!important}
+.site-header .logo::before{content:"";display:block;width:46px;height:46px;flex:0 0 46px;background:url('/assets/dynexal-mark.svg') center/contain no-repeat;filter:drop-shadow(0 4px 10px rgba(0,160,255,.18))}
+.footer .logo{gap:9px!important;align-items:center!important}
+.footer .logo::before{content:"";display:block;width:32px;height:32px;flex:0 0 32px;background:url('/assets/dynexal-mark.svg') center/contain no-repeat}
 .site-header .logo-mark,.footer .logo-mark{display:none!important;visibility:hidden!important;width:0!important;height:0!important;flex:0 0 0!important}
-.site-header .logo{gap:0!important}
 .site-header .logo-copy,.footer .logo-copy{display:flex!important;flex-direction:column;line-height:1.08}
 .site-header .logo-copy strong{font-size:23px!important;letter-spacing:-.7px!important;color:#fff!important}
 .site-header .logo-copy small{display:block!important;margin-top:5px;font-size:12px!important;font-weight:500!important;color:#9eb0c7!important;letter-spacing:.2px!important}
-.site-header .logo>span:not(.logo-copy),.footer .logo>span:not(.logo-copy){display:none!important}
+.footer .logo-copy strong{font-size:18px!important;color:#fff!important}
+.footer .logo-copy small{display:block!important;margin-top:4px;font-size:10px!important;color:#91a0b6!important;font-weight:500!important}
 @media(min-width:901px){
 .site-header .nav{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:30px!important;font-size:17px!important;white-space:nowrap!important;overflow:visible!important}
 .site-header .nav>a,.site-header .nav .has-dropdown>a{height:82px!important;display:flex!important;align-items:center!important;color:#cbd5e1!important}
@@ -15,6 +19,7 @@
 }
 @media(max-width:900px){
 .site-header .logo-copy strong{font-size:20px!important}.site-header .logo-copy small{font-size:10px!important}
+.site-header .logo::before{width:40px;height:40px;flex-basis:40px}
 .site-header .nav .has-dropdown{display:block!important;height:auto!important}
 .site-header .nav .has-dropdown .dropdown-menu,.site-header .nav .nav-dropdown{display:none!important}
 .site-header .nav .nav-arrow{display:none!important}
