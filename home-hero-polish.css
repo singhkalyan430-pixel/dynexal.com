@@ -1,59 +1,69 @@
-/* Dynexal home hero final polish — reference-inspired balance */
-.hero-visual{height:650px;min-width:0}
-.dashboard-window{width:69%;height:382px;right:18%;top:102px;transform:rotate(-1deg)}
-.code-window{width:57%;height:322px;right:0;top:226px;transform:rotate(.4deg)}
-.hero-quote{right:6%;top:8px;font-size:27px;line-height:1.12;transform:rotate(-5deg);max-width:205px}
-.hero-quote i{width:120px;height:3px}
-.hero-brand-badge{right:2%;top:157px;font-size:12px;gap:8px}
-.ms-squares{grid-template-columns:9px 9px;grid-template-rows:9px 9px}
-.ms-squares i{width:9px;height:9px}
-.hero-bottom-strip{width:100vw;max-width:none;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);border-radius:0}
-.hero-bottom-strip>div:first-child{padding-left:max(5vw,28px)}
+/* Dynexal homepage hero — professional developer-at-work direction */
+.hero-showcase{
+  background:#03101f url('https://images.pexels.com/photos/32755772/pexels-photo-32755772.jpeg?auto=compress&cs=tinysrgb&w=2400') center right/cover no-repeat!important;
+}
+.hero-showcase:before{
+  background:
+    linear-gradient(90deg,rgba(2,11,24,.98) 0%,rgba(3,17,35,.94) 38%,rgba(3,20,40,.70) 64%,rgba(2,11,24,.42) 100%),
+    linear-gradient(180deg,rgba(2,11,24,.18),rgba(2,11,24,.52))!important;
+}
+.hero-showcase-inner{grid-template-columns:58% 42%!important;min-height:665px!important}
+.hero-copy{max-width:760px!important;z-index:8}
+.hero-copy h1{max-width:720px!important;text-shadow:0 4px 28px rgba(0,0,0,.32)}
+.hero-copy>p{max-width:650px!important;text-shadow:0 2px 12px rgba(0,0,0,.28)}
 
-/* Developer watermark background */
-.hero-showcase{background:#040d1b url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=2200&q=80') center right/cover no-repeat}
-.hero-showcase:before{background:linear-gradient(90deg,rgba(2,11,24,.98) 0%,rgba(4,18,38,.93) 42%,rgba(4,18,38,.72) 72%,rgba(2,11,24,.88) 100%),radial-gradient(circle at 72% 42%,rgba(13,102,190,.38),transparent 38%)}
+/* Use the real developer photo as the hero visual; remove the old dashboard/code mockups. */
+.hero-visual{height:650px!important;min-width:0!important;pointer-events:none!important}
+.hero-visual .dashboard-window,.hero-visual .code-window{display:none!important}
+.hero-visual .hero-quote{right:5%!important;top:44px!important;font-size:27px!important;max-width:210px!important;z-index:5!important}
+.hero-visual .hero-brand-badge{right:3%!important;top:175px!important;z-index:5!important}
+.hero-desk-glow{display:none!important}
 
-/* Desktop hover dropdown navigation — hover only, no arrow/mark */
+.hero-bottom-strip{
+  width:100vw!important;max-width:none!important;
+  margin-left:calc(50% - 50vw)!important;margin-right:calc(50% - 50vw)!important;
+  border-radius:0!important;position:relative;z-index:8;
+}
+.hero-bottom-strip>div:first-child{padding-left:max(5vw,28px)!important}
+
+/* Reliable desktop hover dropdowns — no arrows */
 @media(min-width:901px){
   .nav .has-dropdown{position:relative;display:flex;align-items:center;height:82px}
   .nav .has-dropdown>a{display:flex;align-items:center;height:82px;gap:0}
   .nav .has-dropdown>a:after{display:none!important;content:none!important}
-  .nav .dropdown-menu{position:absolute;top:100%;left:50%;transform:translate(-50%,8px);min-width:245px;padding:10px;background:rgba(7,18,34,.99);border:1px solid #29415f;border-radius:12px;box-shadow:0 20px 45px rgba(0,0,0,.38);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .18s ease,visibility .18s ease;z-index:100}
+  .nav .dropdown-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translate(-50%,8px);min-width:245px;padding:8px;background:rgba(7,18,34,.99);border:1px solid #29415f;border-radius:12px;box-shadow:0 20px 45px rgba(0,0,0,.38);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease,transform .16s ease,visibility .16s ease;z-index:1000}
+  .nav .dropdown-menu:before{content:"";position:absolute;top:-9px;left:0;right:0;height:9px}
   .nav .dropdown-menu a{display:block;height:auto;padding:11px 13px;border-radius:8px;color:#cbd8e8;font-size:14px;line-height:1.35;white-space:nowrap}
-  .nav .dropdown-menu a:hover,.nav .dropdown-menu a:focus{background:#123258;color:#fff}
+  .nav .dropdown-menu a:hover,.nav .dropdown-menu a:focus-visible{background:#123258;color:#fff;outline:none}
   .nav .has-dropdown:hover>.dropdown-menu,.nav .has-dropdown:focus-within>.dropdown-menu{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
 }
 
-/* Original text branding — no D mark beside the website name */
-.site-header .logo{gap:0}
-.site-header .logo-mark{display:none!important}
-.site-header .logo-copy{display:flex;flex-direction:column;line-height:1.08}
-.site-header .logo-copy strong{font-size:23px;letter-spacing:-.7px}
-.site-header .logo-copy small{margin-top:5px;font-size:13px;font-weight:500;color:#9eb0c7;letter-spacing:.2px}
-.footer .logo{gap:0}
-.footer .logo-mark{display:none!important}
-.footer .logo>span:not(.logo-mark){display:inline!important}
+/* Text-only header/footer branding */
+.site-header .logo,.footer .logo{gap:0!important}
+.site-header .logo-mark,.footer .logo-mark{display:none!important;visibility:hidden!important;width:0!important;height:0!important;flex:0 0 0!important}
+.site-header .logo-copy,.footer .logo-copy{display:flex!important;flex-direction:column!important;line-height:1.08!important}
+.site-header .logo-copy strong{font-size:23px!important;letter-spacing:-.7px!important}
+.site-header .logo-copy small{margin-top:5px!important;font-size:12px!important;font-weight:500!important;color:#9eb0c7!important}
+.footer .logo-copy strong{font-size:18px!important;color:#fff!important}
+.footer .logo-copy small{margin-top:4px!important;font-size:10px!important;color:#91a0b6!important}
 
 @media(max-width:1200px){
-  .dashboard-window{width:74%;right:12%;top:108px}
-  .code-window{width:62%;right:-3%;top:220px}
-  .hero-quote{right:3%;font-size:23px;max-width:180px}
-  .hero-brand-badge{right:-1%;top:150px;font-size:11px}
+  .hero-showcase-inner{grid-template-columns:60% 40%!important}
+  .hero-copy h1{font-size:clamp(54px,5.8vw,72px)!important}
+  .hero-visual .hero-quote{right:2%!important;font-size:23px!important}
 }
 @media(max-width:900px){
-  .hero-showcase{background-position:center center}
-  .hero-showcase:before{background:linear-gradient(180deg,rgba(2,11,24,.97),rgba(4,18,38,.90))}
-  .hero-visual{height:530px}
-  .dashboard-window{width:78%;height:315px;right:12%;top:65px}
-  .code-window{width:68%;height:280px;right:0;top:184px}
-  .hero-quote{right:5%;top:8px;font-size:21px;max-width:170px}
-  .hero-brand-badge{right:2%;top:108px;font-size:9px}
-  .hero-bottom-strip{width:100%;margin-left:0;margin-right:0}
+  .hero-showcase{background-position:68% center!important}
+  .hero-showcase:before{background:linear-gradient(180deg,rgba(2,11,24,.96) 0%,rgba(3,17,35,.84) 55%,rgba(2,11,24,.72) 100%)!important}
+  .hero-showcase-inner{grid-template-columns:1fr!important;min-height:auto!important}
+  .hero-copy{padding-bottom:32px!important}
+  .hero-visual{display:block!important;height:300px!important}
+  .hero-visual .hero-quote,.hero-visual .hero-brand-badge{display:none!important}
+  .hero-bottom-strip{width:100%!important;margin-left:0!important;margin-right:0!important}
 }
 @media(max-width:560px){
-  .dashboard-window{width:94%;height:245px;right:3%;top:45px}
-  .code-window{width:82%;height:220px;right:-2%;top:165px}
-  .hero-quote{font-size:17px;right:5%;top:0;max-width:125px}
-  .hero-brand-badge{right:1%;top:55px;font-size:8px}
+  .hero-showcase{background-position:72% center!important}
+  .hero-copy h1{font-size:48px!important;letter-spacing:-2.5px!important}
+  .hero-copy>p{font-size:17px!important}
+  .hero-visual{height:220px!important}
 }
