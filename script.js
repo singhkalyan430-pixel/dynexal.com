@@ -18,6 +18,37 @@
   });
 })();
 
+// Shared global navigation — one consistent structure on every page
+(function(){
+  const nav=document.querySelector('.nav');
+  if(!nav)return;
+  const segments=window.location.pathname.split('/').filter(Boolean);
+  const depth=segments.length && !window.location.pathname.endsWith('/') ? Math.max(0,segments.length-1) : 0;
+  const root='../'.repeat(depth);
+  const links=[
+    ['Home',root+'index.html','home'],
+    ['Tutorials',root+'tutorials.html','tutorials'],
+    ['Services',root+'services.html','services'],
+    ['Portfolio',root+'portfolio.html','portfolio'],
+    ['Topics',root+'index.html#topics','topics'],
+    ['About',root+'about.html','about']
+  ];
+  const path=window.location.pathname.toLowerCase();
+  let current='home';
+  if(path.includes('/articles/')||path.endsWith('/tutorials.html'))current='tutorials';
+  else if(path.includes('/topics/'))current='topics';
+  else if(path.includes('/projects/')||path.endsWith('/portfolio.html'))current='portfolio';
+  else if(path.endsWith('/services.html'))current='services';
+  else if(path.endsWith('/about.html'))current='about';
+  nav.innerHTML='';
+  links.forEach(([label,href,key])=>{
+    const a=document.createElement('a');
+    a.href=href;a.textContent=label;
+    if(key===current){a.classList.add('active');a.setAttribute('aria-current','page')}
+    nav.appendChild(a);
+  });
+})();
+
 // Shared responsive navigation + hover dropdown styling
 (function(){
   const nav=document.querySelector('.nav');
@@ -52,19 +83,26 @@
   `;
   document.head.appendChild(style);
   const menus={
-    Tutorials:[['AL Development','topics/al-development.html'],['Tables & Pages','articles/creating-list-and-card-pages-al.html'],['Reports & RDLC','topics/rdlc-business-central.html'],['APIs & Integrations','topics/business-central-api.html'],['AI + Business Central','articles/ai-business-central-complete-guide.html'],['Interview Preparation','tutorials.html']],
-    Services:[['AL Development','services.html#development'],['API & Integrations','services.html#integration'],['Reports & RDLC','services.html#reporting'],['AI & Automation','services.html#ai']],
-    Portfolio:[['E-commerce Integration','projects/ecommerce-integration.html'],['Role Center Dashboard','projects/role-center-dashboard.html'],['RDLC Reporting Toolkit','projects/rdlc-reporting-toolkit.html'],['API Integration','projects/api-integration.html']],
-    Topics:[['AL Development','topics/al-development.html'],['Reports & RDLC','topics/rdlc-business-central.html'],['APIs & Integrations','topics/business-central-api.html'],['E-commerce Projects','articles/shopify-business-central-integration.html'],['AI + Business Central','articles/ai-business-central-complete-guide.html']]
+    Tutorials:[['AL Development','/topics/al-development.html'],['Tables & Pages','/articles/creating-list-and-card-pages-al.html'],['Reports & RDLC','/topics/rdlc-business-central.html'],['APIs & Integrations','/topics/business-central-api.html'],['AI + Business Central','/articles/ai-business-central-complete-guide.html'],['Interview Preparation','/tutorials.html']],
+    Services:[['AL Development','/services.html#development'],['API & Integrations','/services.html#integration'],['Reports & RDLC','/services.html#reporting'],['AI & Automation','/services.html#ai']],
+    Portfolio:[['E-commerce Integration','/projects/ecommerce-integration.html'],['Role Center Dashboard','/projects/role-center-dashboard.html'],['RDLC Reporting Toolkit','/projects/rdlc-reporting-toolkit.html'],['API Integration','/projects/api-integration.html']],
+    Topics:[['AL Development','/topics/al-development.html'],['Reports & RDLC','/topics/rdlc-business-central.html'],['APIs & Integrations','/topics/business-central-api.html'],['E-commerce Projects','/articles/shopify-business-central-integration.html'],['AI + Business Central','/articles/ai-business-central-complete-guide.html']]
   };
   [...nav.querySelectorAll(':scope > a')].forEach(link=>{
     const label=link.textContent.trim();
     if(!menus[label]||window.innerWidth<=900)return;
     const wrap=document.createElement('div');wrap.className='has-dropdown';
     link.parentNode.insertBefore(wrap,link);wrap.appendChild(link);
+    link.setAttribute('aria-haspopup','true');link.setAttribute('aria-expanded','false');
     const menu=document.createElement('div');menu.className='dropdown-menu';menu.setAttribute('role','menu');
     menus[label].forEach(([text,href])=>{const a=document.createElement('a');a.href=href;a.textContent=text;a.setAttribute('role','menuitem');menu.appendChild(a)});
     wrap.appendChild(menu);
+    const setOpen=open=>link.setAttribute('aria-expanded',String(open));
+    wrap.addEventListener('mouseenter',()=>setOpen(true));
+    wrap.addEventListener('mouseleave',()=>setOpen(false));
+    link.addEventListener('focus',()=>setOpen(true));
+    wrap.addEventListener('focusout',event=>{if(!wrap.contains(event.relatedTarget))setOpen(false)});
+    link.addEventListener('keydown',event=>{if(event.key==='Escape'){setOpen(false);link.blur()}});
   });
 })();
 
@@ -120,16 +158,6 @@
   if(!filters.length||!posts.length)return;
   const map={'All Tutorials':'all','AL Development':'AL DEVELOPMENT','Reports':'REPORTING','Integrations':'INTEGRATION','AI':'AI'};
   filters.forEach(f=>{f.addEventListener('click',()=>{const key=map[f.textContent.trim()]||'all';filters.forEach(x=>x.classList.toggle('active',x===f));posts.forEach(p=>{const tag=(p.querySelector('.tag')?.textContent||'').toUpperCase();p.hidden=key!=='all'&&!tag.includes(key)})})});
-})();
-
-// Article topic helper
-(function(){
-  if(!location.pathname.includes('/articles/'))return;
-  const path=location.pathname.toLowerCase();let href='../topics/al-development.html',label='AL Development Hub';
-  if(path.includes('rdlc')){href='../topics/rdlc-business-central.html';label='RDLC Reporting Hub'}
-  else if(/api|oauth|httpclient|json|webhook/.test(path)){href='../topics/business-central-api.html';label='Business Central API & Integration Hub'}
-  const nav=document.querySelector('.nav');
-  if(nav&&!nav.querySelector('[data-topic-hub]')){const a=document.createElement('a');a.href=href;a.textContent='Topic Hubs';a.dataset.topicHub='true';nav.appendChild(a)}
 })();
 
 // Dynexal AI Assistant
