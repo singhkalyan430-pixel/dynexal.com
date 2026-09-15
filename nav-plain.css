@@ -1,6 +1,7 @@
-/* Dynexal global header — text-only brand + reliable desktop hover navigation */
-.site-header .logo{gap:0!important;align-items:center!important}
-.site-header .logo::before,.site-header .logo::after,.footer .logo::before,.footer .logo::after{content:none!important;display:none!important}
+/* Dynexal global header — branded wordmark + reliable desktop hover navigation */
+.site-header .logo{gap:12px!important;align-items:center!important}
+.site-header .logo::before,.footer .logo::before{content:""!important;display:block!important;width:42px!important;height:42px!important;flex:0 0 42px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important}
+.site-header .logo::after,.footer .logo::after{content:none!important;display:none!important}
 .site-header .logo-mark,.footer .logo-mark{display:none!important;visibility:hidden!important;width:0!important;height:0!important;flex:0 0 0!important;margin:0!important;padding:0!important}
 .site-header .logo-copy,.footer .logo-copy{display:flex!important;flex-direction:column!important;line-height:1.08!important}
 .site-header .logo-copy strong{font-size:23px!important;letter-spacing:-.7px!important;color:#fff!important}
@@ -30,6 +31,8 @@
 }
 
 @media(max-width:900px){
+  .site-header .logo{gap:9px!important}
+  .site-header .logo::before{width:34px!important;height:34px!important;flex-basis:34px!important}
   .site-header .logo-copy strong{font-size:20px!important}
   .site-header .logo-copy small{font-size:10px!important}
   .site-header .nav .has-dropdown{display:block!important;height:auto!important}
