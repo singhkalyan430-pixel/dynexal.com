@@ -1,27 +1,28 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-labelledby="title desc">
-<title id="title">Dynexal</title>
-<desc id="desc">Modern Dynexal logo combining Business Central, AI and AL development technology.</desc>
+<title id="title">Dynexal Technologies</title>
+<desc id="desc">Modern Dynexal Technologies wordmark with a blue and cyan digital D, AI network hub and technology pixels.</desc>
 <defs>
-  <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-    <stop offset="0" stop-color="#087FEA"/>
-    <stop offset="0.55" stop-color="#10CFE0"/>
-    <stop offset="1" stop-color="#0A58B5"/>
+  <linearGradient id="dynexalGradient" x1="20" y1="20" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#17B9FF"/>
+    <stop offset="0.52" stop-color="#087FEA"/>
+    <stop offset="1" stop-color="#0751A4"/>
   </linearGradient>
 </defs>
 <g transform="translate(18 30)">
-  <path d="M55 8h72c52 0 90 39 90 101s-38 101-90 101H55V8Zm39 45v112h24c29 0 48-20 48-56s-19-56-48-56H94Z" fill="url(#g)"/>
-  <path d="M22 153c25 34 66 47 106 37 34-8 60-34 73-70" fill="none" stroke="#11D4E2" stroke-width="9" stroke-linecap="round"/>
-  <path d="M46 104c21-31 58-49 96-45 32 3 60 20 79 45" fill="none" stroke="#158CF0" stroke-width="8" stroke-linecap="round"/>
-  <circle cx="111" cy="129" r="31" fill="#08203C" stroke="#16D9E3" stroke-width="5"/>
-  <circle cx="111" cy="129" r="9" fill="#16D9E3"/>
-  <path d="M111 101v17M111 140v17M83 129h18M121 129h18" stroke="#16D9E3" stroke-width="5" stroke-linecap="round"/>
-  <rect x="13" y="58" width="14" height="14" rx="2" fill="#158CF0"/>
-  <rect x="3" y="82" width="20" height="20" rx="3" fill="#10CFE0"/>
-  <rect x="15" y="111" width="15" height="15" rx="2" fill="#087FEA"/>
+  <path d="M51 20h48c43 0 70 28 70 70s-27 70-70 70H51V20Z" fill="url(#dynexalGradient)"/>
+  <path d="M82 51v78h17c23 0 38-15 38-39s-15-39-38-39H82Z" fill="#06172D"/>
+  <path d="M37 119c19 23 48 33 76 27 25-5 44-22 55-45" fill="none" stroke="#42E5FF" stroke-width="8" stroke-linecap="round"/>
+  <path d="M55 70c15-20 39-31 64-29 21 2 39 13 52 29" fill="none" stroke="#27C9FF" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="104" cy="91" r="25" fill="#08203C" stroke="#4BE8FF" stroke-width="4"/>
+  <circle cx="104" cy="91" r="7" fill="#4BE8FF"/>
+  <path d="M104 68v14M104 100v14M81 91h14M113 91h14" stroke="#4BE8FF" stroke-width="4" stroke-linecap="round"/>
+  <rect x="22" y="35" width="13" height="13" rx="3" fill="#17B9FF"/>
+  <rect x="10" y="57" width="18" height="18" rx="4" fill="#42E5FF"/>
+  <rect x="20" y="84" width="14" height="14" rx="3" fill="#087FEA"/>
 </g>
-<text x="305" y="150" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="102" font-weight="800" letter-spacing="-4" fill="#102A4A">Dyn<tspan fill="#10BFD2">ex</tspan>al</text>
-<text x="310" y="190" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21" font-weight="600" letter-spacing="5" fill="#102A4A">INNOVATE TODAY. AUTOMATE TOMORROW.</text>
-<line x1="310" y1="230" x2="355" y2="230" stroke="#10BFD2" stroke-width="4"/>
-<text x="375" y="237" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="17" fill="#27476A">Microsoft Dynamics 365 Business Central  |  AI  |  AL Development  |  Solutions</text>
-<line x1="1110" y1="230" x2="1155" y2="230" stroke="#10BFD2" stroke-width="4"/>
+<text x="245" y="145" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="88" font-weight="800" letter-spacing="-3" fill="#102A4A">Dyn<tspan fill="#10BFD2">ex</tspan>al</text>
+<text x="250" y="182" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700" letter-spacing="2" fill="#2A527A">TECHNOLOGIES</text>
+<text x="250" y="222" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="19" font-weight="600" letter-spacing="4" fill="#5C7694">LEARN  |  BUILD  |  INTEGRATE  |  GROW</text>
+<line x1="250" y1="245" x2="300" y2="245" stroke="#10BFD2" stroke-width="4" stroke-linecap="round"/>
+<line x1="1020" y1="245" x2="1070" y2="245" stroke="#10BFD2" stroke-width="4" stroke-linecap="round"/>
 </svg>
