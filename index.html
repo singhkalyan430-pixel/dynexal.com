@@ -35,10 +35,7 @@
 <body>
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="logo" href="index.html" aria-label="Dynexal Technologies home">
-        <span class="logo-mark" aria-hidden="true"></span>
-        <span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn&nbsp; | &nbsp;Build&nbsp; | &nbsp;Integrate&nbsp; | &nbsp;Grow</small></span>
-      </a>
+      <a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn&nbsp; | &nbsp;Build&nbsp; | &nbsp;Integrate&nbsp; | &nbsp;Grow</small></span></a>
       <nav class="nav" aria-label="Main navigation">
         <a class="active" href="index.html" aria-current="page">Home</a>
         <a href="tutorials.html">Tutorials</a>
@@ -52,3 +49,100 @@
   </header>
 
   <main>
+    <section class="hero-showcase" id="home">
+      <div class="hero-bg-glow"></div>
+      <div class="container hero-showcase-inner">
+        <div class="hero-copy">
+          <div class="hero-badge">MICROSOFT DYNAMICS 365 BUSINESS CENTRAL&nbsp; | &nbsp;AL&nbsp; | &nbsp;INTEGRATIONS&nbsp; | &nbsp;AI</div>
+          <h1>Learn. Build.<br><span>Integrate.</span> Grow.</h1>
+          <p>Practical tutorials, projects and professional guidance for Microsoft Dynamics 365 Business Central developers and technical consultants.</p>
+          <div class="hero-actions">
+            <a class="btn hero-primary" href="tutorials.html"><span class="play-icon">▶</span>Explore Tutorials</a>
+            <a class="btn hero-secondary" href="services.html">Our Services</a>
+          </div>
+          <div class="hero-feature-row">
+            <div><span class="feature-icon">&lt;/&gt;</span><strong>AL<br>Development</strong></div>
+            <div><span class="feature-icon">▥</span><strong>Reports<br>&amp; RDLC</strong></div>
+            <div><span class="feature-icon">↔</span><strong>APIs &amp;<br>Integrations</strong></div>
+            <div><span class="feature-icon">◈</span><strong>Business Central<br>Customization</strong></div>
+            <div><span class="feature-icon">✦</span><strong>AI &amp;<br>Automation</strong></div>
+            <div><span class="feature-icon">◎</span><strong>Projects &amp;<br>Case Studies</strong></div>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-label="Dynexal Business Central development workspace">
+          <div class="hero-window dashboard-window">
+            <div class="window-bar"><span></span><span></span><span></span><b>Dynamics 365 Business Central</b></div>
+            <div class="window-body">
+              <aside class="bc-sidebar"><strong>◉</strong><span>Home</span><span>Sales</span><span>Purchases</span><span>Inventory</span><span>Finance</span><span>Reports</span><span>Setup</span></aside>
+              <div class="bc-main">
+                <div class="bc-greeting">Good morning! <small>Business Manager</small></div>
+                <div class="kpi-grid"><div><small>Sales Orders</small><strong>46</strong></div><div><small>Purchase Orders</small><strong>28</strong></div><div><small>Customers</small><strong>124</strong></div><div><small>Items</small><strong>512</strong></div></div>
+                <div class="chart-row"><div class="mini-chart"><small>Sales This Month</small><div class="bars"><i style="height:35%"></i><i style="height:48%"></i><i style="height:42%"></i><i style="height:65%"></i><i style="height:82%"></i><i style="height:58%"></i></div></div><div class="donut-card"><small>Top Customers</small><div class="donut"></div></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-window code-window">
+            <div class="window-bar"><span></span><span></span><span></span><b>AL Development</b></div>
+            <pre><code><em>pageextension</em> 50100 <mark>"CustCardExt"</mark>
+extends <mark>"Customer Card"</mark>
+{
+  layout
+  {
+    addlast(General)
+    {
+      field(<mark>"Dynexal Note"</mark>; "Dynexal Note")
+      {
+        ApplicationArea = All;
+      }
+    }
+  }
+}</code></pre>
+          </div>
+          <div class="hero-quote">“Turning<br><b>ideas into</b><br>solutions”<i></i></div>
+          <div class="hero-brand-badge"><span class="ms-squares"><i></i><i></i><i></i><i></i></span><strong>Microsoft<br>Dynamics 365<br>Business Central</strong></div>
+          <div class="hero-desk-glow"></div>
+        </div>
+      </div>
+      <div class="container hero-bottom-strip">
+        <div><span>◆</span><strong>Learn Practical Skills</strong><small>Step-by-step tutorials</small></div>
+        <div><span>✦</span><strong>Build Real Projects</strong><small>From concepts to solutions</small></div>
+        <div><span>♟</span><strong>Grow Your Career</strong><small>With in-demand skills</small></div>
+        <a href="contact.html"><span>▣</span>Ask Dynexal AI</a>
+      </div>
+    </section>
+
+    <section class="section" id="tutorials">
+      <div class="container">
+        <div class="section-heading"><div><span class="section-label">LATEST FROM DYNEXAL TECHNOLOGIES</span><h2>Featured Business Central Tutorials</h2></div><a class="view-all" href="tutorials.html">View all articles →</a></div>
+        <div class="cards">
+          <article class="card featured"><div class="card-icon">AL</div><span class="tag">AL DEVELOPMENT</span><h3>Getting Started with AL Development in Business Central</h3><p>A beginner-friendly path from your first extension to working with tables, pages, reports and extensions.</p><a href="articles/getting-started-with-al.html">Read AL development tutorial →</a></article>
+          <article class="card"><div class="card-icon">RD</div><span class="tag">REPORTING</span><h3>Building RDLC Reports in Business Central</h3><p>Understand dataset design, report layouts and practical RDLC development workflows.</p><a href="articles/rdlc-reports-business-central.html">Read Business Central RDLC guide →</a></article>
+          <article class="card"><div class="card-icon">API</div><span class="tag">INTEGRATION</span><h3>Business Central API Integration</h3><p>Learn the fundamentals of APIs, authentication, data exchange and integration patterns.</p><a href="articles/business-central-api-integration.html">Read Business Central API guide →</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="topics section" id="topics">
+      <div class="container">
+        <div class="section-heading centered"><div><span class="section-label">LEARN BY TOPIC</span><h2>Explore Dynexal Technologies</h2><p>Focused learning paths for practical Business Central development.</p></div></div>
+        <div class="topic-grid">
+          <a class="topic" href="topics/al-development.html"><span class="topic-icon">⌘</span><div><h3>AL Development</h3><p>Language fundamentals, extensions, debugging and best practices.</p></div><b>→</b></a>
+          <a class="topic" href="topics/al-development.html"><span class="topic-icon">▣</span><div><h3>Tables &amp; Pages</h3><p>Build clean data models, list pages, cards and role centers.</p></div><b>→</b></a>
+          <a class="topic" href="topics/rdlc-business-central.html"><span class="topic-icon">▤</span><div><h3>Reports &amp; RDLC</h3><p>Datasets, layouts, Report Builder and reporting techniques.</p></div><b>→</b></a>
+          <a class="topic" href="topics/business-central-api.html"><span class="topic-icon">↔</span><div><h3>APIs &amp; Integrations</h3><p>Connect Business Central with web apps and external services.</p></div><b>→</b></a>
+          <a class="topic" href="articles/shopify-business-central-integration.html"><span class="topic-icon">◈</span><div><h3>E-commerce Projects</h3><p>Explore Shopify, orders, customers, inventory and sync concepts.</p></div><b>→</b></a>
+          <a class="topic" href="articles/ai-business-central-complete-guide.html"><span class="topic-icon">✦</span><div><h3>AI + Business Central</h3><p>Practical ideas for bringing AI and automation into ERP workflows.</p></div><b>→</b></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="project-section section" id="projects"><div class="container project-grid"><div><span class="section-label">BUILD IN PUBLIC</span><h2>Real Projects.<br>Practical Learning.</h2><p>Explore complete Dynexal Technologies project case studies covering e-commerce integration, Role Center dashboards, RDLC reporting and Business Central APIs.</p><a class="btn primary" href="portfolio.html">Explore Portfolio →</a></div><div class="project-list"><a class="project-item" href="projects/ecommerce-integration.html"><span>01</span><div><strong>E-commerce Integration</strong><small>Orders • Customers • Inventory • APIs</small></div></a><a class="project-item" href="projects/role-center-dashboard.html"><span>02</span><div><strong>Role Center Dashboard</strong><small>Cues • KPIs • Charts • Navigation</small></div></a><a class="project-item" href="projects/rdlc-reporting-toolkit.html"><span>03</span><div><strong>Reporting Toolkit</strong><small>RDLC • Word layouts • Datasets</small></div></a><a class="project-item" href="projects/api-integration.html"><span>04</span><div><strong>API Integration</strong><small>REST • OAuth • JSON • Webhooks</small></div></a></div></div></section>
+
+    <section class="newsletter section" id="about"><div class="container newsletter-box"><div><span class="section-label">WORK WITH DYNEXAL TECHNOLOGIES</span><h2>Need Business Central help?</h2><p>Explore Dynexal Technologies services for development, integrations, reporting and AI-focused technical work.</p></div><a class="btn secondary" href="services.html">View Services →</a></div></section>
+  </main>
+
+  <footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span><a href="about.html">About</a> · <a href="services.html">Services</a> · <a href="portfolio.html">Portfolio</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal Technologies</span></div></footer>
+  <script src="script.js?v=20260915-logo2"></script>
+</body>
+</html>
