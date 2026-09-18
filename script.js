@@ -184,3 +184,24 @@
   form.addEventListener('submit',e=>{e.preventDefault();const q=input.value.trim();if(!q)return;add(q,'user');input.value='';ask(q)});
   panel.querySelectorAll('.ai-q').forEach(b=>b.addEventListener('click',()=>{const q=b.textContent.trim();add(q,'user');ask(q)}));
 })();
+
+
+// Homepage automatic hero carousel
+(function(){
+  const slides=[...document.querySelectorAll('.hero-slide-full')];
+  const dots=[...document.querySelectorAll('.hero-slider-dot')];
+  if(!slides.length)return;
+  let current=0;
+  const show=i=>{
+    current=(i+slides.length)%slides.length;
+    slides.forEach((s,n)=>s.classList.toggle('active',n===current));
+    dots.forEach((d,n)=>d.classList.toggle('active',n===current));
+  };
+  let timer=setInterval(()=>show(current+1),5000);
+  dots.forEach((d,n)=>d.addEventListener('click',()=>{
+    show(n);
+    clearInterval(timer);
+    timer=setInterval(()=>show(current+1),5000);
+  }));
+  show(0);
+})();
