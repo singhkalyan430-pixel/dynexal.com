@@ -1,4 +1,7 @@
 /* Dynexal global header — clean plain navigation */
+/* Branding contract: every page shows the same D mark + Dynexal Technologies wordmark. */
+.site-header .logo > span:not(.logo-mark):not(.logo-copy){display:flex!important;flex-direction:column!important;line-height:1.08!important;color:#fff!important;font-size:23px!important;font-weight:800!important;letter-spacing:-.7px!important}
+.site-header .logo > span:not(.logo-mark):not(.logo-copy)::after{content:"Learn | Build | Integrate | Grow";display:block!important;margin-top:5px!important;font-size:12px!important;font-weight:500!important;color:#9eb0c7!important;letter-spacing:.2px!important}
 .site-header .logo{gap:12px!important;align-items:center!important;white-space:nowrap!important}
 .site-header .logo::before,.footer .logo::before{content:""!important;display:block!important;width:42px!important;height:42px!important;flex:0 0 42px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important}
 .site-header .logo:has(.logo-mark)::before,.footer .logo:has(.logo-mark)::before{display:none!important;content:none!important}
