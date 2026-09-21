@@ -1,8 +1,6 @@
 /* Dynexal global header — clean plain navigation */
 .site-header .logo{gap:12px!important;align-items:center!important;white-space:nowrap!important}
-/* Pages whose header has no explicit logo-mark get the branded D mark. */
 .site-header .logo::before,.footer .logo::before{content:""!important;display:block!important;width:42px!important;height:42px!important;flex:0 0 42px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important}
-/* Home and pages with an explicit logo-mark should use that mark only. */
 .site-header .logo:has(.logo-mark)::before,.footer .logo:has(.logo-mark)::before{display:none!important;content:none!important}
 .site-header .logo::after,.footer .logo::after{content:none!important;display:none!important}
 .site-header .logo-mark,.footer .logo-mark{display:block!important;visibility:visible!important;width:42px!important;height:42px!important;flex:0 0 42px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important;color:transparent!important;font-size:0!important}
@@ -26,5 +24,11 @@
 .site-header .logo-copy strong{font-size:20px!important}
 .site-header .logo-copy small{font-size:10px!important}
 .site-header .nav .nav-arrow{display:none!important}
+}
+/* Homepage hero fix: keep the blue value strip at the bottom, not over the hero copy. */
+.hero-showcase{position:relative!important}
+.hero-showcase .hero-bottom-strip{position:absolute!important;left:50%!important;bottom:0!important;transform:translateX(-50%)!important;width:min(1320px,92%)!important;margin:0!important}
+@media(max-width:900px){
+.hero-showcase .hero-bottom-strip{position:absolute!important;left:50%!important;bottom:0!important;transform:translateX(-50%)!important;width:92%!important}
 }
 :focus-visible{outline:3px solid #38bdf8!important;outline-offset:3px!important}
