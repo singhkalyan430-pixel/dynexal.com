@@ -1,14 +1,22 @@
-// Dynexal global branding — text-only wordmark
+// Dynexal global branding — consistent D mark + wordmark
 (function(){
   document.querySelectorAll('header .logo, footer .logo').forEach(logo=>{
-    const mark=logo.querySelector('.logo-mark');
-    if(mark)mark.remove();
+    let mark=logo.querySelector('.logo-mark');
+    if(!mark){
+      mark=document.createElement('span');
+      mark.className='logo-mark';
+      mark.setAttribute('aria-hidden','true');
+      logo.insertBefore(mark,logo.firstChild);
+    }
     let copy=logo.querySelector('.logo-copy');
     if(!copy){
-      const existing=[...logo.children].find(el=>el.tagName==='SPAN');
-      copy=document.createElement('span');copy.className='logo-copy';
-      if(existing){const text=existing.textContent.trim();existing.remove();copy.innerHTML='<strong></strong><small></small>';copy.querySelector('strong').textContent=text||'Dynexal Technologies'}
-      else copy.innerHTML='<strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small>';
+      const spans=[...logo.children].filter(el=>el.tagName==='SPAN' && el!==mark);
+      const text=spans.map(el=>el.textContent.trim()).join(' ').trim() || 'Dynexal Technologies';
+      spans.forEach(el=>el.remove());
+      copy=document.createElement('span');
+      copy.className='logo-copy';
+      copy.innerHTML='<strong></strong><small></small>';
+      copy.querySelector('strong').textContent=text;
       logo.appendChild(copy);
     }
     const strong=copy.querySelector('strong');
@@ -18,7 +26,7 @@
   });
 })();
 
-// Shared global navigation — one consistent structure on every page
+// Shared global navigation — one plain, consistent structure on every page
 (function(){
   const nav=document.querySelector('.nav');
   if(!nav)return;
@@ -43,67 +51,41 @@
   nav.innerHTML='';
   links.forEach(([label,href,key])=>{
     const a=document.createElement('a');
-    a.href=href;a.textContent=label;
+    a.href=href;
+    a.textContent=label;
     if(key===current){a.classList.add('active');a.setAttribute('aria-current','page')}
     nav.appendChild(a);
   });
 })();
 
-// Shared responsive navigation + hover dropdown styling
+// Plain desktop navigation — no dropdowns, no arrows
 (function(){
   const nav=document.querySelector('.nav');
   if(!nav)return;
   const style=document.createElement('style');
   style.textContent=`
-  .site-header .logo{gap:0}
-  .site-header .logo-mark,.footer .logo-mark{display:none!important}
-  .site-header .logo-copy{display:flex;flex-direction:column;line-height:1.08}
-  .site-header .logo-copy strong{font-size:23px;letter-spacing:-.7px}
-  .site-header .logo-copy small{margin-top:5px;font-size:13px;font-weight:500;color:#9eb0c7;letter-spacing:.2px}
-  .footer .logo-copy{display:flex;flex-direction:column;line-height:1.08}
-  .footer .logo-copy strong{font-size:18px}
-  .footer .logo-copy small{margin-top:4px;font-size:10px;color:#91a0b6;font-weight:500}
-  @media(min-width:901px){
-    .nav{overflow:visible}
-    .nav .has-dropdown{position:relative;height:82px;display:flex;align-items:center}
-    .nav .has-dropdown>a{height:82px;display:flex;align-items:center;position:relative}
-    .nav .has-dropdown>a:after{display:none!important;content:none!important}
-    .nav .dropdown-menu{position:absolute;top:calc(100% - 1px);left:50%;transform:translate(-50%,8px);min-width:245px;padding:8px;background:rgba(7,18,34,.99);border:1px solid #29415f;border-radius:12px;box-shadow:0 20px 45px rgba(0,0,0,.38);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .16s ease,transform .16s ease,visibility .16s ease;z-index:1000}
-    .nav .dropdown-menu:before{content:"";position:absolute;top:-8px;left:0;right:0;height:8px}
-    .nav .dropdown-menu a{display:block!important;height:auto!important;padding:11px 13px;border-radius:8px;color:#cbd8e8;font-size:14px;line-height:1.35;white-space:nowrap}
-    .nav .dropdown-menu a:hover,.nav .dropdown-menu a:focus{background:#123258;color:#fff}
-    .nav .has-dropdown:hover>.dropdown-menu,.nav .has-dropdown:focus-within>.dropdown-menu{opacity:1;visibility:visible;pointer-events:auto;transform:translate(-50%,0)}
-  }
-  @media(max-width:900px){
-    .nav{display:none}
-    .menu-btn{display:block}
-    .site-header .logo-copy strong{font-size:20px}
-    .site-header .logo-copy small{font-size:11px}
-  }
+    .site-header .logo{display:flex!important;align-items:center!important;gap:11px!important;white-space:nowrap!important}
+    .site-header .logo-mark,.footer .logo-mark{display:block!important;width:42px!important;height:42px!important;flex:0 0 42px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important;color:transparent!important;font-size:0!important}
+    .site-header .logo-copy{display:flex!important;flex-direction:column!important;line-height:1.08!important}
+    .site-header .logo-copy strong{font-size:23px!important;letter-spacing:-.7px!important;color:#fff!important}
+    .site-header .logo-copy small{margin-top:5px!important;font-size:11px!important;font-weight:500!important;color:#9eb0c7!important;letter-spacing:.2px!important}
+    .footer .logo-copy{display:flex!important;flex-direction:column!important;line-height:1.08!important}
+    .footer .logo-copy strong{font-size:18px!important;color:#fff!important}
+    .footer .logo-copy small{margin-top:4px!important;font-size:10px!important;color:#91a0b6!important;font-weight:500!important}
+    .site-header .nav .nav-arrow{display:none!important}
+    @media(min-width:901px){
+      .site-header .nav{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:31px!important;font-size:17px!important;white-space:nowrap!important;overflow:visible!important}
+      .site-header .nav>a{height:82px!important;display:flex!important;align-items:center!important;position:relative!important;color:#cbd5e1!important}
+      .site-header .nav>a:hover,.site-header .nav>a:focus-visible{color:#fff!important}
+      .site-header .nav>a.active:after{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:3px!important;border-radius:4px!important;background:#0aa5ff!important}
+    }
+    @media(max-width:900px){
+      .site-header .logo-mark,.footer .logo-mark{width:34px!important;height:34px!important;flex-basis:34px!important}
+      .site-header .logo-copy strong{font-size:20px!important}
+      .site-header .logo-copy small{font-size:10px!important}
+    }
   `;
   document.head.appendChild(style);
-  const menus={
-    Tutorials:[['AL Development','/topics/al-development.html'],['Tables & Pages','/articles/creating-list-and-card-pages-al.html'],['Reports & RDLC','/topics/rdlc-business-central.html'],['APIs & Integrations','/topics/business-central-api.html'],['AI + Business Central','/articles/ai-business-central-complete-guide.html'],['Interview Preparation','/tutorials.html']],
-    Services:[['AL Development','/services.html#development'],['API & Integrations','/services.html#integration'],['Reports & RDLC','/services.html#reporting'],['AI & Automation','/services.html#ai']],
-    Portfolio:[['E-commerce Integration','/projects/ecommerce-integration.html'],['Role Center Dashboard','/projects/role-center-dashboard.html'],['RDLC Reporting Toolkit','/projects/rdlc-reporting-toolkit.html'],['API Integration','/projects/api-integration.html']],
-    Topics:[['AL Development','/topics/al-development.html'],['Reports & RDLC','/topics/rdlc-business-central.html'],['APIs & Integrations','/topics/business-central-api.html'],['E-commerce Projects','/articles/shopify-business-central-integration.html'],['AI + Business Central','/articles/ai-business-central-complete-guide.html']]
-  };
-  [...nav.querySelectorAll(':scope > a')].forEach(link=>{
-    const label=link.textContent.trim();
-    if(!menus[label]||window.innerWidth<=900)return;
-    const wrap=document.createElement('div');wrap.className='has-dropdown';
-    link.parentNode.insertBefore(wrap,link);wrap.appendChild(link);
-    link.setAttribute('aria-haspopup','true');link.setAttribute('aria-expanded','false');
-    const menu=document.createElement('div');menu.className='dropdown-menu';menu.setAttribute('role','menu');
-    menus[label].forEach(([text,href])=>{const a=document.createElement('a');a.href=href;a.textContent=text;a.setAttribute('role','menuitem');menu.appendChild(a)});
-    wrap.appendChild(menu);
-    const setOpen=open=>link.setAttribute('aria-expanded',String(open));
-    wrap.addEventListener('mouseenter',()=>setOpen(true));
-    wrap.addEventListener('mouseleave',()=>setOpen(false));
-    link.addEventListener('focus',()=>setOpen(true));
-    wrap.addEventListener('focusout',event=>{if(!wrap.contains(event.relatedTarget))setOpen(false)});
-    link.addEventListener('keydown',event=>{if(event.key==='Escape'){setOpen(false);link.blur()}});
-  });
 })();
 
 // Mobile navigation
