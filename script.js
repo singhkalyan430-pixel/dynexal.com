@@ -145,7 +145,7 @@
 // Dynexal AI Assistant
 (function(){
   if(document.getElementById('dynexal-ai-launcher'))return;
-  const API='https://dynexal-ai-assistant.vercel.app/api/chat',history=[];
+  const API='/api/chat',history=[];
   const style=document.createElement('style');style.textContent=`
   #dynexal-ai-launcher{position:fixed;right:22px;bottom:22px;z-index:9998;border:0;border-radius:999px;background:linear-gradient(135deg,#1d4ed8,#06b6d4);color:#fff;padding:14px 19px;font:700 14px system-ui;box-shadow:0 12px 30px rgba(0,0,0,.3);cursor:pointer}
   #dynexal-ai-panel{position:fixed;right:22px;bottom:78px;width:min(400px,calc(100vw - 28px));height:min(600px,calc(100vh - 110px));z-index:9999;display:none;flex-direction:column;background:#0b1220;color:#eaf2ff;border:1px solid #263a5b;border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.45);overflow:hidden;font-family:system-ui,sans-serif}
