@@ -228,7 +228,7 @@
   track.style.transform='translate3d(0,0,0)';
 
   const update=()=>{
-    track.style.transform='translate3d('+(-current*100)+'%,0,0)';
+    track.style.transform='translate3d('+(-current*33.3333333333)+'%,0,0)';
     slides.forEach((s,n)=>s.classList.toggle('active',n===current));
     dots.forEach((d,n)=>{
       d.classList.toggle('active',n===current);
