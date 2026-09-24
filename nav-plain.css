@@ -392,3 +392,95 @@ html[data-theme="light"] .theme-toggle:hover{
     margin:6px 0 0!important;
   }
 }
+
+
+/* =========================================================
+   DARK MODE — CONTENT PAGES
+   ========================================================= */
+html[data-theme="dark"] .article,
+html[data-theme="dark"] .case-page,
+html[data-theme="dark"] .legal-page,
+html[data-theme="dark"] .services-page,
+html[data-theme="dark"] .contact-page,
+html[data-theme="dark"] .portfolio-page{
+  color:#e7eef8!important;
+}
+html[data-theme="dark"] .article h1,
+html[data-theme="dark"] .article h2,
+html[data-theme="dark"] .case-page h1,
+html[data-theme="dark"] .case-page h2,
+html[data-theme="dark"] .legal-wrap h1,
+html[data-theme="dark"] .legal-wrap h2,
+html[data-theme="dark"] .services-hero h1,
+html[data-theme="dark"] .services-page h2,
+html[data-theme="dark"] .contact-hero h1,
+html[data-theme="dark"] .contact-card h2{
+  color:#f2f7ff!important;
+}
+html[data-theme="dark"] .article p,
+html[data-theme="dark"] .article li,
+html[data-theme="dark"] .intro,
+html[data-theme="dark"] .case-page p,
+html[data-theme="dark"] .case-page li,
+html[data-theme="dark"] .legal-wrap p,
+html[data-theme="dark"] .legal-wrap li,
+html[data-theme="dark"] .services-hero p,
+html[data-theme="dark"] .service-card p,
+html[data-theme="dark"] .service-card li,
+html[data-theme="dark"] .contact-hero p,
+html[data-theme="dark"] .contact-card>p,
+html[data-theme="dark"] .contact-info p,
+html[data-theme="dark"] .contact-info li{
+  color:#aebdd0!important;
+}
+html[data-theme="dark"] .article code:not(pre code){
+  background:#17263a!important;
+  color:#d8e7fa!important;
+}
+html[data-theme="dark"] .article .note,
+html[data-theme="dark"] .legal-wrap .notice{
+  background:#10223a!important;
+  border-color:#294667!important;
+  color:#cbd9e9!important;
+}
+html[data-theme="dark"] .article-footer{
+  border-color:#29405d!important;
+}
+html[data-theme="dark"] .service-card,
+html[data-theme="dark"] .contact-card{
+  background:#0d1a2b!important;
+  border-color:#263b55!important;
+  box-shadow:0 12px 32px rgba(0,0,0,.22)!important;
+}
+html[data-theme="dark"] .process-step{
+  background:#0d1a2b!important;
+  border-color:#263b55!important;
+}
+html[data-theme="dark"] .tech span{
+  background:#17263a!important;
+  color:#d4e1f0!important;
+}
+html[data-theme="dark"] .legal-page,
+html[data-theme="dark"] .article,
+html[data-theme="dark"] .case-page,
+html[data-theme="dark"] .services-page,
+html[data-theme="dark"] .contact-page{
+  background:#07111f!important;
+}
+html[data-theme="dark"] .portfolio-page{
+  background:#07111f!important;
+}
+html[data-theme="dark"] .google-form-wrap{
+  background:#0d1a2b!important;
+  border-color:#263b55!important;
+}
+html[data-theme="dark"] .updated,
+html[data-theme="dark"] .meta{
+  color:#8498b1!important;
+}
+html[data-theme="dark"] .cta{
+  background:#030b17!important;
+}
+html[data-theme="dark"] .flow{
+  background:#030b17!important;
+}
