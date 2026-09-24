@@ -270,3 +270,125 @@
     display:block!important;
   }
 }
+
+
+/* =========================================================
+   GLOBAL DARK / LIGHT MODE
+   ========================================================= */
+.theme-toggle{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  height:38px!important;
+  min-width:76px!important;
+  padding:0 12px!important;
+  margin-left:2px!important;
+  border:1px solid rgba(148,163,184,.35)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.07)!important;
+  color:#dbeafe!important;
+  font:600 13px/1 system-ui,sans-serif!important;
+  cursor:pointer!important;
+  transition:all .2s ease!important;
+}
+.theme-toggle:hover{
+  background:rgba(255,255,255,.14)!important;
+  border-color:rgba(56,189,248,.7)!important;
+  color:#fff!important;
+}
+.theme-icon{font-size:16px!important;line-height:1!important}
+.theme-label{font-size:12px!important}
+
+html[data-theme="dark"] body{
+  background:#07111f!important;
+  color:#e7eef8!important;
+}
+html[data-theme="dark"] .site-header{
+  background:rgba(3,10,22,.98)!important;
+  border-bottom-color:#20344f!important;
+}
+html[data-theme="dark"] .section,
+html[data-theme="dark"] .topics{
+  background:#07111f!important;
+  color:#e7eef8!important;
+}
+html[data-theme="dark"] .section-heading p,
+html[data-theme="dark"] .card p,
+html[data-theme="dark"] .topic p,
+html[data-theme="dark"] .newsletter-box p{
+  color:#9fb0c4!important;
+}
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .topic{
+  background:#0d1a2b!important;
+  border-color:#203550!important;
+  color:#edf4ff!important;
+}
+html[data-theme="dark"] .card h3,
+html[data-theme="dark"] .topic h3{
+  color:#f2f7ff!important;
+}
+html[data-theme="dark"] .project-section{
+  background:#030a14!important;
+}
+html[data-theme="dark"] .newsletter-box{
+  background:#0d1a2b!important;
+  border-color:#203550!important;
+}
+html[data-theme="dark"] .footer{
+  background:#030913!important;
+}
+html[data-theme="dark"] .footer a{
+  color:#b8c7da!important;
+}
+html[data-theme="dark"] .footer a:hover{
+  color:#fff!important;
+}
+html[data-theme="dark"] .site-header .nav>a{
+  color:#c7d4e5!important;
+}
+html[data-theme="dark"] .site-header .nav>a:hover{
+  color:#fff!important;
+}
+
+/* Keep the homepage hero intentionally dark in both themes. */
+html[data-theme="dark"] .hero-showcase{
+  background:#020916!important;
+}
+html[data-theme="dark"] .hero-showcase:before{
+  opacity:.95!important;
+}
+
+/* Dropdowns follow the active theme. */
+html[data-theme="dark"] .site-header .dropdown-menu{
+  background:#07111f!important;
+  border-color:#29415f!important;
+}
+html[data-theme="dark"] .site-header .dropdown-menu a{
+  color:#cbd8e8!important;
+}
+html[data-theme="dark"] .site-header .dropdown-menu a:hover{
+  background:#123258!important;
+  color:#fff!important;
+}
+
+/* Light theme surfaces stay clean when explicitly selected. */
+html[data-theme="light"] body{background:#f7f9fc!important;color:#172033!important}
+html[data-theme="light"] .theme-toggle{
+  background:rgba(7,18,34,.06)!important;
+  color:#24364d!important;
+  border-color:#cbd5e1!important;
+}
+html[data-theme="light"] .theme-toggle:hover{
+  background:rgba(7,18,34,.11)!important;
+  color:#07111f!important;
+}
+@media(max-width:900px){
+  .theme-toggle{
+    width:100%!important;
+    min-width:0!important;
+    height:42px!important;
+    margin:6px 0 0!important;
+  }
+}
