@@ -168,22 +168,80 @@
 })();
 
 
-// Homepage automatic hero carousel
+// Homepage automatic hero carousel — right to left
 (function(){
   const slides=[...document.querySelectorAll('.hero-slide-full')];
   const dots=[...document.querySelectorAll('.hero-slider-dot')];
   if(!slides.length)return;
+
   let current=0;
-  const show=i=>{
-    current=(i+slides.length)%slides.length;
-    slides.forEach((s,n)=>s.classList.toggle('active',n===current));
-    dots.forEach((d,n)=>d.classList.toggle('active',n===current));
+  let timer=null;
+  let animating=false;
+  const duration=800;
+
+  const updateDots=()=>{
+    dots.forEach((d,n)=>{
+      d.classList.toggle('active',n===current);
+      d.setAttribute('aria-selected',n===current?'true':'false');
+    });
   };
-  let timer=setInterval(()=>show(current+1),5000);
+
+  const show=(nextIndex,force=false)=>{
+    const next=(nextIndex+slides.length)%slides.length;
+    if(animating && !force)return;
+    if(next===current)return;
+
+    const outgoing=slides[current];
+    const incoming=slides[next];
+    animating=true;
+
+    incoming.classList.remove('active','slide-out-left');
+    // Start the next slide just outside the right edge.
+    incoming.style.transform='translateX(100%)';
+    incoming.style.visibility='visible';
+    incoming.style.zIndex='2';
+    void incoming.offsetWidth;
+
+    outgoing.classList.remove('active');
+    outgoing.classList.add('slide-out-left');
+    outgoing.style.zIndex='1';
+
+    incoming.classList.add('active');
+    incoming.style.transform='translateX(0)';
+    current=next;
+    updateDots();
+
+    window.setTimeout(()=>{
+      outgoing.classList.remove('slide-out-left');
+      outgoing.style.transform='';
+      outgoing.style.visibility='';
+      outgoing.style.zIndex='';
+      incoming.style.transform='';
+      incoming.style.visibility='';
+      incoming.style.zIndex='';
+      animating=false;
+    },duration+40);
+  };
+
+  const restart=()=>{
+    window.clearInterval(timer);
+    timer=window.setInterval(()=>show(current+1),5000);
+  };
+
   dots.forEach((d,n)=>d.addEventListener('click',()=>{
+    if(n===current)return;
     show(n);
-    clearInterval(timer);
-    timer=setInterval(()=>show(current+1),5000);
+    restart();
   }));
-  show(0);
+
+  // First slide is visible immediately; then advance every 5 seconds.
+  slides.forEach((s,n)=>{
+    s.classList.remove('active','slide-out-left');
+    s.style.transform=n===0?'translateX(0)':'translateX(100%)';
+    s.style.visibility=n===0?'visible':'hidden';
+    s.style.zIndex=n===0?'2':'';
+  });
+  slides[0].classList.add('active');
+  updateDots();
+  restart();
 })();
