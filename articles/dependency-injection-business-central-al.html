@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="description" content="Learn dependency injection patterns in Microsoft Dynamics 365 Business Central AL using interfaces, replaceable implementations, factories and test-friendly architecture."><meta name="author" content="Dynexal"><meta name="robots" content="index,follow"><link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg"><link rel="canonical" href="https://dynexal.com/articles/dependency-injection-business-central-al.html"><meta property="og:type" content="article"><meta property="og:url" content="https://dynexal.com/articles/dependency-injection-business-central-al.html"><meta property="og:title" content="Dependency Injection in Business Central AL: Practical Guide"><meta property="og:description" content="A practical guide to dependency injection patterns in Business Central AL using interfaces and replaceable implementations."><meta property="og:site_name" content="Dynexal"><title>Dependency Injection in Business Central AL: Practical Guide | Dynexal</title><link rel="stylesheet" href="../styles.css"><style>.article{max-width:900px;margin:0 auto;padding:70px 20px 100px}.article-head{margin-bottom:42px}.tag{color:#426ee5;font-weight:900;letter-spacing:1px;font-size:12px}.article h1{font-size:48px;line-height:1.12;margin:12px 0 18px}.intro{font-size:20px;line-height:1.7;color:#65748a}.article h2{font-size:30px;margin:48px 0 15px}.article h3{font-size:22px;margin:32px 0 12px}.article p,.article li{font-size:17px;line-height:1.75;color:#34445a}.article pre{background:#0b1220;color:#e7edf7;padding:20px;border-radius:12px;overflow:auto;line-height:1.6}.article code{font-family:Consolas,monospace}.note{background:#eef4ff;border-left:4px solid #426ee5;padding:16px 18px;border-radius:8px;margin:22px 0}.warning{background:#fff7e8;border-left:4px solid #e5a62b;padding:16px 18px;border-radius:8px;margin:22px 0}.related{background:#f7f9fc;border:1px solid #e2e7ef;padding:22px;border-radius:14px;margin-top:45px}.related a{color:#426ee5;font-weight:800}.meta{color:#7b8798;font-size:14px}@media(max-width:600px){.article{padding-top:45px}.article h1{font-size:36px}.article h2{font-size:26px}}</style><script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Dependency Injection in Business Central AL: Practical Guide","description":"A practical guide to dependency injection patterns in Microsoft Dynamics 365 Business Central AL.","author":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"},"publisher":{"@type":"Organization","name":"Dynexal","url":"https://dynexal.com/"}}</script><link rel="stylesheet" href="../nav-plain.css?v=20260924-theme5"></head><body><header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header><main class="article"><div class="article-head"><span class="tag">AL DEVELOPMENT • DESIGN PATTERNS</span><h1>Dependency Injection in Business Central AL: Practical Guide</h1><p class="intro">Learn how to apply dependency-injection principles in Microsoft Dynamics 365 Business Central AL using interfaces, replaceable implementations and factory-style selection.</p><p class="meta">Dynexal · Business Central AL Development · Tutorial #17</p></div>
+<h2>What is dependency injection?</h2><p>Dependency injection (DI) is a design technique where a component receives the behavior it depends on instead of creating or hard-coding that dependency itself.</p><div class="note"><strong>Simple idea:</strong> The business process says what behavior it needs; another component supplies the implementation.</div>
+<h2>Why use DI in Business Central AL?</h2><ul><li>Reduce direct dependencies.</li><li>Make implementations replaceable.</li><li>Support multiple providers or strategies.</li><li>Improve testability.</li><li>Keep integration-specific logic outside core business processes.</li></ul>
+<h2>Interfaces are the foundation</h2><p>AL interfaces provide a natural contract between a consumer and an implementation.</p><pre><code>interface "Notification Provider"
+{
+    procedure SendMessage(Message: Text): Boolean;
+}</code></pre>
+<h2>Implement the contract</h2><pre><code>codeunit 50140 "Email Notification Provider" implements "Notification Provider"
+{
+    procedure SendMessage(Message: Text): Boolean
+    begin
+        // Email implementation
+        exit(true);
+    end;
+}</code></pre>
+<h2>Inject the dependency</h2><p>A procedure can receive the interface as a parameter. The consumer does not need to know which concrete provider is being used.</p><pre><code>procedure NotifyCustomer(
+    Provider: Interface "Notification Provider";
+    Message: Text): Boolean
+begin
+    exit(Provider.SendMessage(Message));
+end;</code></pre>
+<h2>Enum + interface pattern</h2><p>An enum can represent the business choice while the interface represents the behavior.</p><pre><code>enum 50140 "Notification Method"
+{
+    Extensible = true;
+
+    value(0; Email) { }
+    value(1; SMS) { }
+}</code></pre><p>A factory-style codeunit can map the selected enum value to the appropriate implementation. This keeps provider-selection logic in one place.</p>
+<h2>Dependency injection for integrations</h2><p>DI is useful when Business Central connects to multiple CRM, e-commerce, shipping or middleware providers. Define a common contract and keep each provider's HTTP, authentication, JSON and mapping logic inside its implementation.</p><pre><code>interface "Customer Sync Provider"
+{
+    procedure SyncCustomer(CustomerNo: Code[20]): Boolean;
+}</code></pre>
+<h2>Example architecture</h2><pre><code>Business Process
+       |
+       v
+Interface Contract
+       |
+   +---+---+
+   |   |   |
+Provider A  Provider B  Test Provider</code></pre><p>The business process depends on the contract. Implementations can change independently as long as they satisfy that contract.</p>
+<h2>DI and automated testing</h2><p>A production implementation may call an external service, while a test implementation can return predictable results without making a real HTTP request.</p><pre><code>codeunit 50142 "Test Notification Provider"
+    implements "Notification Provider"
+{
+    procedure SendMessage(Message: Text): Boolean
+    begin
+        exit(true);
+    end;
+}</code></pre>
+<h2>DI vs direct codeunit dependency</h2><table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left;padding:12px;border-bottom:1px solid #d9e0ea">Direct dependency</th><th style="text-align:left;padding:12px;border-bottom:1px solid #d9e0ea">Interface-based dependency</th></tr><tr><td style="padding:12px">Consumer knows the implementation</td><td style="padding:12px">Consumer knows the contract</td></tr><tr><td style="padding:12px">Replacement can require code changes</td><td style="padding:12px">Implementations can be replaced more easily</td></tr><tr><td style="padding:12px">Testing may depend on concrete services</td><td style="padding:12px">A test implementation can be supplied</td></tr></table>
+<h2>Common mistakes</h2><ul><li>Creating interfaces for logic that does not need abstraction.</li><li>Building an unnecessarily complex factory.</li><li>Mixing provider-specific HTTP logic into the main business process.</li><li>Using vague or oversized interfaces.</li><li>Assuming every AL solution needs a DI framework.</li></ul>
+<h2>Best practices</h2><ul><li>Keep interfaces small and focused.</li><li>Inject behavior at clear boundaries.</li><li>Keep external API and authentication details inside provider implementations.</li><li>Use enums or configuration to select strategies when appropriate.</li><li>Use test implementations for business-process testing.</li><li>Introduce abstraction when it provides real replaceability, testability or reduced coupling.</li></ul>
+<h2>Real-world use cases</h2><ul><li>Multiple payment providers</li><li>Multiple shipping providers</li><li>Different e-commerce connectors</li><li>Email/SMS notification providers</li><li>Tax or pricing providers</li><li>External API and middleware integrations</li></ul>
+<h2>Frequently asked questions</h2><h3>Does AL support dependency injection?</h3><p>AL supports the principles through interfaces, parameters and replaceable implementations. A separate general-purpose DI container is not required for these patterns.</p><h3>Is DI useful for Business Central integrations?</h3><p>Yes. It can separate provider-specific details from core business logic and make implementations easier to replace or test.</p><h3>Should every codeunit use an interface?</h3><p>No. Use abstraction where multiple implementations, replaceability, testability or reduced coupling provides a clear benefit.</p>
+<h2>Summary</h2><p>Dependency injection is about controlling dependencies and keeping business logic flexible. In Business Central AL, interfaces provide a practical foundation: define a contract, implement it in one or more codeunits, and pass the required implementation into the business process.</p>
+<div class="related"><h2>Related Dynexal tutorials</h2><p><a href="interfaces-business-central-al.html">Interfaces in Business Central AL</a></p><p><a href="codeunits-business-central.html">Codeunits in Business Central</a></p><p><a href="business-central-api-integration.html">Business Central API Integration</a></p><p><a href="oauth-2-authentication-business-central-al.html">OAuth 2.0 Authentication in Business Central AL</a></p></div></main><footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js?v=20260924-theme5"></script></body></html>
