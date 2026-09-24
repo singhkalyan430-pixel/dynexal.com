@@ -34,12 +34,31 @@
   const depth=segments.length && !window.location.pathname.endsWith('/') ? Math.max(0,segments.length-1) : 0;
   const root='../'.repeat(depth);
   const links=[
-    ['Home',root+'index.html','home'],
-    ['Tutorials',root+'tutorials.html','tutorials'],
-    ['Services',root+'services.html','services'],
-    ['Portfolio',root+'portfolio.html','portfolio'],
-    ['Topics',root+'index.html#topics','topics'],
-    ['About',root+'about.html','about']
+    {label:'Home',href:root+'index.html',key:'home'},
+    {label:'Tutorials',href:root+'tutorials.html',key:'tutorials',menu:[
+      ['AL Development',root+'topics/al-development.html'],
+      ['Reports & RDLC',root+'topics/rdlc-business-central.html'],
+      ['APIs & Integrations',root+'articles/business-central-api-integration.html'],
+      ['AI + Business Central',root+'articles/ai-business-central-complete-guide.html']
+    ]},
+    {label:'Services',href:root+'services.html',key:'services',menu:[
+      ['Business Central Development',root+'services.html#business-central-development'],
+      ['Integration Services',root+'services.html#integration-services'],
+      ['AI Solutions',root+'services.html#ai-solutions']
+    ]},
+    {label:'Portfolio',href:root+'portfolio.html',key:'portfolio',menu:[
+      ['All Projects',root+'portfolio.html'],
+      ['E-commerce Integration',root+'projects/ecommerce-integration.html'],
+      ['Role Center Dashboard',root+'projects/role-center-dashboard.html'],
+      ['Reporting Toolkit',root+'projects/rdlc-reporting-toolkit.html'],
+      ['API Integration',root+'projects/api-integration.html']
+    ]},
+    {label:'Topics',href:root+'index.html#topics',key:'topics',menu:[
+      ['AL Development',root+'topics/al-development.html'],
+      ['Business Central API',root+'topics/business-central-api.html'],
+      ['Reports & RDLC',root+'topics/rdlc-business-central.html']
+    ]},
+    {label:'About',href:root+'about.html',key:'about'}
   ];
   const path=window.location.pathname.toLowerCase();
   let current='home';
@@ -49,12 +68,33 @@
   else if(path.endsWith('/services.html'))current='services';
   else if(path.endsWith('/about.html'))current='about';
   nav.innerHTML='';
-  links.forEach(([label,href,key])=>{
-    const a=document.createElement('a');
-    a.href=href;
-    a.textContent=label;
-    if(key===current){a.classList.add('active');a.setAttribute('aria-current','page')}
-    nav.appendChild(a);
+  links.forEach(item=>{
+    if(item.menu){
+      const wrap=document.createElement('div');
+      wrap.className='has-dropdown';
+      const a=document.createElement('a');
+      a.href=item.href;
+      a.textContent=item.label;
+      if(item.key===current){a.classList.add('active');a.setAttribute('aria-current','page')}
+      const menu=document.createElement('div');
+      menu.className='dropdown-menu';
+      menu.setAttribute('role','menu');
+      item.menu.forEach(([label,href])=>{
+        const sub=document.createElement('a');
+        sub.href=href;
+        sub.textContent=label;
+        sub.setAttribute('role','menuitem');
+        menu.appendChild(sub);
+      });
+      wrap.append(a,menu);
+      nav.appendChild(wrap);
+    }else{
+      const a=document.createElement('a');
+      a.href=item.href;
+      a.textContent=item.label;
+      if(item.key===current){a.classList.add('active');a.setAttribute('aria-current','page')}
+      nav.appendChild(a);
+    }
   });
 })();
 
