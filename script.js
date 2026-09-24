@@ -42,9 +42,9 @@
       ['AI + Business Central',root+'articles/ai-business-central-complete-guide.html']
     ]},
     {label:'Services',href:root+'services.html',key:'services',menu:[
-      ['Business Central Development',root+'services.html#business-central-development'],
-      ['Integration Services',root+'services.html#integration-services'],
-      ['AI Solutions',root+'services.html#ai-solutions']
+      ['Business Central Development',root+'services.html#development'],
+      ['Integration Services',root+'services.html#integration'],
+      ['AI Solutions',root+'services.html#ai']
     ]},
     {label:'Portfolio',href:root+'portfolio.html',key:'portfolio',menu:[
       ['All Projects',root+'portfolio.html'],
