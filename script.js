@@ -170,7 +170,18 @@
     nav.style.padding='20px';nav.style.background='#0b1220';nav.style.flexDirection='column';nav.style.gap='18px';
     btn.setAttribute('aria-expanded',String(!open));
   });
-  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{if(innerWidth<=900){nav.style.display='none';btn.setAttribute('aria-expanded','false')}}));
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>{
+    if(innerWidth>900)return;
+    const isDropdownParent=a.parentElement?.classList.contains('has-dropdown');
+    const isSubmenuLink=a.closest('.dropdown-menu');
+    if(isDropdownParent&&!isSubmenuLink){
+      e.preventDefault();
+      a.parentElement.classList.toggle('mobile-open');
+      return;
+    }
+    nav.style.display='none';
+    btn.setAttribute('aria-expanded','false');
+  }));
 })();
 
 // Portfolio visual polish
