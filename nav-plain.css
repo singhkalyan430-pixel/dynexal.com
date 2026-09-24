@@ -266,7 +266,8 @@
     border:0!important;
     box-shadow:none!important;
   }
-  .site-header .nav .has-dropdown:focus-within>.dropdown-menu{
+  .site-header .nav .has-dropdown:focus-within>.dropdown-menu,
+  .site-header .nav .has-dropdown.mobile-open>.dropdown-menu{
     display:block!important;
   }
 }
