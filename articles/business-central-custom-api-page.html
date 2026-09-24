@@ -29,11 +29,11 @@
   "inLanguage":"en"
 }
 </script>
-<link rel="stylesheet" href="../styles.css">
+<link rel="stylesheet" href="../styles.css?v=20260924-standard1">
 <style>
 .article{max-width:850px;margin:0 auto;padding:75px 20px 90px}.article .back{color:#426ee5;font-weight:800;font-size:14px}.article .section-label{display:block;margin-top:35px}.article h1{font-size:52px;line-height:1.08;letter-spacing:-2px;margin:14px 0 12px;color:#172033}.article .meta{color:#718096;font-size:14px;margin-bottom:34px}.article .intro{font-size:20px;color:#4b5b70;line-height:1.7}.article h2{margin-top:48px;font-size:30px;line-height:1.2;color:#172033}.article h3{margin-top:32px;font-size:22px;color:#172033}.article p,.article li{font-size:17px;color:#46546a;line-height:1.8}.article ul,.article ol{padding-left:25px}.article code:not(pre code){background:#eef2f7;color:#263b61;padding:3px 7px;border-radius:5px;font-size:.9em}.article pre{background:#0b1220;color:#dbe6f5;padding:24px;border-radius:14px;overflow:auto;margin:24px 0;border:1px solid #263955;box-shadow:0 12px 30px rgba(23,32,51,.08)}.article pre code{background:transparent!important;color:#dbe6f5!important;padding:0!important;border-radius:0!important;font-family:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;font-size:14px;line-height:1.75;white-space:pre}.hero-note{background:#eaf0ff;border:1px solid #d6e1f7;padding:20px 22px;border-radius:12px;margin:28px 0;color:#33445e}.tip{border-left:4px solid #426ee5;background:#f5f8ff;padding:16px 20px;margin:24px 0}.warning{border-left:4px solid #d38b2c;background:#fff8eb;padding:16px 20px;margin:24px 0;color:#5b4a2d}.article-links{margin-top:28px;padding:22px;background:#f7f9fc;border:1px solid #e1e6ee;border-radius:12px}.article-links a{color:#315fd6;font-weight:700}.article-footer{margin-top:65px;padding-top:25px;border-top:1px solid #e1e6ee}@media(max-width:800px){.article{padding-top:50px}.article h1{font-size:38px}.article p,.article li{font-size:16px}.article pre{padding:18px}.article pre code{font-size:12px}}
 </style>
-  <link rel="stylesheet" href="../nav-plain.css?v=20260924-theme3">
+  <link rel="stylesheet" href="../nav-plain.css?v=20260924-theme5">
 </head>
 <body>
 <header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span>Dynexal Technologies</span></a><nav class="nav" aria-label="Article navigation"><a href="../tutorials.html">Tutorials</a><a href="../index.html#topics">Topics</a><a href="../index.html#projects">Projects</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
@@ -45,15 +45,15 @@
 <div class="hero-note"><strong>What you will learn:</strong> API PageType, APIPublisher, APIGroup, APIVersion, EntityName, EntitySetName, ODataKeyFields, SourceTable, CRUD operations, endpoint URLs, Postman testing, permissions and versioning.</div>
 
 <h2>What is a custom API page?</h2>
-<p>A custom API page is an AL page object with <code>PageType = API</code>. It exposes Business Central data through a versioned, OData v4-enabled REST web service and is intended for integration scenarios rather than the Business Central user interface. Microsoft documents API pages as supporting create, read, update and delete operations. citeturn0search2</p>
+<p>A custom API page is an AL page object with <code>PageType = API</code>. It exposes Business Central data through a versioned, OData v4-enabled REST web service and is intended for integration scenarios rather than the Business Central user interface. Microsoft documents API pages as supporting create, read, update and delete operations.</p>
 <p>Custom API pages are useful when an external website, mobile application, e-commerce platform, middleware service or another ERP system needs a focused Business Central data contract.</p>
 
 <h2>Standard API vs custom API</h2>
-<p>Business Central includes many built-in APIs that can often be used without writing AL. Microsoft recommends using the built-in API stack where it meets the integration requirement. A custom API is appropriate when the standard endpoint does not expose the required fields, entity shape or business-specific contract. citeturn0search5turn0search8</p>
+<p>Business Central includes many built-in APIs that can often be used without writing AL. Microsoft recommends using the built-in API stack where it meets the integration requirement. A custom API is appropriate when the standard endpoint does not expose the required fields, entity shape or business-specific contract.</p>
 <ul>
 <li><strong>Standard API:</strong> best when the existing endpoint already provides the required data and operations.</li>
 <li><strong>Custom API page:</strong> best when you need a custom read/write entity based on a Business Central table.</li>
-<li><strong>API query:</strong> useful for read-only endpoints that combine data from multiple sources. citeturn0search6</li>
+<li><strong>API query:</strong> useful for read-only endpoints that combine data from multiple sources.</li>
 </ul>
 
 <h2>Custom API page structure</h2>
@@ -101,11 +101,11 @@
         }
     }
 }</code></pre>
-<p>This pattern follows Microsoft's documented API page model. The API properties determine the route, while the layout determines which fields are exposed. citeturn0search0turn0search2</p>
+<p>This pattern follows Microsoft's documented API page model. The API properties determine the route, while the layout determines which fields are exposed.</p>
 
 <h2>Understanding the important API properties</h2>
 <h3>PageType</h3>
-<p><code>PageType = API;</code> identifies the page as an API endpoint. It is not a normal list, card or document page and cannot be displayed as a user-interface page. citeturn0search2</p>
+<p><code>PageType = API;</code> identifies the page as an API endpoint. It is not a normal list, card or document page and cannot be displayed as a user-interface page.</p>
 <h3>APIPublisher</h3>
 <p>Defines the publisher portion of the custom API route. Use a stable, lowercase identifier for your integration namespace.</p>
 <h3>APIGroup</h3>
@@ -113,9 +113,9 @@
 <h3>APIVersion</h3>
 <p>Defines the API version, such as <code>v1.0</code>. Versioning is important because external systems depend on the API contract.</p>
 <h3>EntityName and EntitySetName</h3>
-<p><code>EntityName</code> is the singular entity name and <code>EntitySetName</code> is the collection name used in the endpoint. Microsoft recommends the documented API naming conventions, including camelCase for these identifiers. citeturn0search2</p>
+<p><code>EntityName</code> is the singular entity name and <code>EntitySetName</code> is the collection name used in the endpoint. Microsoft recommends the documented API naming conventions, including camelCase for these identifiers.</p>
 <h3>ODataKeyFields</h3>
-<p>For custom APIs, Microsoft recommends using a single GUID field such as <code>SystemId</code> as the OData key. This provides a unique, immutable identifier and improves compatibility with external integrations. citeturn0search0</p>
+<p>For custom APIs, Microsoft recommends using a single GUID field such as <code>SystemId</code> as the OData key. This provides a unique, immutable identifier and improves compatibility with external integrations.</p>
 <h3>SourceTable</h3>
 <p>Defines the Business Central table that supplies the API data. Keep the API contract focused and expose only the fields that external consumers actually need.</p>
 <h3>DelayedInsert</h3>
@@ -126,7 +126,7 @@
 <pre><code>https://api.businesscentral.dynamics.com/v2.0/{environment}/api/{publisher}/{group}/{version}/{endpoint}</code></pre>
 <p>For a company-specific request, the company can be included in the route:</p>
 <pre><code>https://api.businesscentral.dynamics.com/v2.0/{environment}/api/dynexal/integration/v1.0/companies({companyId})/customers</code></pre>
-<p>Microsoft documents the current endpoint structure and explains that a company can also be supplied as a query parameter. citeturn0search1</p>
+<p>Microsoft documents the current endpoint structure and explains that a company can also be supplied as a query parameter.</p>
 
 <h2>Example: a custom Customer API</h2>
 <p>Assume the API uses:</p>
@@ -171,7 +171,7 @@ Content-Type: application/json
 <p>For production integrations, follow the API's concurrency and request requirements and use the response to determine whether the update succeeded.</p>
 
 <h2>DELETE: remove a record</h2>
-<p>API pages support delete operations by default, but deletion can be disabled using the API page properties when appropriate. Microsoft documents <code>InsertAllowed</code>, <code>ModifyAllowed</code> and <code>DeleteAllowed</code> for controlling these operations. citeturn0search2</p>
+<p>API pages support delete operations by default, but deletion can be disabled using the API page properties when appropriate. Microsoft documents <code>InsertAllowed</code>, <code>ModifyAllowed</code> and <code>DeleteAllowed</code> for controlling these operations.</p>
 <pre><code>DELETE /api/dynexal/integration/v1.0/companies({companyId})/customers({id})</code></pre>
 <div class="warning"><strong>Production warning:</strong> do not expose DELETE simply because the platform supports it. Evaluate business rules, permissions, audit requirements and recovery procedures before allowing external systems to delete ERP records.</div>
 
@@ -219,10 +219,10 @@ DeleteAllowed = false;</code></pre>
 <p>Check the API page layout. A field must be exposed by the API page if the external client needs to read or write it.</p>
 
 <h2>API page vs API query</h2>
-<p>Use an API page when the external application needs a custom entity with read/write behavior. Use an API query when you need a read-only endpoint that combines data from multiple sources. Microsoft specifically documents API queries as read-only and suitable for joining data from different sources. citeturn0search6</p>
+<p>Use an API page when the external application needs a custom entity with read/write behavior. Use an API query when you need a read-only endpoint that combines data from multiple sources. Microsoft specifically documents API queries as read-only and suitable for joining data from different sources.</p>
 
 <h2>Custom API relationships</h2>
-<p>Related API entities can be exposed using API page parts and relationships. Microsoft recommends making relationship fields available in the API pages and using appropriate SystemId-based links so the platform can generate referential constraints for consumers. citeturn0search0</p>
+<p>Related API entities can be exposed using API page parts and relationships. Microsoft recommends making relationship fields available in the API pages and using appropriate SystemId-based links so the platform can generate referential constraints for consumers.</p>
 <p>For example, an order API could expose related order lines through a navigation property instead of building a large custom JSON structure manually.</p>
 
 <h2>Versioning strategy</h2>
