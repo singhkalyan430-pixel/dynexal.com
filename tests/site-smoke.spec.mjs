@@ -40,7 +40,7 @@ test('homepage renders without same-origin request failures', async ({ page }) =
   await expect(page.locator('a[href="tutorials.html"]').first()).toBeVisible();
   await expect(page.locator('a[href="services.html"]').first()).toBeVisible();
   await expect(page.locator('.site-header .logo-copy strong')).toHaveText('Dynexal Technologies');
-  await expect(page.locator('.site-header .logo-mark')).toHaveCount(0);
+  await expect(page.locator('.site-header .logo-mark')).toHaveCount(1);
   const logoPseudo = await page.locator('.site-header .logo').evaluate(el => getComputedStyle(el, '::before').display);
   expect(logoPseudo).toBe('none');
   expect(failed, failed.join('\n')).toEqual([]);
@@ -57,14 +57,14 @@ test('global desktop navigation has stable labels and hover dropdowns', async ({
     'Home', 'Tutorials', 'Services', 'Portfolio', 'Topics', 'About'
   ]);
   await expect(nav.getByText('Contact', { exact: true })).toHaveCount(0);
-  await expect(page.locator('.site-header .logo-mark')).toHaveCount(0);
+  await expect(page.locator('.site-header .logo-mark')).toHaveCount(1);
   await expect(page.locator('.site-header .logo-copy strong')).toHaveText('Dynexal Technologies');
 
   const tutorials = nav.locator('.has-dropdown > a', { hasText: 'Tutorials' });
   await tutorials.hover();
   const menu = nav.locator('.has-dropdown', { hasText: 'Tutorials' }).locator('.dropdown-menu');
   await expect(menu).toBeVisible();
-  await expect(menu.locator('a')).toHaveCount(6);
+  await expect(menu.locator('a')).toHaveCount(4);
   await expect(menu.getByText('AL Development', { exact: true })).toBeVisible();
   await expect(menu.getByText('AL Development', { exact: true }).evaluate(el => getComputedStyle(el).display)).resolves.toBe('block');
   await expect(tutorials).not.toHaveCSS('font-size', '0px');
@@ -111,7 +111,7 @@ test('tutorial filters change visible cards', async ({ page }) => {
 });
 
 test('services navigation anchors land on real sections', async ({ page }) => {
-  for (const anchor of ['development', 'integration', 'reporting', 'ai']) {
+  for (const anchor of ['development', 'integration', 'reporting', 'ecommerce', 'ai', 'consulting']) {
     await page.goto(`${BASE}/services.html#${anchor}`, { waitUntil: 'networkidle' });
     const target = page.locator(`#${anchor}`);
     await expect(target).toBeVisible();
