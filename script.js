@@ -208,80 +208,51 @@
 })();
 
 
-// Homepage automatic hero carousel — right to left
+// Homepage automatic hero carousel — smooth right-to-left track
 (function(){
+  const track=document.querySelector('.hero-slider-track');
   const slides=[...document.querySelectorAll('.hero-slide-full')];
   const dots=[...document.querySelectorAll('.hero-slider-dot')];
-  if(!slides.length)return;
+  if(!track||slides.length<2)return;
 
   let current=0;
   let timer=null;
-  let animating=false;
-  const duration=800;
 
-  const updateDots=()=>{
+  slides.forEach((slide)=>{
+    slide.classList.remove('active','slide-out-left');
+    slide.style.transform='';
+    slide.style.visibility='';
+    slide.style.opacity='';
+  });
+
+  track.style.transform='translate3d(0,0,0)';
+
+  const update=()=>{
+    track.style.transform='translate3d('+(-current*100)+'%,0,0)';
+    slides.forEach((s,n)=>s.classList.toggle('active',n===current));
     dots.forEach((d,n)=>{
       d.classList.toggle('active',n===current);
       d.setAttribute('aria-selected',n===current?'true':'false');
     });
   };
 
-  const show=(nextIndex,force=false)=>{
-    const next=(nextIndex+slides.length)%slides.length;
-    if(animating && !force)return;
-    if(next===current)return;
-
-    const outgoing=slides[current];
-    const incoming=slides[next];
-    animating=true;
-
-    incoming.classList.remove('active','slide-out-left');
-    // Start the next slide just outside the right edge.
-    incoming.style.transform='translateX(100%)';
-    incoming.style.visibility='visible';
-    incoming.style.zIndex='2';
-    void incoming.offsetWidth;
-
-    outgoing.classList.remove('active');
-    outgoing.classList.add('slide-out-left');
-    outgoing.style.zIndex='1';
-
-    incoming.classList.add('active');
-    incoming.style.transform='translateX(0)';
-    current=next;
-    updateDots();
-
-    window.setTimeout(()=>{
-      outgoing.classList.remove('slide-out-left');
-      outgoing.style.transform='';
-      outgoing.style.visibility='';
-      outgoing.style.zIndex='';
-      incoming.style.transform='';
-      incoming.style.visibility='';
-      incoming.style.zIndex='';
-      animating=false;
-    },duration+40);
+  const goTo=(index)=>{
+    current=(index+slides.length)%slides.length;
+    update();
   };
 
   const restart=()=>{
-    window.clearInterval(timer);
-    timer=window.setInterval(()=>show(current+1),5000);
+    clearInterval(timer);
+    timer=setInterval(()=>goTo(current+1),5000);
   };
 
-  dots.forEach((d,n)=>d.addEventListener('click',()=>{
-    if(n===current)return;
-    show(n);
-    restart();
-  }));
-
-  // First slide is visible immediately; then advance every 5 seconds.
-  slides.forEach((s,n)=>{
-    s.classList.remove('active','slide-out-left');
-    s.style.transform=n===0?'translateX(0)':'translateX(100%)';
-    s.style.visibility=n===0?'visible':'hidden';
-    s.style.zIndex=n===0?'2':'';
+  dots.forEach((dot,n)=>{
+    dot.addEventListener('click',()=>{
+      goTo(n);
+      restart();
+    });
   });
-  slides[0].classList.add('active');
-  updateDots();
+
+  update();
   restart();
 })();
