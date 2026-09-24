@@ -599,3 +599,43 @@
     display:block!important;
   }
 }
+
+
+/* Final slider engine: one horizontal track, slides never disappear. */
+.hero-slider-track{
+  display:flex!important;
+  flex-direction:row!important;
+  width:300%!important;
+  height:100%!important;
+  inset:0!important;
+  overflow:visible!important;
+  transform:translate3d(0,0,0);
+  transition:transform .8s cubic-bezier(.22,.61,.36,1)!important;
+  will-change:transform;
+}
+.hero-slide-full,
+.hero-slide-full.active,
+.hero-slide-full.slide-out-left{
+  position:relative!important;
+  inset:auto!important;
+  flex:0 0 33.333333%!important;
+  width:33.333333%!important;
+  height:100%!important;
+  min-width:0!important;
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  transform:none!important;
+  transition:none!important;
+  z-index:1!important;
+  pointer-events:auto!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-slider-track{transition:none!important}
+}
+
+/* Dropdowns are hidden until hover/focus; no arrow marker. */
+.site-header .nav .has-dropdown>a:after{
+  content:none!important;
+  display:none!important;
+}
