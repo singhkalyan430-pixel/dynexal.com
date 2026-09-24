@@ -107,7 +107,6 @@ fs.writeFileSync(
 );
 
 const urls = htmlFiles
-  .filter(file => !file.endsWith(`undefined404.html`))
   .map(file => ({
     url: publicUrl(file),
     lastmod: getLastModified(path.relative(root, file).replaceAll(path.sep, '/'))
