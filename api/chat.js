@@ -64,9 +64,9 @@ ${selectedContext || "No specific Dynexal article matched this question."}`;
       method: "POST", signal: controller.signal,
       headers: { "Content-Type": "application/json", ["x-goog-" + "api-key"]: apiKey },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
+        system_instruction: { parts: [{ text: systemPrompt }] },
         contents: [...history, { role: "user", parts: [{ text: message }] }],
-        generationConfig: { maxOutputTokens: 900 }
+        generation_config: { maxOutputTokens: 900 }
       })
     });
     clearTimeout(timeout);
