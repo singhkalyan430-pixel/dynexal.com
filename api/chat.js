@@ -73,7 +73,12 @@ ${selectedContext || "No specific Dynexal article matched this question."}`;
     const data = await response.json();
     if (!response.ok) {
       console.error("Gemini API error:", response.status, data);
-      return res.status(502).json({ error: "AI provider request failed." });
+      const providerMessage = data?.error?.message ? String(data.error.message).slice(0, 300) : "";
+      return res.status(502).json({
+        error: providerMessage
+          ? "Dynexal AI provider error: " + providerMessage
+          : "Dynexal AI provider request failed."
+      });
     }
     const answer = data?.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("").trim();
     if (!answer) return res.status(502).json({ error: "AI provider returned no answer." });
