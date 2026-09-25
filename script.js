@@ -135,9 +135,9 @@
   const style=document.createElement('style');
   style.textContent=`
     .site-header .logo{display:flex!important;align-items:center!important;gap:11px!important;white-space:nowrap!important}
-    .site-header .logo-mark,.footer .logo-mark{display:block!important;width:42px!important;height:42px!important;flex:0 0 42px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important;color:transparent!important;font-size:0!important}
+    .site-header .logo-mark,.footer .logo-mark{display:block!important;width:52px!important;height:52px!important;flex:0 0 52px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important;color:transparent!important;font-size:0!important}
     .site-header .logo-copy{display:flex!important;flex-direction:column!important;line-height:1.08!important}
-    .site-header .logo-copy strong{font-size:23px!important;letter-spacing:-.7px!important;color:#fff!important}
+    .site-header .logo-copy strong{font-size:25px!important;letter-spacing:-.7px!important;color:#fff!important}
     .site-header .logo-copy small{margin-top:5px!important;font-size:11px!important;font-weight:500!important;color:#9eb0c7!important;letter-spacing:.2px!important}
     .footer .logo-copy{display:flex!important;flex-direction:column!important;line-height:1.08!important}
     .footer .logo-copy strong{font-size:18px!important;color:#fff!important}
@@ -150,8 +150,8 @@
       .site-header .nav>a.active:after{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:3px!important;border-radius:4px!important;background:#0aa5ff!important}
     }
     @media(max-width:900px){
-      .site-header .logo-mark,.footer .logo-mark{width:34px!important;height:34px!important;flex-basis:34px!important}
-      .site-header .logo-copy strong{font-size:20px!important}
+      .site-header .logo-mark,.footer .logo-mark{width:40px!important;height:40px!important;flex-basis:40px!important}
+      .site-header .logo-copy strong{font-size:21px!important}
       .site-header .logo-copy small{font-size:10px!important}
     }
   `;
