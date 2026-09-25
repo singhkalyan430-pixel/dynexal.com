@@ -58,28 +58,55 @@ If unrelated to Business Central or related development technology, politely exp
 MATCHED DYNEXAL ARTICLE CONTEXT:
 ${selectedContext || "No specific Dynexal article matched this question."}`;
 
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 25000);
-    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent", {
-      method: "POST", signal: controller.signal,
-      headers: { "Content-Type": "application/json", ["x-goog-" + "api-key"]: apiKey },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
-        contents: [...history, { role: "user", parts: [{ text: message }] }],
-        generation_config: { maxOutputTokens: 900 }
-      })
-    });
-    clearTimeout(timeout);
-    const data = await response.json();
-    if (!response.ok) {
-      console.error("Gemini API error:", response.status, data);
-      const providerMessage = data?.error?.message ? String(data.error.message).slice(0, 300) : "";
-      return res.status(502).json({
-        error: providerMessage
-          ? "Dynexal AI provider error: " + providerMessage
-          : "Dynexal AI provider request failed."
-      });
+    const models = ["gemini-3.8-flash", "gemini-3.6-flash"];
+    let data = null;
+    let response = null;
+    let lastProviderError = "";
+
+    for (const model of models) {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 25000);
+      try {
+        response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+          method: "POST",
+          signal: controller.signal,
+          headers: { "Content-Type": "application/json", ["x-goog-" + "api-key"]: apiKey },
+          body: JSON.stringify({
+            system_instruction: { parts: [{ text: systemPrompt }] },
+            contents: [...history, { role: "user", parts: [{ text: message }] }],
+            generation_config: { maxOutputTokens: 900 }
+          })
+        });
+        data = await response.json();
+
+        if (response.ok) break;
+
+        const providerMessage = data?.error?.message ? String(data.error.message).slice(0, 300) : "";
+        lastProviderError = providerMessage || "Provider request failed.";
+
+        // Temporary capacity/rate-limit errors can be retried on the fallback model.
+        if (![429, 500, 502, 503, 504].includes(response.status) || model === models[models.length - 1]) {
+          console.error("Gemini API error:", response.status, data);
+          return res.status(502).json({ error: "Dynexal AI provider error: " + lastProviderError });
+        }
+      } catch (error) {
+        lastProviderError = error?.name === "AbortError"
+          ? "AI request timed out."
+          : "Unable to reach the AI provider.";
+        if (model === models[models.length - 1]) {
+          console.error("Gemini request error:", error);
+          if (error?.name === "AbortError") return res.status(504).json({ error: lastProviderError });
+          return res.status(502).json({ error: lastProviderError });
+        }
+      } finally {
+        clearTimeout(timeout);
+      }
     }
+
+    if (!response?.ok) {
+      return res.status(502).json({ error: "Dynexal AI provider error: " + lastProviderError });
+    }
+
     const answer = data?.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("").trim();
     if (!answer) return res.status(502).json({ error: "AI provider returned no answer." });
     return res.status(200).json({ answer, sources });
