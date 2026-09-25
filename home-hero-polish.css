@@ -972,3 +972,32 @@ html[data-theme="dark"] .marquee-card small{color:#aebdd0!important}
 }
 html[data-theme="dark"] .dynexal-marquee .marquee-card:hover{box-shadow:0 16px 34px rgba(0,0,0,.28)}
 html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
+
+
+/* Marquee layout hardening: keep every capability in one horizontal row. */
+.dynexal-marquee{display:block!important;overflow:hidden!important}
+.dynexal-marquee-track{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:nowrap!important;
+  align-items:stretch!important;
+  width:max-content!important;
+  min-width:max-content!important;
+}
+.dynexal-marquee-track>.marquee-card{
+  display:flex!important;
+  flex:0 0 285px!important;
+  width:285px!important;
+  min-width:285px!important;
+  max-width:285px!important;
+  box-sizing:border-box!important;
+  margin:0!important;
+}
+@media(max-width:800px){
+  .dynexal-marquee-track>.marquee-card{
+    flex-basis:260px!important;
+    width:260px!important;
+    min-width:260px!important;
+    max-width:260px!important;
+  }
+}
