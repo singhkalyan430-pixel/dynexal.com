@@ -58,53 +58,69 @@ If unrelated to Business Central or related development technology, politely exp
 MATCHED DYNEXAL ARTICLE CONTEXT:
 ${selectedContext || "No specific Dynexal article matched this question."}`;
 
-    const models = ["gemini-3.8-flash", "gemini-3.6-flash"];
+    // Start with the lightweight stable model to reduce capacity pressure, then fall back
+    // through stable Gemini models if Google returns a transient 429/5xx capacity error.
+    const models = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.6-flash"];
     let data = null;
     let response = null;
     let lastProviderError = "";
 
-    for (const model of models) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 25000);
-      try {
-        response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-          method: "POST",
-          signal: controller.signal,
-          headers: { "Content-Type": "application/json", ["x-goog-" + "api-key"]: apiKey },
-          body: JSON.stringify({
-            system_instruction: { parts: [{ text: systemPrompt }] },
-            contents: [...history, { role: "user", parts: [{ text: message }] }],
-            generation_config: { maxOutputTokens: 900 }
-          })
-        });
-        data = await response.json();
+    for (let modelIndex = 0; modelIndex < models.length; modelIndex++) {
+      const model = models[modelIndex];
+      const attempts = modelIndex === 0 ? 2 : 1;
 
-        if (response.ok) break;
+      for (let attempt = 0; attempt < attempts; attempt++) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 18000);
+        try {
+          response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+            method: "POST",
+            signal: controller.signal,
+            headers: { "Content-Type": "application/json", ["x-goog-" + "api-key"]: apiKey },
+            body: JSON.stringify({
+              system_instruction: { parts: [{ text: systemPrompt }] },
+              contents: [...history, { role: "user", parts: [{ text: message }] }],
+              generation_config: { maxOutputTokens: 700 }
+            })
+          });
+          data = await response.json();
 
-        const providerMessage = data?.error?.message ? String(data.error.message).slice(0, 300) : "";
-        lastProviderError = providerMessage || "Provider request failed.";
+          if (response.ok) break;
 
-        // Temporary capacity/rate-limit errors can be retried on the fallback model.
-        if (![429, 500, 502, 503, 504].includes(response.status) || model === models[models.length - 1]) {
-          console.error("Gemini API error:", response.status, data);
-          return res.status(502).json({ error: "Dynexal AI provider error: " + lastProviderError });
+          const providerMessage = data?.error?.message ? String(data.error.message).slice(0, 300) : "";
+          lastProviderError = providerMessage || "Provider request failed.";
+          const retryable = [429, 500, 502, 503, 504].includes(response.status);
+
+          if (!retryable) {
+            console.error("Gemini API error:", response.status, data);
+            return res.status(502).json({ error: "Dynexal AI provider error: " + lastProviderError });
+          }
+
+          if (attempt < attempts - 1) {
+            await new Promise(resolve => setTimeout(resolve, 1200 * (attempt + 1)));
+          }
+        } catch (error) {
+          lastProviderError = error?.name === "AbortError"
+            ? "AI request timed out."
+            : "Unable to reach the AI provider.";
+          if (attempt < attempts - 1) {
+            await new Promise(resolve => setTimeout(resolve, 1200 * (attempt + 1)));
+          }
+        } finally {
+          clearTimeout(timeout);
         }
-      } catch (error) {
-        lastProviderError = error?.name === "AbortError"
-          ? "AI request timed out."
-          : "Unable to reach the AI provider.";
-        if (model === models[models.length - 1]) {
-          console.error("Gemini request error:", error);
-          if (error?.name === "AbortError") return res.status(504).json({ error: lastProviderError });
-          return res.status(502).json({ error: lastProviderError });
-        }
-      } finally {
-        clearTimeout(timeout);
+
+        if (response?.ok) break;
       }
+
+      if (response?.ok) break;
     }
 
     if (!response?.ok) {
-      return res.status(502).json({ error: "Dynexal AI provider error: " + lastProviderError });
+      console.error("Gemini provider unavailable:", lastProviderError);
+      return res.status(502).json({
+        error: "Dynexal AI is temporarily busy. Google Gemini is not accepting the request right now. Please try again in a moment."
+      });
     }
 
     const answer = data?.candidates?.[0]?.content?.parts?.map(part => part.text || "").join("").trim();
