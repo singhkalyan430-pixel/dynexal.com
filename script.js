@@ -223,6 +223,61 @@
   filters.forEach(f=>{f.addEventListener('click',()=>{const key=map[f.textContent.trim()]||'all';filters.forEach(x=>x.classList.toggle('active',x===f));posts.forEach(p=>{const tag=(p.querySelector('.tag')?.textContent||'').toUpperCase();p.hidden=key!=='all'&&!tag.includes(key)})})});
 })();
 
+// Isolated capabilities marquee — Shadow DOM prevents global site CSS from stacking cards vertically
+(function(){
+  const host=document.querySelector('.dynexal-marquee');
+  if(!host || host.dataset.isolatedMarquee==='1')return;
+  host.dataset.isolatedMarquee='1';
+  const items=[
+    ['BC','Business Central','ERP development & extensions','business-central-development.html'],
+    ['</>','AL Development','Tables, pages, codeunits & events','al-development.html'],
+    ['↔','API Integration','REST, OAuth, JSON & webhooks','api-integration.html'],
+    ['▤','RDLC Reporting','Datasets, layouts & business reports','rdlc-reporting.html'],
+    ['◈','Shopify Integration','Products, orders & synchronization','shopify-integration.html'],
+    ['✦','AI Automation','AI assistants & intelligent workflows','ai-automation.html'],
+    ['✓','Testing & Security','Permissions, tests & performance','testing-security.html'],
+    ['⌂','Technical Consulting','Architecture & implementation guidance','technical-consulting.html']
+  ];
+  const root=host.shadowRoot||host.attachShadow({mode:'open'});
+  const style=document.createElement('style');
+  style.textContent=`
+    :host{display:block;width:100%;height:170px;overflow:hidden;position:relative;box-sizing:border-box}
+    .viewport{width:100%;height:100%;overflow:hidden;position:relative;padding:10px 0 20px;box-sizing:border-box}
+    .track{position:absolute;left:0;top:10px;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:18px;width:max-content;height:128px;animation:run 48s linear infinite;will-change:transform}
+    .card{display:flex;flex:0 0 300px;width:300px;height:128px;box-sizing:border-box;align-items:center;gap:16px;padding:20px 22px;border:1px solid #dbe6f1;border-top:3px solid #1d7ed0;border-radius:17px;background:#fff;box-shadow:0 10px 28px rgba(18,50,82,.08);color:#17243a;text-decoration:none;font-family:inherit}
+    .card:nth-child(4n+2){border-top-color:#20a0a8}.card:nth-child(4n+3){border-top-color:#5267d9}.card:nth-child(4n+4){border-top-color:#e27b32}
+    .icon{flex:0 0 48px;width:48px;height:48px;display:grid;place-items:center;border-radius:13px;background:#edf6ff;color:#1679c9;font-size:15px;font-weight:850}
+    .card:nth-child(4n+2) .icon{background:#edfafa;color:#16858b}.card:nth-child(4n+3) .icon{background:#eff0ff;color:#5267d9}.card:nth-child(4n+4) .icon{background:#fff4ea;color:#d96c1f}
+    .copy{min-width:0}.copy strong{display:block;font-size:16px;line-height:1.25}.copy small{display:block;margin-top:7px;color:#66788f;font-size:12px;line-height:1.4}.copy em{display:block;margin-top:8px;color:#1679c9;font-size:11px;font-style:normal;font-weight:800}
+    .card:hover{transform:translateY(-5px);box-shadow:0 16px 34px rgba(18,50,82,.13)}
+    @keyframes run{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-50% - 9px),0,0)}}
+    .viewport:hover .track{animation-play-state:paused}
+    :host([data-theme="dark"]) .card{background:#0d1a2b;border-color:#203550;color:#f2f7ff;box-shadow:0 10px 28px rgba(0,0,0,.2)}
+    :host([data-theme="dark"]) .copy small{color:#aebdd0}
+    :host([data-theme="dark"]) .copy em{color:#6fc6ff}
+    @media(max-width:800px){
+      :host{height:158px}
+      .track{height:116px;gap:14px;animation-duration:42s}
+      .card{flex-basis:260px;width:260px;height:116px;padding:18px}
+    }
+    @media(prefers-reduced-motion:reduce){.track{animation:none}}
+  `;
+  const viewport=document.createElement('div');viewport.className='viewport';
+  const track=document.createElement('div');track.className='track';
+  items.concat(items).forEach((it,i)=>{
+    const a=document.createElement('a');a.className='card';a.href=it[3];
+    if(i>=items.length){a.setAttribute('aria-hidden','true');a.tabIndex=-1}
+    a.innerHTML='<span class="icon"></span><span class="copy"><strong></strong><small></small>'+ (i<items.length?'<em>Learn more →</em>':'') +'</span>';
+    a.querySelector('.icon').textContent=it[0];
+    a.querySelector('strong').textContent=it[1];
+    a.querySelector('small').textContent=it[2];
+    track.appendChild(a);
+  });
+  viewport.appendChild(track);root.append(style,viewport);
+  const sync=()=>host.setAttribute('data-theme',document.documentElement.getAttribute('data-theme')||'light');
+  sync();new MutationObserver(sync).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+})();
+ 
 // Dynexal AI Assistant
 (function(){
   if(document.getElementById('dynexal-ai-launcher'))return;
