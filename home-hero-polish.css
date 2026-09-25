@@ -951,3 +951,24 @@ html[data-theme="dark"] .marquee-card small{color:#aebdd0!important}
 @media(prefers-reduced-motion:reduce){
   .dynexal-marquee-track{animation:none;transform:none}
 }
+
+.dynexal-marquee .marquee-card{
+  color:inherit;
+  text-decoration:none;
+  transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+}
+.dynexal-marquee .marquee-card:hover{
+  transform:translateY(-5px);
+  box-shadow:0 16px 34px rgba(18,50,82,.13);
+  border-color:#9bc5e8;
+}
+.marquee-card em{
+  display:block;
+  margin-top:8px;
+  color:#1679c9;
+  font-size:11px;
+  font-style:normal;
+  font-weight:800;
+}
+html[data-theme="dark"] .dynexal-marquee .marquee-card:hover{box-shadow:0 16px 34px rgba(0,0,0,.28)}
+html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
