@@ -60,7 +60,7 @@ ${selectedContext || "No specific Dynexal article matched this question."}`;
 
     // Start with the lightweight stable model to reduce capacity pressure, then fall back
     // through stable Gemini models if Google returns a transient 429/5xx capacity error.
-    const models = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.6-flash"];
+    const models = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash"];
     let data = null;
     let response = null;
     let lastProviderError = "";
@@ -80,7 +80,7 @@ ${selectedContext || "No specific Dynexal article matched this question."}`;
             body: JSON.stringify({
               system_instruction: { parts: [{ text: systemPrompt }] },
               contents: [...history, { role: "user", parts: [{ text: message }] }],
-              generation_config: { maxOutputTokens: 700 }
+              generation_config: { maxOutputTokens: 700, thinking_config: { thinking_level: "low" } }
             })
           });
           data = await response.json();
