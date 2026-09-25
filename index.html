@@ -22,7 +22,19 @@
 <style>
 .hero-auto-slider{position:relative;overflow:hidden}.hero-slider-track{position:absolute;inset:0;z-index:0}.hero-slide-full{position:absolute;inset:0;opacity:1;visibility:hidden;transform:translateX(100%);transition:transform .8s cubic-bezier(.22,.61,.36,1),visibility 0s linear .8s;will-change:transform}.hero-slide-full.active{opacity:1;visibility:visible;transform:translateX(0);transition:transform .8s cubic-bezier(.22,.61,.36,1),visibility 0s linear 0s}.hero-slide-full.slide-out-left{opacity:1;visibility:visible;transform:translateX(-100%);z-index:1;transition:transform .8s cubic-bezier(.22,.61,.36,1)}.hero-showcase>.hero-slider-dots{position:absolute;z-index:8;left:50%;bottom:24px;transform:translateX(-50%);display:flex;gap:9px;padding:8px 12px;border-radius:999px;background:rgba(5,13,27,.62);backdrop-filter:blur(8px)}.hero-slider-dot{width:9px;height:9px;border:0;border-radius:50%;padding:0;background:#7890ad;cursor:pointer}.hero-slider-dot.active{background:#70a1ff;transform:scale(1.25)}
 @media(prefers-reduced-motion:reduce){.hero-slide-full,.hero-slide-full.active,.hero-slide-full.slide-out-left{transition:none;transform:none}}
-</style></head>
+</style><style id="dynexal-marquee-inline-fix">
+.dynexal-marquee-section .dynexal-marquee{display:block!important;position:relative!important;width:100%!important;height:170px!important;overflow:hidden!important;padding:10px 0 20px!important;box-sizing:border-box!important}
+.dynexal-marquee-section .dynexal-marquee-track{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:stretch!important;gap:18px!important;position:absolute!important;left:0!important;top:10px!important;width:max-content!important;min-width:max-content!important;height:128px!important;margin:0!important;padding:0!important;animation:dynexal-marquee-inline 48s linear infinite!important;will-change:transform!important}
+.dynexal-marquee-section .dynexal-marquee-track>.marquee-card{display:flex!important;flex-direction:row!important;align-items:center!important;flex:0 0 300px!important;width:300px!important;min-width:300px!important;max-width:300px!important;height:128px!important;min-height:128px!important;max-height:128px!important;box-sizing:border-box!important;margin:0!important;padding:20px 22px!important}
+@keyframes dynexal-marquee-inline{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-50% - 9px),0,0)}}
+.dynexal-marquee-section .dynexal-marquee:hover .dynexal-marquee-track{animation-play-state:paused!important}
+@media(max-width:800px){
+.dynexal-marquee-section .dynexal-marquee{height:158px!important}
+.dynexal-marquee-section .dynexal-marquee-track{gap:14px!important;height:116px!important;animation-duration:42s!important}
+.dynexal-marquee-section .dynexal-marquee-track>.marquee-card{flex-basis:260px!important;width:260px!important;min-width:260px!important;max-width:260px!important;height:116px!important;min-height:116px!important;max-height:116px!important}
+}
+</style>
+</head>
 <body>
 <header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark">D</span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a class="active" href="index.html" aria-current="page">Home</a><a href="tutorials.html">Tutorials</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a><a href="#topics">Topics</a><a href="about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main>
