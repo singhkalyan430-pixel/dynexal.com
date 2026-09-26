@@ -1104,3 +1104,123 @@ html[data-theme="dark"] .flow{
     height:82px!important;
   }
 }
+
+/* FINAL: Chrome Desktop Site on phones must use the real desktop navigation/layout.
+   The browser may report a ~980px CSS viewport, so max-width mobile rules still match;
+   these explicit overrides intentionally win for .desktop-site-mode. */
+@media (min-width:700px) and (max-width:1100px){
+  html.desktop-site-mode body.desktop-site-mode{
+    min-width:1100px!important;
+    overflow-x:auto!important;
+  }
+  body.desktop-site-mode .site-header{
+    min-width:1100px!important;
+  }
+  body.desktop-site-mode .site-header .nav-wrap{
+    width:100%!important;
+    max-width:1320px!important;
+    height:82px!important;
+    padding:0 28px!important;
+    box-sizing:border-box!important;
+  }
+  body.desktop-site-mode .site-header .logo-mark{
+    width:52px!important;height:52px!important;flex:0 0 52px!important;
+  }
+  body.desktop-site-mode .site-header .logo-copy strong{font-size:23px!important}
+  body.desktop-site-mode .site-header .logo-copy small{font-size:12px!important;display:block!important}
+  body.desktop-site-mode .site-header .menu-btn{display:none!important}
+  body.desktop-site-mode .site-header .nav,
+  body.desktop-site-mode .site-header .nav.mobile-nav-open{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    position:static!important;
+    width:auto!important;
+    max-width:none!important;
+    height:82px!important;
+    padding:0!important;
+    margin-left:auto!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:30px!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    overflow:visible!important;
+    z-index:auto!important;
+  }
+  body.desktop-site-mode .site-header .nav>a{
+    display:flex!important;
+    width:auto!important;
+    height:82px!important;
+    min-height:0!important;
+    padding:0!important;
+    align-items:center!important;
+    border:0!important;
+    background:transparent!important;
+    font-size:17px!important;
+    color:#cbd5e1!important;
+  }
+  body.desktop-site-mode .site-header .nav .has-dropdown{
+    width:auto!important;
+    height:82px!important;
+    display:flex!important;
+    flex-direction:row!important;
+    align-items:center!important;
+    border:0!important;
+    background:transparent!important;
+  }
+  body.desktop-site-mode .site-header .nav .has-dropdown>a{
+    height:82px!important;
+    padding:0!important;
+    border:0!important;
+    background:transparent!important;
+  }
+  body.desktop-site-mode .site-header .nav .dropdown-menu{
+    position:absolute!important;
+  }
+  body.desktop-site-mode .hero-showcase{
+    min-width:1100px!important;
+    min-height:760px!important;
+    height:auto!important;
+  }
+  body.desktop-site-mode .hero-showcase-inner{
+    min-height:668px!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,52%) minmax(0,48%)!important;
+    padding-top:0!important;
+    padding-bottom:0!important;
+  }
+  body.desktop-site-mode .hero-copy{
+    padding:42px 0 110px!important;
+  }
+  body.desktop-site-mode .hero-copy h1{
+    font-size:clamp(58px,5.5vw,82px)!important;
+  }
+  body.desktop-site-mode .hero-copy>p{font-size:18px!important}
+  body.desktop-site-mode .hero-actions{flex-wrap:nowrap!important}
+  body.desktop-site-mode .hero-feature-row{
+    display:grid!important;
+    grid-template-columns:repeat(6,1fr)!important;
+  }
+  body.desktop-site-mode .hero-slide-full:after{
+    display:block!important;
+  }
+  body.desktop-site-mode .hero-bottom-strip{
+    position:absolute!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    min-height:86px!important;
+    height:auto!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,1fr)!important;
+  }
+  body.desktop-site-mode .hero-bottom-strip>div{
+    min-height:58px!important;
+    border-right:1px solid rgba(255,255,255,.2)!important;
+    border-bottom:0!important;
+  }
+}
