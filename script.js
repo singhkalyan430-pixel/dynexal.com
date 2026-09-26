@@ -248,7 +248,7 @@
   style.textContent=`
     :host{display:block;width:100%;height:170px;overflow:hidden;position:relative;box-sizing:border-box}
     .viewport{width:100%;height:100%;overflow:hidden;position:relative;padding:10px 0 20px;box-sizing:border-box}
-    .track{position:absolute;left:0;top:10px;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:18px;width:max-content;height:128px;animation:run 48s linear infinite;will-change:transform}
+    .track{position:absolute;left:0;top:10px;display:flex;flex-direction:row;flex-wrap:nowrap;align-items:stretch;gap:18px;width:max-content;height:128px;animation:run 48s linear infinite!important;animation-play-state:running!important;will-change:transform}
     .card{display:flex;flex:0 0 300px;width:300px;height:128px;box-sizing:border-box;align-items:center;gap:16px;padding:20px 22px;border:1px solid #dbe6f1;border-top:3px solid #1d7ed0;border-radius:17px;background:#fff;box-shadow:0 10px 28px rgba(18,50,82,.08);color:#17243a;text-decoration:none;font-family:inherit}
     .card:nth-child(4n+2){border-top-color:#20a0a8}.card:nth-child(4n+3){border-top-color:#5267d9}.card:nth-child(4n+4){border-top-color:#e27b32}
     .icon{flex:0 0 48px;width:48px;height:48px;display:grid;place-items:center;border-radius:13px;background:#edf6ff;color:#1679c9;font-size:15px;font-weight:850}
@@ -256,7 +256,7 @@
     .copy{min-width:0}.copy strong{display:block;font-size:16px;line-height:1.25}.copy small{display:block;margin-top:7px;color:#66788f;font-size:12px;line-height:1.4}.copy em{display:block;margin-top:8px;color:#1679c9;font-size:11px;font-style:normal;font-weight:800}
     .card:hover{transform:translateY(-5px);box-shadow:0 16px 34px rgba(18,50,82,.13)}
     @keyframes run{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-50% - 9px),0,0)}}
-    .viewport:hover .track{animation-play-state:paused}
+    .viewport:hover .track{animation-play-state:paused!important}
     :host([data-theme="dark"]) .card{background:#0d1a2b;border-color:#203550;color:#f2f7ff;box-shadow:0 10px 28px rgba(0,0,0,.2)}
     :host([data-theme="dark"]) .copy small{color:#aebdd0}
     :host([data-theme="dark"]) .copy em{color:#6fc6ff}
@@ -265,7 +265,7 @@
       .track{height:116px;gap:14px;animation-duration:42s}
       .card{flex-basis:260px;width:260px;height:116px;padding:18px}
     }
-    @media(prefers-reduced-motion:reduce){.track{animation:none}}
+    @media(prefers-reduced-motion:reduce){.track{animation:run 48s linear infinite!important}}
   `;
   const viewport=document.createElement('div');viewport.className='viewport';
   const track=document.createElement('div');track.className='track';
