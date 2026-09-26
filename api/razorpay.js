@@ -40,7 +40,10 @@ async function createOrder() {
   const data = await response.json();
   if (!response.ok) {
     console.error("Razorpay order error:", response.status, data);
-    throw new Error("Unable to create payment order.");
+    const code = data?.error?.code ? String(data.error.code) : "";
+    const description = data?.error?.description ? String(data.error.description) : "";
+    const reason = [code, description].filter(Boolean).join(": ");
+    throw new Error(reason ? "Razorpay: " + reason : "Unable to create payment order.");
   }
   return data;
 }
