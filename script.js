@@ -193,6 +193,18 @@
   document.head.appendChild(style);
 })();
 
+// Mobile Chrome "Desktop site" mode — preserve the true desktop layout
+(function(){
+  const isMobileUA=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'');
+  const syncDesktopSite=()=>{
+    const desktopSite=isMobileUA && window.innerWidth>=700;
+    document.documentElement.classList.toggle('desktop-site-mode',desktopSite);
+    document.body.classList.toggle('desktop-site-mode',desktopSite);
+  };
+  syncDesktopSite();
+  window.addEventListener('resize',syncDesktopSite);
+})();
+
 // Mobile navigation — explicit body state for reliable mobile drawer rendering
 (function(){
   const btn=document.querySelector('.menu-btn');
