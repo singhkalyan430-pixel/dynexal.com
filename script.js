@@ -41,6 +41,10 @@
       ['APIs & Integrations',root+'articles/business-central-api-integration.html'],
       ['AI + Business Central',root+'articles/ai-business-central-complete-guide.html']
     ]},
+    {label:'Interview Prep',href:root+'interview-prep.html',key:'interview',menu:[
+      ['Free Questions',root+'interview-prep.html#free'],
+      ['Premium Interview Master',root+'interview-prep.html#premium']
+    ]},
     {label:'Services',href:root+'services.html',key:'services',menu:[
       ['Business Central Development',root+'services.html#development'],
       ['Integration Services',root+'services.html#integration'],
@@ -62,7 +66,8 @@
   ];
   const path=window.location.pathname.toLowerCase();
   let current='home';
-  if(path.includes('/articles/')||path.endsWith('/tutorials.html'))current='tutorials';
+  if(path.endsWith('/interview-prep.html'))current='interview';
+  else if(path.includes('/articles/')||path.endsWith('/tutorials.html'))current='tutorials';
   else if(path.includes('/topics/'))current='topics';
   else if(path.includes('/projects/')||path.endsWith('/portfolio.html'))current='portfolio';
   else if(path.endsWith('/services.html'))current='services';
