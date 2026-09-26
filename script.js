@@ -217,7 +217,7 @@
     nav.querySelectorAll('.has-dropdown').forEach(item=>{
       item.classList.remove('mobile-open');
       const menu=item.querySelector(':scope > .dropdown-menu');
-      if(menu)menu.style.setProperty('display','none','important');
+      if(menu){menu.hidden=true;menu.style.removeProperty('display');}
     });
   };
 
@@ -261,31 +261,25 @@
     if(mq.matches) setOpen(!nav.classList.contains('mobile-nav-open'));
   });
 
-  nav.addEventListener('click',(event)=>{
-    if(!mq.matches)return;
-    const a=event.target.closest('a');
-    if(!a)return;
-    const parent=a.parentElement;
-    const isDropdownParent=parent?.classList.contains('has-dropdown');
-    const isSubmenuLink=!!a.closest('.dropdown-menu');
-    if(isDropdownParent&&!isSubmenuLink){
+  nav.querySelectorAll('.has-dropdown > a').forEach(a=>{
+    a.addEventListener('click',(event)=>{
+      if(!mq.matches)return;
       event.preventDefault();
       event.stopPropagation();
-      const willOpen=!parent.classList.contains('mobile-open');
-      nav.querySelectorAll('.has-dropdown').forEach(item=>{
-        if(item===parent)return;
-        item.classList.remove('mobile-open');
-        const other=item.querySelector(':scope > .dropdown-menu');
-        if(other)other.style.setProperty('display','none','important');
-      });
+      const parent=a.parentElement;
       const menu=parent.querySelector(':scope > .dropdown-menu');
-      parent.classList.toggle('mobile-open',willOpen);
-      if(menu)menu.style.setProperty('display',willOpen?'flex':'none','important');
-      return;
-    }
-    setOpen(false);
-  });
+      const willOpen=!parent.classList.contains('mobile-open');
 
+      nav.querySelectorAll('.has-dropdown').forEach(item=>{
+        const other=item.querySelector(':scope > .dropdown-menu');
+        item.classList.remove('mobile-open');
+        if(other)other.hidden=true;
+      });
+
+      parent.classList.toggle('mobile-open',willOpen);
+      if(menu)menu.hidden=!willOpen;
+    });
+  });
   document.addEventListener('click',(event)=>{
     if(!mq.matches||!nav.classList.contains('mobile-nav-open'))return;
     if(!event.target.closest('.site-header'))setOpen(false);
