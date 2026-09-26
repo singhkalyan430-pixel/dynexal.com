@@ -537,3 +537,68 @@ html[data-theme="dark"] .flow{
   .site-header .logo-copy small{font-size:8px!important}
   .site-header .logo-mark{width:38px!important;height:38px!important;flex-basis:38px!important}
 }
+
+
+/* INTERVIEW PREP — subtle premium navigation highlight */
+@media(min-width:901px){
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"]{
+    height:44px!important;
+    align-self:center!important;
+    padding:0 14px!important;
+    margin:0 -7px!important;
+    border:1px solid rgba(56,189,248,.42)!important;
+    border-radius:10px!important;
+    background:linear-gradient(135deg,rgba(14,165,233,.14),rgba(37,99,235,.10))!important;
+    color:#eaf6ff!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 18px rgba(14,165,233,.08)!important;
+    transition:all .18s ease!important;
+  }
+
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"]::before{
+    content:"✦"!important;
+    margin-right:7px!important;
+    color:#38bdf8!important;
+    font-size:12px!important;
+    line-height:1!important;
+  }
+
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"]:hover,
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"]:focus-visible,
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"].active{
+    color:#fff!important;
+    border-color:rgba(56,189,248,.78)!important;
+    background:linear-gradient(135deg,rgba(14,165,233,.23),rgba(37,99,235,.17))!important;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 6px 22px rgba(14,165,233,.15)!important;
+  }
+
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"].active:after{
+    display:none!important;
+  }
+}
+
+@media(max-width:900px){
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"]{
+    display:flex!important;
+    align-items:center!important;
+    width:100%!important;
+    box-sizing:border-box!important;
+    padding:10px 12px!important;
+    border:1px solid rgba(56,189,248,.35)!important;
+    border-radius:10px!important;
+    background:rgba(14,165,233,.10)!important;
+    color:#eaf6ff!important;
+  }
+
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"]::before{
+    content:"✦"!important;
+    margin-right:8px!important;
+    color:#38bdf8!important;
+    font-size:12px!important;
+  }
+
+  .site-header .nav .has-dropdown>a[href*="interview-prep.html"].active{
+    border-color:rgba(56,189,248,.65)!important;
+    background:rgba(14,165,233,.16)!important;
+    color:#fff!important;
+  }
+}
