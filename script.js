@@ -168,12 +168,27 @@
 (function(){
   const btn=document.querySelector('.menu-btn'),nav=document.querySelector('.nav');
   if(!btn||!nav)return;
-  btn.setAttribute('aria-expanded','false');
+  const syncMobileNav=()=>{
+    const mobile=window.matchMedia('(max-width:900px)').matches;
+    if(mobile){
+      nav.style.display='none';
+      nav.style.position='absolute';nav.style.top='72px';nav.style.left='0';nav.style.right='0';
+      nav.style.padding='20px';nav.style.background='#0b1220';nav.style.flexDirection='column';nav.style.gap='18px';
+      btn.style.display='block';
+      btn.setAttribute('aria-expanded','false');
+    }else{
+      nav.style.display='';
+      nav.style.position='';nav.style.top='';nav.style.left='';nav.style.right='';
+      nav.style.padding='';nav.style.background='';nav.style.flexDirection='';nav.style.gap='';
+      btn.style.display='none';
+      btn.setAttribute('aria-expanded','false');
+    }
+  };
+  syncMobileNav();
+  window.addEventListener('resize',syncMobileNav);
   btn.addEventListener('click',()=>{
     const open=nav.style.display==='flex';
     nav.style.display=open?'none':'flex';
-    nav.style.position='absolute';nav.style.top='72px';nav.style.left='0';nav.style.right='0';
-    nav.style.padding='20px';nav.style.background='#0b1220';nav.style.flexDirection='column';nav.style.gap='18px';
     btn.setAttribute('aria-expanded',String(!open));
   });
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>{
