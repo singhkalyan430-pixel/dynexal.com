@@ -122,7 +122,7 @@
         color:#bff1ff!important;
       }
     }
-    @media(max-width:900px){
+    @media(max-width:1100px){
       .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"]{
         color:#67d7ff!important;
         font-weight:700!important;
@@ -184,7 +184,7 @@
       .site-header .nav>.has-dropdown>.dropdown-menu a:hover{background:#132b47!important;color:#fff!important}
       .site-header .nav>a.active:after,.site-header .nav>.has-dropdown>a.active:after{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:3px!important;border-radius:4px!important;background:#0aa5ff!important}
     }
-    @media(max-width:900px){
+    @media(max-width:1100px){
       .site-header .logo-mark{width:40px!important;height:40px!important;flex-basis:40px!important}
       .site-header .logo-copy strong{font-size:23px!important}
       .site-header .logo-copy small{font-size:10.5px!important}
@@ -198,7 +198,7 @@
   const btn=document.querySelector('.menu-btn'),nav=document.querySelector('.nav');
   if(!btn||!nav)return;
   const syncMobileNav=()=>{
-    const mobile=window.matchMedia('(max-width:900px)').matches;
+    const mobile=window.matchMedia('(max-width:1100px)').matches;
     if(mobile){
       nav.style.display='none';
       nav.style.position='absolute';nav.style.top='72px';nav.style.left='0';nav.style.right='0';
@@ -221,7 +221,7 @@
     btn.setAttribute('aria-expanded',String(open));
   });
   nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',e=>{
-    if(innerWidth>900)return;
+    if(innerWidth>1100)return;
     const isDropdownParent=a.parentElement?.classList.contains('has-dropdown');
     const isSubmenuLink=a.closest('.dropdown-menu');
     if(isDropdownParent&&!isSubmenuLink){
