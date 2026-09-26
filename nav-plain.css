@@ -1248,3 +1248,19 @@ html[data-theme="dark"] .flow{
     color:#38bdf8!important;
   }
 }
+
+
+/* Mobile submenu native hidden state must override all menu display rules */
+@media(max-width:900px){
+  .site-header .nav.mobile-nav-open .has-dropdown > .dropdown-menu[hidden]{
+    display:none!important;
+    visibility:hidden!important;
+    pointer-events:none!important;
+  }
+  .site-header .nav.mobile-nav-open .has-dropdown.mobile-open > .dropdown-menu:not([hidden]){
+    display:flex!important;
+    flex-direction:column!important;
+    visibility:visible!important;
+    pointer-events:auto!important;
+  }
+}
