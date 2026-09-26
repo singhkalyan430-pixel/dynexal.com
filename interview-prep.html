@@ -91,5 +91,73 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
 </section>
 </main>
 <footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span>Dynexal Technologies</span></a><p>Learn. Build. Integrate.</p><span><a href="about.html">About</a> · <a href="services.html">Services</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
-<script src="script.js?v=20260926-qa7"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+(function(){
+  const buttons=[...document.querySelectorAll('#premium-pay,[data-pay-premium]')];
+  if(!buttons.length)return;
+  let busy=false;
+  const setBusy=(state)=>{
+    busy=state;
+    buttons.forEach(btn=>{
+      btn.disabled=state;
+      btn.textContent=state?'Opening secure checkout…':'Get Premium — ₹499 →';
+    });
+  };
+  const startPayment=async()=>{
+    if(busy)return;
+    setBusy(true);
+    try{
+      const orderResponse=await fetch('/api/razorpay',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'create'})
+      });
+      const order=await orderResponse.json();
+      if(!orderResponse.ok)throw new Error(order.error||'Unable to start payment.');
+      const options={
+        key:order.keyId,
+        amount:order.amount,
+        currency:order.currency||'INR',
+        name:'Dynexal Technologies',
+        description:order.name,
+        order_id:order.orderId,
+        theme:{color:'#0a9ff5'},
+        handler:async function(response){
+          try{
+            const verifyResponse=await fetch('/api/razorpay',{
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({
+                action:'verify',
+                razorpay_order_id:response.razorpay_order_id,
+                razorpay_payment_id:response.razorpay_payment_id,
+                razorpay_signature:response.razorpay_signature
+              })
+            });
+            const result=await verifyResponse.json();
+            if(!verifyResponse.ok||!result.verified)throw new Error(result.error||'Payment verification failed.');
+            window.location.href='/payment-success.html?payment_id='+encodeURIComponent(result.paymentId);
+          }catch(error){
+            setBusy(false);
+            alert(error?.message||'Payment verification failed. Please contact Dynexal support.');
+          }
+        },
+        modal:{ondismiss:function(){setBusy(false)}}
+      };
+      const checkout=new Razorpay(options);
+      checkout.on('payment.failed',function(response){
+        setBusy(false);
+        alert(response?.error?.description||'Payment was not completed. Please try again.');
+      });
+      checkout.open();
+    }catch(error){
+      setBusy(false);
+      alert(error?.message||'Unable to start payment. Please try again.');
+    }
+  };
+  buttons.forEach(btn=>btn.addEventListener('click',startPayment));
+})();
+</script>
+<script src="script.js?v=20260926-pay2"></script>
 </body></html>
