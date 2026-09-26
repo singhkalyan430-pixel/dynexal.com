@@ -41,10 +41,6 @@
       ['APIs & Integrations',root+'articles/business-central-api-integration.html'],
       ['AI + Business Central',root+'articles/ai-business-central-complete-guide.html']
     ]},
-    {label:'Interview Prep',href:root+'interview-prep.html',key:'interview',menu:[
-      ['Free Questions',root+'interview-prep.html#free'],
-      ['Premium Interview Master',root+'interview-prep.html#premium']
-    ]},
     {label:'Services',href:root+'services.html',key:'services',menu:[
       ['Business Central Development',root+'services.html#development'],
       ['Integration Services',root+'services.html#integration'],
@@ -62,7 +58,11 @@
       ['Business Central API',root+'topics/business-central-api.html'],
       ['Reports & RDLC',root+'topics/rdlc-business-central.html']
     ]},
-    {label:'About',href:root+'about.html',key:'about'}
+    {label:'About',href:root+'about.html',key:'about'},
+    {label:'Interview Prep',href:root+'interview-prep.html',key:'interview',menu:[
+      ['Free Questions',root+'interview-prep.html#free'],
+      ['Premium Interview Master',root+'interview-prep.html#premium']
+    ]}
   ];
   const path=window.location.pathname.toLowerCase();
   let current='home';
@@ -101,6 +101,35 @@
       nav.appendChild(a);
     }
   });
+})();
+
+// Interview Prep navigation placement + premium typography
+(function(){
+  const nav=document.querySelector('.nav');
+  if(!nav)return;
+  const style=document.createElement('style');
+  style.textContent=`
+    @media(min-width:901px){
+      .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"]{
+        color:#67d7ff!important;
+        font-weight:700!important;
+        letter-spacing:.1px!important;
+        text-shadow:0 0 14px rgba(56,189,248,.18)!important;
+      }
+      .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"]:hover,
+      .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"]:focus-visible,
+      .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"].active{
+        color:#bff1ff!important;
+      }
+    }
+    @media(max-width:900px){
+      .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"]{
+        color:#67d7ff!important;
+        font-weight:700!important;
+      }
+    }
+  `;
+  document.head.appendChild(style);
 })();
 
 // Global dark/light mode switch
