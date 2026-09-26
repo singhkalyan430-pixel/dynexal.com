@@ -1273,3 +1273,30 @@ html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
     font-size:12px!important;
   }
 }
+
+
+/* MOBILE HARDENING — supports Android browsers that expose a wider CSS viewport */
+@media (max-width:1100px){
+  html,body{max-width:100%;overflow-x:hidden!important}
+  .hero-showcase{min-height:570px!important;height:570px!important;overflow:hidden!important}
+  .hero-showcase-inner{height:auto!important;min-height:0!important;padding:30px 20px 105px!important;display:block!important}
+  .hero-copy{max-width:100%!important;padding:0!important}
+  .hero-copy h1{font-size:clamp(40px,8vw,52px)!important;line-height:1.03!important;letter-spacing:-2px!important}
+  .hero-copy>p{max-width:100%!important;font-size:15px!important;line-height:1.5!important}
+  .hero-slide-full:after{display:none!important}
+  .hero-feature-row{display:none!important}
+  .hero-slider-dots{bottom:92px!important;right:50%!important;left:auto!important;transform:translateX(50%)!important}
+  .hero-bottom-strip{left:0!important;right:0!important;bottom:0!important;width:100%!important;transform:none!important;grid-template-columns:repeat(3,1fr)!important;min-height:78px!important;height:78px!important}
+  .hero-bottom-strip>div{min-height:78px!important;padding:8px 5px!important;text-align:center!important}
+  .hero-bottom-strip strong{font-size:10px!important}
+  .hero-bottom-strip small{font-size:8px!important}
+}
+@media (max-width:700px){
+  .hero-showcase{min-height:555px!important;height:555px!important}
+  .hero-showcase-inner{padding:27px 16px 95px!important}
+  .hero-copy h1{font-size:42px!important;margin:15px 0!important}
+  .hero-copy>p{font-size:14px!important}
+  .hero-actions{gap:8px!important;margin-top:18px!important}
+  .hero-primary,.hero-secondary{padding:11px 13px!important;font-size:12px!important}
+  .hero-badge{font-size:8px!important;padding:6px 9px!important}
+}
