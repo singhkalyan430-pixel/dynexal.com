@@ -35,7 +35,7 @@
   const root='../'.repeat(depth);
   const links=[
     {label:'Home',href:root+'index.html',key:'home'},
-    {label:'Interview Prep',href:root+'interview-prep.html',key:'interview',menu:[\n      ['Free Questions',root+'interview-prep.html#free'],\n      ['Premium Interview Master',root+'interview-prep.html#premium']\n    ]},\n    {label:'Tutorials',href:root+'tutorials.html',key:'tutorials',menu:[
+    {label:'Tutorials',href:root+'tutorials.html',key:'tutorials',menu:[
       ['AL Development',root+'topics/al-development.html'],
       ['Reports & RDLC',root+'topics/rdlc-business-central.html'],
       ['APIs & Integrations',root+'articles/business-central-api-integration.html'],
@@ -133,29 +133,30 @@
   toggle.addEventListener('click',()=>apply(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
 })(); 
 
-// Plain desktop navigation — no dropdowns, no arrows
+// Navigation visual polish
 (function(){
   const nav=document.querySelector('.nav');
   if(!nav)return;
   const style=document.createElement('style');
   style.textContent=`
     .site-header .logo{display:flex!important;align-items:center!important;gap:13px!important;white-space:nowrap!important}
-    .site-header .logo-mark,.footer .logo-mark{display:block!important;width:52px!important;height:52px!important;flex:0 0 52px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important;color:transparent!important;font-size:0!important}
+    .site-header .logo-mark{display:block!important;width:52px!important;height:52px!important;flex:0 0 52px!important;background:url('/assets/dynexal-mark.svg') center/contain no-repeat!important;color:transparent!important;font-size:0!important}
     .site-header .logo-copy{display:flex!important;flex-direction:column!important;line-height:1.08!important}
     .site-header .logo-copy strong{font-size:30px!important;line-height:1!important;letter-spacing:-.9px!important;color:#fff!important;font-weight:800!important}
     .site-header .logo-copy small{margin-top:6px!important;font-size:12px!important;font-weight:500!important;color:#9eb0c7!important;letter-spacing:.25px!important}
-    .footer .logo-copy{display:flex!important;flex-direction:column!important;line-height:1.08!important}
-    .footer .logo-copy strong{font-size:18px!important;color:#fff!important}
-    .footer .logo-copy small{margin-top:4px!important;font-size:10px!important;color:#91a0b6!important;font-weight:500!important}
-    .site-header .nav .nav-arrow{display:none!important}
     @media(min-width:901px){
       .site-header .nav{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:31px!important;font-size:17px!important;white-space:nowrap!important;overflow:visible!important}
-      .site-header .nav>a{height:82px!important;display:flex!important;align-items:center!important;position:relative!important;color:#cbd5e1!important}
-      .site-header .nav>a:hover,.site-header .nav>a:focus-visible{color:#fff!important}
-      .site-header .nav>a.active:after{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:3px!important;border-radius:4px!important;background:#0aa5ff!important}
+      .site-header .nav>a,.site-header .nav>.has-dropdown>a{height:82px!important;display:flex!important;align-items:center!important;position:relative!important;color:#cbd5e1!important}
+      .site-header .nav>a:hover,.site-header .nav>.has-dropdown>a:hover,.site-header .nav>a:focus-visible,.site-header .nav>.has-dropdown>a:focus-visible{color:#fff!important}
+      .site-header .nav>.has-dropdown{position:relative!important;height:82px!important;display:flex!important;align-items:center!important}
+      .site-header .nav>.has-dropdown>.dropdown-menu{display:none!important;position:absolute!important;top:74px!important;left:50%!important;transform:translateX(-50%)!important;min-width:230px!important;padding:9px!important;background:#0b1729!important;border:1px solid #203b5b!important;border-radius:14px!important;box-shadow:0 18px 40px rgba(0,0,0,.32)!important;z-index:9999!important}
+      .site-header .nav>.has-dropdown:hover>.dropdown-menu,.site-header .nav>.has-dropdown:focus-within>.dropdown-menu{display:flex!important;flex-direction:column!important;gap:2px!important}
+      .site-header .nav>.has-dropdown>.dropdown-menu a{display:block!important;padding:11px 13px!important;border-radius:9px!important;color:#cbd5e1!important;text-decoration:none!important;font-size:14px!important;white-space:nowrap!important}
+      .site-header .nav>.has-dropdown>.dropdown-menu a:hover{background:#132b47!important;color:#fff!important}
+      .site-header .nav>a.active:after,.site-header .nav>.has-dropdown>a.active:after{content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:3px!important;border-radius:4px!important;background:#0aa5ff!important}
     }
     @media(max-width:900px){
-      .site-header .logo-mark,.footer .logo-mark{width:40px!important;height:40px!important;flex-basis:40px!important}
+      .site-header .logo-mark{width:40px!important;height:40px!important;flex-basis:40px!important}
       .site-header .logo-copy strong{font-size:23px!important}
       .site-header .logo-copy small{font-size:10.5px!important}
     }
