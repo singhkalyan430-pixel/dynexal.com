@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Payment Successful | Dynexal Technologies</title>
+<link rel="stylesheet" href="styles.css?v=20260926-payment">
+<link rel="stylesheet" href="nav-plain.css?v=20260924-theme5">
+<style>
+.payment-page{min-height:calc(100vh - 82px);display:grid;place-items:center;padding:60px 20px;background:linear-gradient(135deg,#041022,#071d36,#0a2a49);color:#fff}
+.payment-card{width:min(620px,100%);padding:42px;border:1px solid #294d70;border-radius:24px;background:rgba(7,18,34,.94);box-shadow:0 24px 70px rgba(0,0,0,.3);text-align:center}
+.payment-icon{width:64px;height:64px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;background:#0b9d59;font-size:30px}
+.payment-card h1{margin:0 0 12px;font-size:clamp(32px,5vw,48px)}
+.payment-card p{color:#b9cbe0;line-height:1.7}
+.payment-id{margin:22px 0;padding:12px;border-radius:10px;background:#0d2138;color:#8fd2ff;font:12px ui-monospace,monospace;word-break:break-all}
+.payment-btn{display:inline-flex;margin-top:12px;padding:13px 20px;border-radius:10px;background:#119df4;color:#fff;font-weight:800;text-decoration:none}
+.payment-note{font-size:12px;color:#7f96b1;margin-top:18px}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<main class="payment-page">
+<section class="payment-card">
+<div class="payment-icon">✓</div>
+<h1>Payment Successful</h1>
+<p>Your payment for the <strong>Dynexal Interview Master — 60 Questions</strong> has been verified successfully.</p>
+<div class="payment-id" id="payment-id">Payment ID: verifying…</div>
+<a class="payment-btn" href="interview-prep.html#premium">Back to Interview Master</a>
+<p class="payment-note">Keep this payment ID for your records. Premium material delivery can be connected to this verified payment flow.</p>
+</section>
+</main>
+<script>
+(function(){
+ const id=new URLSearchParams(location.search).get('payment_id');
+ document.getElementById('payment-id').textContent=id?'Payment ID: '+id:'Payment verified';
+})();
+</script>
+<script src="script.js?v=20260926-payment1"></script>
+</body>
+</html>
