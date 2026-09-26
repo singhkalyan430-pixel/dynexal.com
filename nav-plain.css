@@ -993,8 +993,16 @@ html[data-theme="dark"] .flow{
 
 
 
-/* MOBILE MENU — full-screen drawer so page content cannot show through */
+
+/* MOBILE MENU — hide page layer completely while navigation is open */
 @media (max-width:1100px){
+  body:has(.site-header .nav.mobile-nav-open){
+    overflow:hidden!important;
+  }
+  body:has(.site-header .nav.mobile-nav-open) main,
+  body:has(.site-header .nav.mobile-nav-open) footer{
+    display:none!important;
+  }
   .site-header .nav.mobile-nav-open{
     position:fixed!important;
     top:72px!important;
@@ -1003,23 +1011,16 @@ html[data-theme="dark"] .flow{
     bottom:0!important;
     width:100vw!important;
     max-width:none!important;
-    height:auto!important;
+    height:calc(100vh - 72px)!important;
     max-height:none!important;
     overflow-y:auto!important;
-    overflow-x:hidden!important;
-    box-sizing:border-box!important;
-    z-index:10001!important;
     background:#07111f!important;
-    border-top:1px solid #29415f!important;
-    border-bottom:0!important;
-    box-shadow:none!important;
-  }
-  .site-header:has(.nav.mobile-nav-open){
-    z-index:10000!important;
+    z-index:10001!important;
   }
 }
 @media (max-width:560px){
   .site-header .nav.mobile-nav-open{
     top:68px!important;
+    height:calc(100vh - 68px)!important;
   }
 }
