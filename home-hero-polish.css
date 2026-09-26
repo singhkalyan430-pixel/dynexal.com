@@ -874,7 +874,7 @@ html[data-theme="dark"] .stack-row span{
   display:flex;
   width:max-content;
   gap:18px;
-  animation:dynexal-marquee-left 42s linear infinite;
+  animation:dynexal-marquee-left 42s linear infinite!important;animation-play-state:running!important;
   will-change:transform;
 }
 .dynexal-marquee:hover .dynexal-marquee-track{
@@ -947,9 +947,6 @@ html[data-theme="dark"] .marquee-card small{color:#aebdd0!important}
   .marquee-heading p{margin-top:14px}
   .marquee-card{flex-basis:260px;min-height:116px;padding:18px}
   .dynexal-marquee-track{gap:14px;animation-duration:38s}
-}
-@media(prefers-reduced-motion:reduce){
-  .dynexal-marquee-track{animation:none;transform:none}
 }
 
 .dynexal-marquee .marquee-card{
@@ -1030,7 +1027,7 @@ html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
   height:128px!important;
   margin:0!important;
   padding:0!important;
-  animation:dynexal-marquee-run 48s linear infinite!important;
+  animation:dynexal-marquee-run 48s linear infinite!important;animation-play-state:running!important;
   transform:translate3d(0,0,0)!important;
   will-change:transform!important;
 }
