@@ -197,7 +197,7 @@
 (function(){
   const isMobileUA=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent||'');
   const syncDesktopSite=()=>{
-    const desktopSite=isMobileUA && window.innerWidth>=700;
+    const desktopSite=(!isMobileUA) || window.innerWidth>=700;
     document.documentElement.classList.toggle('desktop-site-mode',desktopSite);
     document.body.classList.toggle('desktop-site-mode',desktopSite);
   };
