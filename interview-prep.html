@@ -108,7 +108,7 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
     if(busy)return;
     setBusy(true);
     try{
-      const orderResponse=await fetch('/api/razorpay',{
+      const orderResponse=await fetch('https://dynexal-ai-assistant.vercel.app/api/razorpay',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({action:'create'})
@@ -125,7 +125,7 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
         theme:{color:'#0a9ff5'},
         handler:async function(response){
           try{
-            const verifyResponse=await fetch('/api/razorpay',{
+            const verifyResponse=await fetch('https://dynexal-ai-assistant.vercel.app/api/razorpay',{
               method:'POST',
               headers:{'Content-Type':'application/json'},
               body:JSON.stringify({
