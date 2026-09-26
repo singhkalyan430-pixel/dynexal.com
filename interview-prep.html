@@ -51,6 +51,11 @@ html[data-theme="dark"] .product-card h2{color:#f2f7ff}.product-card>p,.product-
 html[data-theme="dark"] .section-heading h2{color:#f2f7ff}.section-heading p{color:#aebdd0}
 html[data-theme="dark"] .question{background:#0d1a2b;border-color:#203550}.question h3{color:#f2f7ff}.question p{color:#aebdd0}
 @media(max-width:800px){.interview-hero{padding:62px 0 70px}.interview-hero h1{letter-spacing:-2px}.interview-products,.free-grid{grid-template-columns:1fr}.interview-wrap{margin-top:-25px}.product-card{padding:23px}.preview{padding-top:55px}}
+
+.premium-pay-btn{border:0;cursor:pointer;font:inherit}
+.premium-pay-btn:disabled{opacity:.65;cursor:wait}
+.payment-note{margin-top:10px;font-size:12px;color:#718198}
+html[data-theme="dark"] .payment-note{color:#91a4bb}
 </style>
 </head>
 <body>
@@ -64,7 +69,7 @@ html[data-theme="dark"] .question{background:#0d1a2b;border-color:#203550}.quest
 </div></section>
 <div class="interview-wrap"><section class="interview-products">
 <article class="product-card free"><div class="product-label">FREE</div><h2>Interview Starter</h2><p>Start practicing with original Dynexal questions before you decide whether you need the full pack.</p><div class="price free-price">₹0</div><ul class="product-list"><li>12 practical questions</li><li>AL &amp; Business Central fundamentals</li><li>Short model answers</li><li>Senior follow-up thinking</li></ul><a class="product-cta" href="#free">Practice Free →</a></article>
-<article class="product-card premium" id="premium"><div class="product-label">DYNEXAL PREMIUM</div><h2>Interview Master — 60 Questions</h2><p>A branded, print-ready premium pack covering real developer discussions and senior scenarios.</p><div class="price">Premium Pack</div><ul class="product-list"><li>60 original scenario-driven questions</li><li>Model answers + senior follow-ups</li><li>Architecture, APIs, integrations &amp; JSON</li><li>Testing, security, reporting &amp; performance</li><li>Job Queue &amp; background processing</li><li>Dynexal branded PDF material</li></ul><a class="product-cta" href="contact.html?subject=Premium%20Interview%20Master">Get Premium →</a></article>
+<article class="product-card premium" id="premium"><div class="product-label">DYNEXAL PREMIUM</div><h2>Interview Master — 60 Questions</h2><p>A branded, print-ready premium pack covering real developer discussions and senior scenarios.</p><div class="price">Premium Pack</div><ul class="product-list"><li>60 original scenario-driven questions</li><li>Model answers + senior follow-ups</li><li>Architecture, APIs, integrations &amp; JSON</li><li>Testing, security, reporting &amp; performance</li><li>Job Queue &amp; background processing</li><li>Dynexal branded PDF material</li></ul><button class="product-cta premium-pay-btn" id="premium-pay" type="button">Get Premium — ₹499 →</button></article>
 </section></div>
 <section class="preview container" id="free"><div class="section-heading"><h2>Free Interview Questions</h2><p>Use these as a quick self-test. Try answering aloud before reading the model answer.</p></div>
 <div class="free-grid">
@@ -81,7 +86,7 @@ html[data-theme="dark"] .question{background:#0d1a2b;border-color:#203550}.quest
 <article class="question"><div class="num">11 • JOB QUEUE</div><h3>When should a Job Queue be considered?</h3><p>Use background processing for scheduled synchronization, imports, exports and recurring work that should not block a user's session. Design for retries, logging and idempotency.</p></article>
 <article class="question"><div class="num">12 • SENIOR</div><h3>What does “production-ready” mean for a Business Central extension?</h3><p>Beyond working functionality, consider security, permissions, performance, testing, upgradeability, monitoring, deployment repeatability, migration and supportability.</p></article>
 </div>
-<div class="premium-preview"><h3>Ready for the full interview?</h3><p>The Premium Master expands these themes into 60 original questions with model answers and senior follow-ups, including practical architecture and integration scenarios.</p><div class="pill-row"><span class="pill">60 Questions</span><span class="pill">Senior Scenarios</span><span class="pill">AL</span><span class="pill">APIs</span><span class="pill">Integrations</span><span class="pill">RDLC</span><span class="pill">Testing</span><span class="pill">Performance</span></div><a class="product-cta" href="contact.html?subject=Premium%20Interview%20Master">Request Premium Access →</a></div>
+<div class="premium-preview"><h3>Ready for the full interview?</h3><p>The Premium Master expands these themes into 60 original questions with model answers and senior follow-ups, including practical architecture and integration scenarios.</p><div class="pill-row"><span class="pill">60 Questions</span><span class="pill">Senior Scenarios</span><span class="pill">AL</span><span class="pill">APIs</span><span class="pill">Integrations</span><span class="pill">RDLC</span><span class="pill">Testing</span><span class="pill">Performance</span></div><button class="product-cta premium-pay-btn" type="button" data-pay-premium>Buy Interview Master — ₹499 →</button></div>
 <p class="disclaimer">Dynexal interview material is independently authored for learning and interview preparation. It is not official Microsoft exam material.</p>
 </section>
 </main>
