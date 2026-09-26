@@ -485,3 +485,55 @@ html[data-theme="dark"] .cta{
 html[data-theme="dark"] .flow{
   background:#030b17!important;
 }
+
+
+/* FINAL MOBILE HEADER LOCK — 2026-09-26 */
+@media (max-width:900px){
+  html,body{max-width:100%;overflow-x:hidden!important}
+  .site-header{width:100%!important;overflow:visible!important}
+  .site-header .nav{display:none!important;visibility:hidden!important;opacity:0!important}
+  .site-header .menu-btn{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:42px!important;
+    height:42px!important;
+    flex:0 0 42px!important;
+    margin-left:auto!important;
+    padding:0!important;
+    border:1px solid rgba(148,163,184,.35)!important;
+    border-radius:10px!important;
+    background:rgba(255,255,255,.06)!important;
+    color:#fff!important;
+    font-size:22px!important;
+    line-height:1!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  .site-header .nav-wrap{
+    width:100%!important;
+    max-width:100%!important;
+    box-sizing:border-box!important;
+    padding-left:16px!important;
+    padding-right:16px!important;
+  }
+  .site-header .logo{
+    min-width:0!important;
+    max-width:calc(100% - 54px)!important;
+    overflow:hidden!important;
+  }
+  .site-header .logo-copy{
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+  .site-header .logo-copy strong,
+  .site-header .logo-copy small{
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+}
+@media (max-width:560px){
+  .site-header .logo-copy strong{font-size:17px!important}
+  .site-header .logo-copy small{font-size:8px!important}
+  .site-header .logo-mark{width:38px!important;height:38px!important;flex-basis:38px!important}
+}
