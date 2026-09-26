@@ -10,7 +10,7 @@ a{color:inherit;text-decoration:none}
 .logo-copy{display:flex;flex-direction:column;line-height:1.08}
 .logo-copy strong{font-size:23px;letter-spacing:-.7px}
 .logo-copy small{margin-top:5px;font-size:13px;font-weight:500;color:#9eb0c7;letter-spacing:.2px}
-.footer .logo-mark{width:32px;height:32px;flex-basis:32px}
+.footer .logo-mark{width:32px;height:32px;flex-basis:32px;font-size:0;line-height:0}
 .nav{display:flex;align-items:center;gap:30px;font-size:17px;color:#d6deea;white-space:nowrap}
 .nav>a{display:flex;align-items:center;height:82px;position:relative}
 .nav>a:hover,.nav>a.active{color:#fff}
