@@ -1079,3 +1079,28 @@ html[data-theme="dark"] .flow{
     height:calc(100vh - 68px)!important;
   }
 }
+
+/* Mobile browser Desktop Site mode: keep the desktop composition intact */
+@media (min-width:700px) and (max-width:1100px){
+  html.desktop-site-mode,
+  body.desktop-site-mode{
+    min-width:1100px!important;
+  }
+  body.desktop-site-mode .site-header,
+  body.desktop-site-mode .hero-showcase,
+  body.desktop-site-mode .section,
+  body.desktop-site-mode .footer{
+    min-width:1100px!important;
+  }
+  body.desktop-site-mode .menu-btn{
+    display:none!important;
+  }
+  body.desktop-site-mode .nav{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+  }
+  body.desktop-site-mode .nav-wrap{
+    height:82px!important;
+  }
+}
