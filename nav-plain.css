@@ -757,3 +757,64 @@ html[data-theme="dark"] .flow{
     font-size:13px!important;
   }
 }
+
+
+/* FINAL MOBILE HEADER — prevent logo clipping and guarantee menu visibility */
+@media (max-width:1100px){
+  .site-header .nav-wrap{
+    display:flex!important;
+    align-items:center!important;
+    width:100%!important;
+    min-width:0!important;
+    padding:0 14px!important;
+    box-sizing:border-box!important;
+  }
+  .site-header .logo{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    max-width:calc(100% - 52px)!important;
+    width:auto!important;
+    gap:8px!important;
+    overflow:visible!important;
+  }
+  .site-header .logo-mark{
+    width:36px!important;
+    height:36px!important;
+    flex:0 0 36px!important;
+  }
+  .site-header .logo-copy{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    overflow:visible!important;
+  }
+  .site-header .logo-copy strong{
+    font-size:17px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  .site-header .logo-copy small{
+    font-size:8px!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+  }
+  .site-header .menu-btn{
+    position:relative!important;
+    z-index:10001!important;
+    display:flex!important;
+    flex:0 0 42px!important;
+    width:42px!important;
+    height:42px!important;
+    margin-left:8px!important;
+    align-items:center!important;
+    justify-content:center!important;
+  }
+  .site-header .nav.mobile-nav-open{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    z-index:10000!important;
+  }
+}
