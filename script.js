@@ -35,7 +35,7 @@
   const root='../'.repeat(depth);
   const links=[
     {label:'Home',href:root+'index.html',key:'home'},
-    {label:'Tutorials',href:root+'tutorials.html',key:'tutorials',menu:[
+    {label:'Interview Prep',href:root+'interview-prep.html',key:'interview',menu:[\n      ['Free Questions',root+'interview-prep.html#free'],\n      ['Premium Interview Master',root+'interview-prep.html#premium']\n    ]},\n    {label:'Tutorials',href:root+'tutorials.html',key:'tutorials',menu:[
       ['AL Development',root+'topics/al-development.html'],
       ['Reports & RDLC',root+'topics/rdlc-business-central.html'],
       ['APIs & Integrations',root+'articles/business-central-api-integration.html'],
