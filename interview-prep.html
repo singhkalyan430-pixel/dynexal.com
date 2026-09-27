@@ -196,7 +196,8 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
             });
             const result=await verifyResponse.json();
             if(!verifyResponse.ok||!result.verified)throw new Error(result.error||'Payment verification failed.');
-            window.location.href='/payment-success.html?payment_id='+encodeURIComponent(result.paymentId);
+            const successUrl='/payment-success.html?payment_id='+encodeURIComponent(result.paymentId)+(result.reviewToken?'&review_token='+encodeURIComponent(result.reviewToken):'');
+            window.location.href=successUrl;
           }catch(error){
             setBusy(false);
             alert(error?.message||'Payment verification failed. Please contact Dynexal support.');
