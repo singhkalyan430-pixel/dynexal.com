@@ -49,6 +49,51 @@ async function createOrder() {
   return data;
 }
 
+async function saveVerifiedPurchase({ orderId, paymentId }) {
+  const baseUrl = process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!baseUrl || !serviceKey) {
+    console.warn("Supabase review storage is not configured.");
+    return null;
+  }
+
+  const headers = {
+    apikey: serviceKey,
+    Authorization: "Bearer " + serviceKey,
+    "Content-Type": "application/json",
+    Prefer: "return=representation"
+  };
+
+  const existingResponse = await fetch(
+    baseUrl + "/rest/v1/interview_purchases?razorpay_payment_id=eq." + encodeURIComponent(paymentId) + "&select=id,review_token",
+    { headers }
+  );
+  if (existingResponse.ok) {
+    const existing = await existingResponse.json();
+    if (existing[0]?.review_token) return existing[0];
+  }
+
+  const reviewToken = crypto.randomBytes(32).toString("hex");
+  const insertResponse = await fetch(baseUrl + "/rest/v1/interview_purchases", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      razorpay_payment_id: paymentId,
+      razorpay_order_id: orderId,
+      product: PRODUCT_NAME,
+      amount_paise: PRICE_PAISE,
+      review_token: reviewToken
+    })
+  });
+  if (!insertResponse.ok) {
+    const error = await insertResponse.text();
+    console.error("Supabase purchase storage error:", error);
+    return null;
+  }
+  const rows = await insertResponse.json();
+  return rows[0] || null;
+}
+
 async function verifyPayment({ orderId, paymentId, signature }) {
   const secret = process.env.RAZORPAY_KEY_SECRET;
   const expected = crypto
@@ -126,11 +171,17 @@ export default async function handler(req, res) {
         signature
       });
 
+      const purchase = await saveVerifiedPurchase({
+        orderId: payment.order_id,
+        paymentId: payment.id
+      });
+
       return res.status(200).json({
         verified: true,
         paymentId: payment.id,
         orderId: payment.order_id,
-        product: PRODUCT_NAME
+        product: PRODUCT_NAME,
+        reviewToken: purchase?.review_token || null
       });
     }
 
