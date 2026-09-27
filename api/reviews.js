@@ -50,30 +50,37 @@ export default async function handler(req, res) {
     const comment = String(body?.comment || "").trim();
     const rating = Number(body?.rating);
 
-    if (!token || !reviewerName || !comment || !Number.isInteger(rating)) {
-      return res.status(400).json({ error: "Rating, name, comment and review token are required." });
+    if (!reviewerName || !comment || !Number.isInteger(rating)) {
+      return res.status(400).json({ error: "Rating, name and comment are required." });
     }
     if (rating < 1 || rating > 5) return res.status(400).json({ error: "Rating must be between 1 and 5." });
     if (reviewerName.length < 2 || reviewerName.length > 80) return res.status(400).json({ error: "Name must be between 2 and 80 characters." });
     if (comment.length < 10 || comment.length > 1000) return res.status(400).json({ error: "Comment must be between 10 and 1000 characters." });
 
-    const purchaseResponse = await fetch(
-      SUPABASE_URL + "/rest/v1/interview_purchases?review_token=eq." + encodeURIComponent(token) + "&select=id",
-      { headers: dbHeaders() }
-    );
-    const purchases = await purchaseResponse.json();
-    if (!purchaseResponse.ok || !purchases[0]?.id) {
-      return res.status(403).json({ error: "This review link is not valid for a verified purchase." });
+    let purchaseId = null;
+    let source = "community";
+    if (token) {
+      const purchaseResponse = await fetch(
+        SUPABASE_URL + "/rest/v1/interview_purchases?review_token=eq." + encodeURIComponent(token) + "&select=id",
+        { headers: dbHeaders() }
+      );
+      const purchases = await purchaseResponse.json();
+      if (!purchaseResponse.ok || !purchases[0]?.id) {
+        return res.status(403).json({ error: "This premium review link is not valid." });
+      }
+      purchaseId = purchases[0].id;
+      source = "premium";
     }
 
     const reviewResponse = await fetch(SUPABASE_URL + "/rest/v1/interview_reviews", {
       method: "POST",
       headers: { ...dbHeaders(), Prefer: "return=representation" },
       body: JSON.stringify({
-        purchase_id: purchases[0].id,
+        purchase_id: purchaseId,
         rating,
         reviewer_name: reviewerName,
         comment,
+        source,
         status: "pending"
       })
     });
