@@ -150,7 +150,22 @@ html[data-theme="dark"] .dynexal-insights{background:#050d18}
 .intel-panels{display:grid;grid-template-columns:1.15fr .85fr;gap:20px;margin-bottom:20px}.intel-panel{border:1px solid #203f57;border-radius:18px;background:#091827;padding:23px}.intel-panel-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;color:#52e0cf;font-size:10px;font-weight:900;letter-spacing:.1em}.intel-panel-title a{color:#719ed4;text-decoration:none;font-size:10px}.trend-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.trend-list a{padding:15px;border:1px solid #1e3c53;border-radius:12px;background:#0b1c2d;text-decoration:none}.trend-list b{display:block;color:#67aaff;font-size:10px;margin-bottom:7px}.trend-list span{display:block;color:#dce8f3;font-size:12px;line-height:1.45}.trend-list em{color:#e1ad65;font-style:normal;font-size:9px}.radar-tags{display:flex;gap:8px;flex-wrap:wrap}.radar-tags span{padding:7px 10px;border-radius:999px;border:1px solid #294d67;color:#9dc5df;background:#0b2031;font-size:9px;font-weight:900}.intel-panel>p{margin:16px 0 0;color:#8fa8bc;font-size:13px;line-height:1.65}
 @media(max-width:850px){.feature-content{grid-template-columns:1fr}.feature-signal{display:none}.intel-panels{grid-template-columns:1fr}.trend-list{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.insight-feature{padding:22px}.feature-copy h3{font-size:27px}.feature-actions{gap:13px;flex-direction:column}.trend-list{grid-template-columns:1fr}.intel-panel{padding:19px}}
-</style></style></head>
+</style></style><style id="dynexal-home-cleanup">
+/* Keep the homepage focused: one featured insight + three compact updates. */
+.dynexal-insights{padding:76px 0 82px}
+.dynexal-insights .section-heading{margin-bottom:28px}
+.dynexal-insights .section-heading p{max-width:600px}
+.compact-intel{display:block!important;margin:0!important}
+.compact-intel .intel-panel{padding:18px 20px}
+.compact-intel .trend-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.compact-intel .trend-list a{padding:16px}
+@media(max-width:850px){.compact-intel .trend-list{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){
+  .dynexal-insights{padding:58px 0 64px}
+  .dynexal-insights .section-heading h2{font-size:31px}
+  .compact-intel .trend-list{grid-template-columns:1fr}
+}
+</style></head>
 <body>
 <header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a class="active" href="index.html" aria-current="page">Home</a><div class="has-dropdown"><a href="tutorials.html">Tutorials</a><div class="dropdown-menu"><a href="topics/al-development.html">AL Development</a><a href="topics/rdlc-business-central.html">Reports &amp; RDLC</a><a href="articles/business-central-api-integration.html">APIs &amp; Integrations</a><a href="articles/ai-business-central-complete-guide.html">AI + Business Central</a></div></div><div class="has-dropdown"><a href="interview-prep.html">Interview Prep</a><div class="dropdown-menu"><a href="interview-prep.html#free">Free Questions</a><a href="interview-prep.html#premium">Premium Interview Master</a></div></div><div class="has-dropdown"><a href="services.html">Services</a><div class="dropdown-menu"><a href="services.html#development">Business Central Development</a><a href="services.html#integration">Integration Services</a><a href="services.html#ai">AI Solutions</a></div></div><div class="has-dropdown"><a href="portfolio.html">Portfolio</a><div class="dropdown-menu"><a href="portfolio.html">All Projects</a><a href="projects/ecommerce-integration.html">E-commerce Integration</a><a href="projects/role-center-dashboard.html">Role Center Dashboard</a><a href="projects/rdlc-reporting-toolkit.html">Reporting Toolkit</a><a href="projects/api-integration.html">API Integration</a></div></div><div class="has-dropdown"><a href="#topics">Topics</a><div class="dropdown-menu"><a href="topics/al-development.html">AL Development</a><a href="topics/business-central-api.html">Business Central API</a><a href="topics/rdlc-business-central.html">Reports &amp; RDLC</a></div></div><a href="about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main>
@@ -298,91 +313,33 @@ html[data-theme="dark"] .dynexal-insights{background:#050d18}
       </div>
     </div>
   </div>  </div><div class="hero-slider-dots" role="tablist" aria-label="Hero slides"><button class="hero-slider-dot active" data-slide="0" aria-label="Business Central and AL slide"></button><button class="hero-slider-dot" data-slide="1" aria-label="APIs and integrations slide"></button><button class="hero-slider-dot" data-slide="2" aria-label="AI and automation slide"></button><button class="hero-slider-dot" data-slide="3" aria-label="Reporting and RDLC slide"></button><button class="hero-slider-dot" data-slide="4" aria-label="Security testing and performance slide"></button><button class="hero-slider-dot" data-slide="5" aria-label="Consulting and implementation slide"></button></div><div class="container hero-bottom-strip"><div><span>◆</span><strong>Learn Practical Skills</strong><small>Step-by-step tutorials</small></div><div><span>✦</span><strong>Build Real Projects</strong><small>From concepts to solutions</small></div><div><span>♟</span><strong>Grow Your Career</strong><small>With in-demand skills</small></div></div></section>
-<section class="dynexal-marquee-section" aria-label="Dynexal capabilities">
-  <div class="container">
-    <div class="marquee-heading">
-      <div><span class="section-label">WHAT WE BUILD</span><h2>Business Central solutions, <span>moving forward.</span></h2></div>
-      <p>Explore our core development, integration, reporting and AI capabilities.</p>
-    </div>
-  </div>
-  <div class="dynexal-marquee" role="region" aria-label="Capabilities carousel">
-    <div class="dynexal-marquee-track">
-      <a class="marquee-card" href="business-central-development.html"><span class="marquee-icon">BC</span><div><strong>Business Central</strong><small>ERP development & extensions</small><em>Learn more →</em></div></a>
-      <a class="marquee-card" href="al-development.html"><span class="marquee-icon">&lt;/&gt;</span><div><strong>AL Development</strong><small>Tables, pages, codeunits &amp; events</small><em>Learn more →</em></div></a>
-      <a class="marquee-card" href="api-integration.html"><span class="marquee-icon">↔</span><div><strong>API Integration</strong><small>REST, OAuth, JSON &amp; webhooks</small><em>Learn more →</em></div></a>
-      <a class="marquee-card" href="rdlc-reporting.html"><span class="marquee-icon">▤</span><div><strong>RDLC Reporting</strong><small>Datasets, layouts &amp; business reports</small><em>Learn more →</em></div></a>
-      <a class="marquee-card" href="shopify-integration.html"><span class="marquee-icon">◈</span><div><strong>Shopify Integration</strong><small>Products, orders &amp; synchronization</small><em>Learn more →</em></div></a>
-      <a class="marquee-card" href="ai-automation.html"><span class="marquee-icon">✦</span><div><strong>AI Automation</strong><small>AI assistants &amp; intelligent workflows</small><em>Learn more →</em></div></a>
-      <a class="marquee-card" href="testing-security.html"><span class="marquee-icon">✓</span><div><strong>Testing &amp; Security</strong><small>Permissions, tests &amp; performance</small><em>Learn more →</em></div></a>
-      <a class="marquee-card" href="technical-consulting.html"><span class="marquee-icon">⌂</span><div><strong>Technical Consulting</strong><small>Architecture &amp; implementation guidance</small><em>Learn more →</em></div></a>
-      <a class="marquee-card" href="business-central-development.html" aria-hidden="true" tabindex="-1"><span class="marquee-icon">BC</span><div><strong>Business Central</strong><small>ERP development & extensions</small></div></a>
-      <a class="marquee-card" href="al-development.html" aria-hidden="true" tabindex="-1"><span class="marquee-icon">&lt;/&gt;</span><div><strong>AL Development</strong><small>Tables, pages, codeunits &amp; events</small></div></a>
-      <a class="marquee-card" href="api-integration.html" aria-hidden="true" tabindex="-1"><span class="marquee-icon">↔</span><div><strong>API Integration</strong><small>REST, OAuth, JSON &amp; webhooks</small></div></a>
-      <a class="marquee-card" href="rdlc-reporting.html" aria-hidden="true" tabindex="-1"><span class="marquee-icon">▤</span><div><strong>RDLC Reporting</strong><small>Datasets, layouts &amp; business reports</small></div></a>
-      <a class="marquee-card" href="shopify-integration.html" aria-hidden="true" tabindex="-1"><span class="marquee-icon">◈</span><div><strong>Shopify Integration</strong><small>Products, orders &amp; synchronization</small></div></a>
-      <a class="marquee-card" href="ai-automation.html" aria-hidden="true" tabindex="-1"><span class="marquee-icon">✦</span><div><strong>AI Automation</strong><small>AI assistants &amp; intelligent workflows</small></div></a>
-      <a class="marquee-card" href="testing-security.html" aria-hidden="true" tabindex="-1"><span class="marquee-icon">✓</span><div><strong>Testing &amp; Security</strong><small>Permissions, tests &amp; performance</small></div></a>
-      <a class="marquee-card" href="technical-consulting.html" aria-hidden="true" tabindex="-1"><span class="marquee-icon">⌂</span><div><strong>Technical Consulting</strong><small>Architecture &amp; implementation guidance</small></div></a>
-    </div>
-  </div>
-</section>
-
-<section class="dynexal-stack" aria-label="Dynexal technology stack">
-  <div class="container">
-    <span class="stack-label">TECHNOLOGY STACK</span>
-    <div class="stack-row">
-      <span>Microsoft Dynamics 365</span><span>Business Central</span><span>AL</span><span>REST APIs</span><span>OAuth 2.0</span><span>RDLC</span><span>Shopify</span><span>AI &amp; Automation</span>
-    </div>
-  </div>
-</section>
-<section class="section" id="tutorials"><div class="container"><div class="section-heading"><div><span class="section-label">LEARN. BUILD. APPLY.</span><h2>Practical Tutorials &amp; Resources</h2><p>Step-by-step guides built around real Business Central development problems.</p></div><a class="view-all" href="tutorials.html">View all tutorials →</a></div><div class="cards"><article class="card"><div class="card-icon">AL</div><span class="tag">AL DEVELOPMENT</span><h3>Business Central Development</h3><p>Learn AL, tables, pages, extensions, codeunits, events, interfaces and development best practices.</p><a href="tutorials.html">Explore AL tutorials →</a></article><article class="card"><div class="card-icon">API</div><span class="tag">INTEGRATIONS</span><h3>APIs &amp; Integrations</h3><p>Work with REST APIs, JSON, HttpClient, OAuth 2.0, webhooks and custom API pages.</p><a href="articles/business-central-api-integration.html">Explore integration guides →</a></article><article class="card"><div class="card-icon">AI</div><span class="tag">AI + BUSINESS CENTRAL</span><h3>AI-Powered Solutions</h3><p>Explore AI, automation, agents and practical approaches for intelligent ERP workflows.</p><a href="articles/ai-business-central-complete-guide.html">Explore AI guide →</a></article></div></div></section>
 <section class="dynexal-insights section" id="insights" aria-labelledby="insights-title">
   <div class="container">
     <div class="section-heading">
-      <div><span class="section-label">DYNEXAL INTELLIGENCE • LIVE</span><h2 id="insights-title">Latest News &amp; Insights</h2><p>Business Central, AI, AL development, agents, MCP and Microsoft ecosystem updates — with a developer-focused view.</p></div>
+      <div><span class="section-label">DYNEXAL INSIGHTS</span><h2 id="insights-title">What’s changing in Business Central?</h2><p>One featured story and a few useful updates — without the noise.</p></div>
       <a class="view-all" href="articles.html">View all insights →</a>
     </div>
     <article class="insight-feature">
-      <div class="feature-top"><span class="live-pill"><i></i> LIVE FEATURED</span><span class="feature-date">Sep 2026</span></div>
+      <div class="feature-top"><span class="live-pill"><i></i> FEATURED</span><span class="feature-date">Sep 2026</span></div>
       <div class="feature-content">
         <div class="feature-copy">
           <span class="feature-category">AI • BUSINESS CENTRAL</span>
           <h3>Business Central is moving deeper into agentic development</h3>
-          <p>Microsoft is expanding AI agents, MCP capabilities and AI-assisted AL development. The developer workflow is increasingly moving from code completion toward build, diagnostics, publishing and debugging with AI agents.</p>
-          <div class="feature-actions"><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/al-agent-tools/al-agent-tools-overview" target="_blank" rel="noopener">Read Microsoft Update →</a><a href="articles/ai-changing-business-central-development-2026.html">Dynexal Analysis →</a></div>
+          <p>AI agents, MCP and AI-assisted AL development are changing how developers build, test and maintain Business Central solutions.</p>
+          <div class="feature-actions"><a href="articles/ai-changing-business-central-development-2026.html">Read Dynexal Analysis →</a><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/al-agent-tools/al-agent-tools-overview" target="_blank" rel="noopener">Microsoft source →</a></div>
         </div>
-        <div class="feature-signal"><span>DEVELOPER RADAR</span><strong>AI AGENTS</strong><b>AL + MCP</b><small>Build · Publish · Diagnostics · Debug</small></div>
+        <div class="feature-signal"><span>DEVELOPER RADAR</span><strong>AI + AL</strong><b>MCP • AGENTS</b><small>Build · Diagnose · Debug</small></div>
       </div>
     </article>
-    <div class="intel-panels">
+    <div class="intel-panels compact-intel">
       <div class="intel-panel">
-        <div class="intel-panel-title"><span>⚡ TRENDING NOW</span><a href="articles.html">Explore →</a></div>
+        <div class="intel-panel-title"><span>LATEST UPDATES</span><a href="articles.html">More →</a></div>
         <div class="trend-list">
-          <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/configure-mcp-server" target="_blank" rel="noopener"><b>MCP</b><span>Agentic experiences &amp; Business Central data</span></a>
+          <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/configure-mcp-server" target="_blank" rel="noopener"><b>MCP</b><span>Connect AI clients with Business Central tools</span></a>
           <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/ai-agent-sdk-overview" target="_blank" rel="noopener"><b>AI SDK</b><span>Coding agents in AL <em>Preview</em></span></a>
-          <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/whatsnew/overview" target="_blank" rel="noopener"><b>BC 28.5</b><span>Latest update &amp; what's new</span></a>
+          <a href="https://support.microsoft.com/en-us/servicing/dynamics/business-central/update/2026/09/update-28-5-for-microsoft-dynamics-365-business-central-2026-release-wave-1" target="_blank" rel="noopener"><b>BC 28.5</b><span>Latest platform updates</span></a>
         </div>
       </div>
-      <div class="intel-panel">
-        <div class="intel-panel-title"><span>🧑‍💻 DEVELOPER RADAR</span><a href="articles/ai-changing-business-central-development-2026.html">Analysis →</a></div>
-        <div class="radar-tags"><span>AL AGENTS</span><span>MCP</span><span>COPILOT</span><span>AI CODING</span><span>APIs</span><span>AUTOMATION</span></div>
-        <p>What changes for an AL developer: more agent-assisted implementation, stronger architecture and validation skills, and greater importance of secure tool access.</p>
-      </div>
-    </div>
-    <div class="insights-live-wrap" aria-label="Running latest news">
-      <div class="insights-live-head"><span class="live-dot"></span><strong>RUNNING LATEST</strong><span>Microsoft • Business Central • AI</span></div>
-      <div class="insights-marquee"><div class="insights-marquee-track">
-        <a class="insight-live-item" href="https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/08/25/one-always-on-roadmap-dynamics-365-power-platform-and-dataverse-join-the-ai-at-work-roadmap/" target="_blank" rel="noopener"><b>ROADMAP</b><span>Dynamics 365 roadmap content is moving to AI at Work</span><em>Aug 25</em></a>
-        <a class="insight-live-item" href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/al-agent-tools/al-agent-tools-overview" target="_blank" rel="noopener"><b>AL DEVELOPMENT</b><span>AI agent tools can build, publish, diagnose and debug AL</span><em>2026</em></a>
-        <a class="insight-live-item" href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/configure-mcp-server" target="_blank" rel="noopener"><b>MCP</b><span>Business Central MCP connects AI clients with configured ERP tools</span><em>2026</em></a>
-        <a class="insight-live-item" href="https://support.microsoft.com/en-us/servicing/dynamics/business-central/update/2026/09/update-28-5-for-microsoft-dynamics-365-business-central-2026-release-wave-1" target="_blank" rel="noopener"><b>BC 28.5</b><span>September update includes platform and MCP-related fixes</span><em>Sep</em></a>
-        <a class="insight-live-item" href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/ai-agent-sdk-overview" target="_blank" rel="noopener"><b>AI SDK</b><span>Coding agents in AL are available as a preview capability</span><em>Preview</em></a>
-        <a class="insight-live-item" href="https://www.microsoft.com/en-us/dynamics-365/blog/business-leader/2026/08/25/one-always-on-roadmap-dynamics-365-power-platform-and-dataverse-join-the-ai-at-work-roadmap/" target="_blank" rel="noopener"><b>ROADMAP</b><span>Dynamics 365 roadmap content is moving to AI at Work</span><em>Aug 25</em></a>
-        <a class="insight-live-item" href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/al-agent-tools/al-agent-tools-overview" target="_blank" rel="noopener"><b>AL DEVELOPMENT</b><span>AI agent tools can build, publish, diagnose and debug AL</span><em>2026</em></a>
-        <a class="insight-live-item" href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/configure-mcp-server" target="_blank" rel="noopener"><b>MCP</b><span>Business Central MCP connects AI clients with configured ERP tools</span><em>2026</em></a>
-        <a class="insight-live-item" href="https://support.microsoft.com/en-us/servicing/dynamics/business-central/update/2026/09/update-28-5-for-microsoft-dynamics-365-business-central-2026-release-wave-1" target="_blank" rel="noopener"><b>BC 28.5</b><span>September update includes platform and MCP-related fixes</span><em>Sep</em></a>
-        <a class="insight-live-item" href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/ai-agent-sdk-overview" target="_blank" rel="noopener"><b>AI SDK</b><span>Coding agents in AL are available as a preview capability</span><em>Preview</em></a>
-      </div></div>
     </div>
   </div>
 </section>
