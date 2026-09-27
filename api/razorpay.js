@@ -6,7 +6,7 @@ const allowedOrigins = new Set([
 ]);
 
 const PRICE_PAISE = 49900;
-const PRODUCT_NAME = "Dynexal Interview Master — 60 Questions";
+const PRODUCT_NAME = "Dynexal Interview Master — 100 Questions";
 
 function setCors(req, res) {
   const origin = req.headers.origin || "";
