@@ -4,7 +4,9 @@ const allowedOrigins = new Set([
 ]);
 
 const SUPABASE_URL = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const SERVICE_KEY = String(process.env.SUPABASE_SERVICE_ROLE_KEY || "")
+  .trim()
+  .replace(/^["']+|["']+$/g, "");
 
 function setCors(req, res) {
   const origin = req.headers.origin || "";
@@ -98,6 +100,6 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error("Review API error:", error);
-    return res.status(400).json({ error: error?.message || "Review request failed." });
+    return res.status(400).json({ error: "Review request failed. Please try again." });
   }
 }
