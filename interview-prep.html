@@ -167,6 +167,8 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
         description:order.name,
         order_id:order.orderId,
         theme:{color:'#0a9ff5'},
+        timeout:600,
+        retry:{enabled:true},
         handler:async function(response){
           try{
             const verifyResponse=await fetch('https://dynexal-ai-assistant.vercel.app/api/razorpay',{
@@ -192,7 +194,8 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
       const checkout=new Razorpay(options);
       checkout.on('payment.failed',function(response){
         setBusy(false);
-        alert(response?.error?.description||'Payment was not completed. Please try again.');
+        const e=response?.error||{};
+        alert((e.description||'Payment was not completed.')+'\n\nPlease close this checkout and start payment again to generate a fresh Razorpay order and UPI QR.');
       });
       checkout.open();
     }catch(error){
