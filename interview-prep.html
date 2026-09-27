@@ -112,9 +112,25 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
 .review-date{font-size:11px;color:#718aa4}
 @media(max-width:900px){.reviews-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:560px){.reviews-grid{grid-template-columns:1fr}}
-.community-review-form{padding:10px 0 35px}
-.public-review-box{max-width:760px;margin:0 auto 20px}
-.public-review-box .star-picker button{font-size:36px}
+.community-review-form{padding:28px 0 55px}
+.community-review-form .section-heading{display:block!important;width:min(760px,92%)!important;max-width:760px!important;text-align:center!important;margin:0 auto 28px!important}
+.community-review-form .section-heading h2{display:block!important;margin:0 0 12px!important}
+.community-review-form .section-heading p{display:block!important;margin:0!important}
+.public-review-box{max-width:760px!important;margin:0 auto 20px!important;padding:30px!important;border:1px solid #254766!important;border-radius:20px!important;background:linear-gradient(135deg,#0b1c30,#0d243d)!important;box-shadow:0 18px 45px rgba(0,0,0,.18)!important}
+.public-review-box .star-picker{display:flex!important;gap:7px!important;margin:0 0 20px!important;justify-content:center!important}
+.public-review-box .star-picker button{font-size:36px!important;line-height:1!important;border:0!important;background:transparent!important;color:#50677f!important;cursor:pointer!important;padding:2px!important}
+.public-review-box .star-picker button.active{color:#ffc857!important}
+.public-review-box input,.public-review-box textarea{display:block!important;width:100%!important;box-sizing:border-box!important;margin:9px 0!important;padding:13px 14px!important;border:1px solid #315775!important;border-radius:11px!important;background:#08192c!important;color:#f4f8fc!important;font:inherit!important;outline:none!important}
+.public-review-box input::placeholder,.public-review-box textarea::placeholder{color:#7890a8!important}
+.public-review-box input:focus,.public-review-box textarea:focus{border-color:#149ff4!important;box-shadow:0 0 0 3px rgba(20,159,244,.12)!important}
+.public-review-box .review-submit{display:inline-flex!important;align-items:center!important;justify-content:center!important;margin-top:8px!important;padding:13px 22px!important;border:0!important;border-radius:10px!important;background:#119df4!important;color:#fff!important;font-weight:800!important;cursor:pointer!important}
+.public-review-box .review-submit:disabled{opacity:.65!important;cursor:wait!important}
+.public-review-box .review-message{margin-top:12px!important;color:#9fd8ff!important;font-size:13px!important}
+@media(max-width:560px){
+  .public-review-box{padding:20px!important}
+  .public-review-box .star-picker button{font-size:32px!important}
+  .public-review-box .review-submit{width:100%!important}
+}
 </style>
 </head>
 <body>
