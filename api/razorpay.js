@@ -7,6 +7,7 @@ const allowedOrigins = new Set([
 
 const PRICE_PAISE = 49900;
 const PRODUCT_NAME = "Dynexal Interview Master — 100 Questions";
+const IS_LIVE_KEY = String(process.env.RAZORPAY_KEY_ID || "").startsWith("rzp_live_");
 
 function setCors(req, res) {
   const origin = req.headers.origin || "";
@@ -88,6 +89,12 @@ export default async function handler(req, res) {
     });
   }
 
+  if (!IS_LIVE_KEY) {
+    return res.status(500).json({
+      error: "Razorpay is still in Test Mode. Add the LIVE Razorpay Key ID and Key Secret in Vercel before accepting real payments."
+    });
+  }
+
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     const action = String(body?.action || "create").trim();
@@ -99,7 +106,8 @@ export default async function handler(req, res) {
         orderId: order.id,
         amount: order.amount,
         currency: order.currency,
-        name: PRODUCT_NAME
+        name: PRODUCT_NAME,
+        mode: "live"
       });
     }
 
