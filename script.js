@@ -132,35 +132,11 @@
   document.head.appendChild(style);
 })();
 
-// Global dark/light mode switch
+// Global theme — use the standard Dynexal default layout (no theme switch).
 (function(){
-  const nav=document.querySelector('.nav');
-  if(!nav)return;
-  const saved=localStorage.getItem('dynexal-theme');
-  const preferred=saved || (window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
-  document.documentElement.setAttribute('data-theme',preferred);
-
-  const toggle=document.createElement('button');
-  toggle.type='button';
-  toggle.className='theme-toggle';
-  toggle.setAttribute('aria-label',preferred==='dark'?'Switch to light mode':'Switch to dark mode');
-  toggle.setAttribute('title',preferred==='dark'?'Light mode':'Dark mode');
-  toggle.innerHTML='<span class="theme-icon" aria-hidden="true">'+(preferred==='dark'?'☀':'☾')+'</span><span class="theme-label">'+(preferred==='dark'?'Light':'Dark')+'</span>';
-
-  nav.appendChild(toggle);
-
-  const apply=(theme)=>{
-    document.documentElement.setAttribute('data-theme',theme);
-    localStorage.setItem('dynexal-theme',theme);
-    const dark=theme==='dark';
-    toggle.querySelector('.theme-icon').textContent=dark?'☀':'☾';
-    toggle.querySelector('.theme-label').textContent=dark?'Light':'Dark';
-    toggle.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');
-    toggle.setAttribute('title',dark?'Light mode':'Dark mode');
-  };
-
-  toggle.addEventListener('click',()=>apply(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'));
-})(); 
+  document.documentElement.setAttribute('data-theme','light');
+  try{ localStorage.removeItem('dynexal-theme'); }catch(e){}
+})();
 
 // Navigation visual polish
 (function(){
