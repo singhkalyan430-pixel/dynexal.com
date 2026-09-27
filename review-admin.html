@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Review Admin | Dynexal</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="nav-plain.css">
+<style>
+body{background:#06111f;color:#eef6ff}.admin-wrap{max-width:1050px;margin:0 auto;padding:55px 20px 80px}
+.admin-head{margin-bottom:28px}.admin-head h1{margin:0;font-size:clamp(30px,5vw,46px)}.admin-head p{color:#91a9c2;margin:8px 0 0}
+.admin-login,.review-card{padding:25px;border:1px solid #254b6d;border-radius:18px;background:linear-gradient(135deg,#0b1e33,#0b2742);box-shadow:0 16px 45px rgba(0,0,0,.18)}
+.admin-login{max-width:620px;margin:30px auto}.admin-login label{display:block;font-weight:800;margin-bottom:8px}.admin-login input{width:100%;box-sizing:border-box;padding:13px;border:1px solid #315775;border-radius:10px;background:#07182b;color:#fff;margin-bottom:12px}.btn{border:0;border-radius:10px;padding:12px 18px;font-weight:800;cursor:pointer}.btn-primary{background:#119df4;color:#fff}.btn-danger{background:#5c2630;color:#ffd9df}.status{margin-top:12px;color:#8fd5ff;font-size:13px}
+.review-list{display:grid;gap:18px}.review-card{display:grid;gap:14px}.review-top{display:flex;justify-content:space-between;gap:15px;align-items:center}.stars{color:#ffc857;font-size:22px;letter-spacing:2px}.meta{color:#8fa8c0;font-size:12px}.comment{font-size:16px;line-height:1.7;color:#e4eef8}.actions{display:flex;gap:10px}.empty{text-align:center;padding:45px;color:#8fa8c0;border:1px dashed #315775;border-radius:16px}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a></div></header>
+<main class="admin-wrap">
+<div class="admin-head"><h1>Review Moderation</h1><p>Approve or reject Interview Prep reviews before they appear publicly.</p></div>
+<section class="admin-login" id="login-box">
+<label for="admin-key">Admin Review Key</label>
+<input id="admin-key" type="password" autocomplete="off" placeholder="Enter your private admin key">
+<button class="btn btn-primary" id="login-btn">Open Pending Reviews</button>
+<div class="status" id="login-status"></div>
+</section>
+<section id="reviews" class="review-list" hidden></section>
+</main>
+<script>
+(function(){
+ const api='https://dynexal-ai-assistant.vercel.app/api/reviews';
+ const login=document.getElementById('login-box'),list=document.getElementById('reviews'),keyInput=document.getElementById('admin-key'),status=document.getElementById('login-status');
+ let key='';
+ function esc(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+ function render(items){
+   list.hidden=false;
+   if(!items.length){list.innerHTML='<div class="empty">No pending reviews.</div>';return;}
+   list.innerHTML=items.map(r=>'<article class="review-card" data-id="'+esc(r.id)+'"><div class="review-top"><div><strong>'+esc(r.reviewer_name)+'</strong><div class="meta">'+esc(r.source)+' · '+new Date(r.created_at).toLocaleString()+'</div></div><div class="stars">'+('★'.repeat(Number(r.rating)))+'<span style="color:#50677f">'+('★'.repeat(5-Number(r.rating)))+'</span></div></div><div class="comment">'+esc(r.comment)+'</div><div class="actions"><button class="btn btn-primary" data-action="approve">Approve</button><button class="btn btn-danger" data-action="reject">Reject</button></div></article>').join('');
+ }
+ async function load(){
+   status.textContent='Loading…';
+   try{
+     const res=await fetch(api,{headers:{'X-Admin-Key':key}});
+     const data=await res.json();if(!res.ok)throw new Error(data.error||'Unable to load reviews.');
+     render(data.reviews||[]);login.hidden=true;status.textContent='';
+   }catch(e){status.textContent=e.message||'Unable to load reviews.';}
+ }
+ document.getElementById('login-btn').onclick=()=>{key=keyInput.value.trim();if(!key){status.textContent='Enter the admin key.';return;}load();};
+ list.addEventListener('click',async e=>{
+   const btn=e.target.closest('[data-action]');if(!btn)return;
+   const card=btn.closest('.review-card');const id=card.dataset.id;btn.disabled=true;
+   try{
+     const res=await fetch(api,{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Key':key},body:JSON.stringify({action:btn.dataset.action,review_id:id})});
+     const data=await res.json();if(!res.ok)throw new Error(data.error||'Unable to update review.');
+     card.remove();if(!list.querySelector('.review-card'))list.innerHTML='<div class="empty">No pending reviews.</div>';
+   }catch(e){alert(e.message||'Unable to update review.');btn.disabled=false;}
+ });
+})();
+</script>
+</body>
+</html>
