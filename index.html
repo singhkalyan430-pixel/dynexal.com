@@ -513,43 +513,7 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
   loadReviews();
 })();
 </script>
-<style>
-.dynexal-testimonials{padding:86px 0 92px;background:linear-gradient(180deg,#061329 0%,#081a30 100%);border-top:1px solid rgba(67,145,207,.18);border-bottom:1px solid rgba(67,145,207,.14)}
-.testimonial-heading{text-align:center;max-width:780px;margin:0 auto 38px}
-.testimonial-kicker{display:inline-block;padding:6px 12px;border:1px solid rgba(20,159,244,.3);border-radius:999px;background:rgba(20,159,244,.08);color:#75c8ff;font-size:10px;font-weight:900;letter-spacing:1.5px}
-.testimonial-heading h2{margin:14px 0 12px;font-size:clamp(30px,4vw,46px);letter-spacing:-1.5px;color:#f4f8ff}
-.testimonial-heading p{margin:0;color:#9eb8d2;font-size:16px;line-height:1.7}
-.testimonial-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1080px;margin:0 auto}
-.testimonial-card{padding:27px;border:1px solid #254b6d;border-radius:18px;background:linear-gradient(145deg,rgba(13,37,62,.95),rgba(7,24,43,.96));box-shadow:0 16px 45px rgba(0,0,0,.16);min-height:220px;box-sizing:border-box}
-.testimonial-stars{color:#ffc857;font-size:19px;letter-spacing:2px;margin-bottom:17px}
-.testimonial-comment{color:#dce9f6;font-size:15px;line-height:1.75;margin:0 0 22px}
-.testimonial-name{font-weight:800;color:#fff}.testimonial-date{display:block;margin-top:4px;color:#7692ad;font-size:11px}
-.testimonial-loading,.testimonial-empty{grid-column:1/-1;text-align:center;color:#8da7c1;padding:28px}
-.testimonial-actions{text-align:center;margin-top:30px}
-@media(max-width:850px){.testimonial-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.dynexal-testimonials{padding:60px 0 66px}.testimonial-grid{grid-template-columns:1fr}.testimonial-card{padding:23px}}
-</style>
-<script>
-(function(){
-  const list=document.getElementById('dynexal-review-list');
-  if(!list)return;
-  fetch('https://dynexal-ai-assistant.vercel.app/api/reviews')
-    .then(r=>r.ok?r.json():Promise.reject())
-    .then(data=>{
-      const reviews=Array.isArray(data.reviews)?data.reviews:[];
-      if(!reviews.length){list.innerHTML='<div class="testimonial-empty">Be the first to share your Dynexal experience.</div>';return;}
-      list.innerHTML=reviews.slice(0,6).map(r=>{
-        const rating=Math.max(1,Math.min(5,Number(r.rating)||0));
-        const date=r.created_at?new Date(r.created_at).toLocaleDateString(undefined,{month:'short',year:'numeric'}):'';
-        const stars='★'.repeat(rating)+'<span style="color:#50677f">'+('★'.repeat(5-rating))+'</span>';
-        const safeName=String(r.reviewer_name||'Dynexal User').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-        const safeComment=String(r.comment||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-        return '<article class="testimonial-card"><div class="testimonial-stars" aria-label="'+rating+' out of 5 stars">'+stars+'</div><p class="testimonial-comment">“'+safeComment+'”</p><div class="testimonial-name">'+safeName+'</div><span class="testimonial-date">'+date+'</span></article>';
-      }).join('');
-    })
-    .catch(()=>{list.innerHTML='<div class="testimonial-empty">Feedback will appear here as approved reviews are published.</div>';});
-})();
-</script>
+
 
 </main>
 <footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span class="logo-mark">D</span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><span><a href="about.html">About</a> · <a href="services.html">Services</a> · <a href="portfolio.html">Portfolio</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal Technologies</span></div></footer>
