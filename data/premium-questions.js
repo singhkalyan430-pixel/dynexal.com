@@ -1,4 +1,4 @@
-export default [
+const premiumQuestions = [
   {
     "id": 1,
     "title": "Single-tenant architecture",
@@ -1100,3 +1100,18 @@ export default [
     "followup": "What technical trade-off are you most prepared to defend? INTERVIEW CUE Think in objects → triggers → validation → tests. <PARSED TEXT FOR PAGE: 59 / 59>"
   }
 ];
+const premiumTechnicalGuidance = {
+  "Architecture & Deployment": "At senior level, explain the deployment topology, environment ownership, authentication, database responsibilities, upgrade strategy and operational trade-offs. Connect the architecture to how the extension will be developed, tested, deployed and supported.",
+  "Extensibility, AL & Object Design": "Focus on supported extensibility, clear object responsibilities, dependency contracts, event subscribers, visibility and upgradeability. Explain why the chosen extension point is appropriate instead of only naming the AL object.",
+  "Scenario & Case-Study Reasoning": "Start with the business requirement, identify ownership and constraints, then explain the design choice, trade-off, failure mode and validation strategy. Senior answers should show how the solution behaves in production, not only in a demo.",
+  "Reporting, UX, Data & Integration": "Discuss data shape, filtering, performance, user experience and maintainability together. Explain how the Business Central object or data-access pattern supports the business requirement and what happens as data volume grows.",
+  "Senior AL, Performance & Extensibility": "Use measurement before optimization and keep business logic, UI and persistence responsibilities separated. Discuss transaction scope, public API surface, coupling, testability and upgrade impact when defending an AL design.",
+  "Integration, APIs & Reliability": "A production integration needs a stable contract, secure authentication, validation, idempotency, pagination or batching, bounded retries, rate-limit handling, reconciliation and safe telemetry. Explain how the integration recovers from partial failure.",
+  "Testing, Background Jobs & Upgrade": "Treat tests, background processing and upgrades as lifecycle concerns. Cover positive and negative tests, transaction isolation, job monitoring, data migration, dependency validation, recovery and post-deployment verification.",
+  "DevOps, Observability & Architecture": "Senior engineering includes reproducible builds, automated quality gates, release evidence, telemetry, correlation IDs and incident-ready diagnostics. The architecture should make ownership, failure recovery and support responsibilities explicit."
+};
+premiumQuestions.forEach((item) => {
+  item.technicalDiscussion = premiumTechnicalGuidance[item.category] ||
+    "Explain the business requirement, technical choice, justification, practical impact, testing approach and production support considerations.";
+});
+export default premiumQuestions;
