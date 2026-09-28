@@ -37,6 +37,11 @@
 <section id="dashboard" class="dashboard">
 <div class="toolbar">
 <div><div class="eyebrow">COMMUNITY FEEDBACK</div><h1>Manage Reviews</h1></div>
+<div class="card" style="padding:14px 16px;min-width:280px">
+<div style="font-size:12px;font-weight:800;margin-bottom:7px">Set / change admin password</div>
+<div style="display:flex;gap:8px"><input id="newPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Minimum 8 characters"><button id="savePassword" class="btn" type="button">Save</button></div>
+<div id="passwordMsg" style="font-size:12px;color:#667085;margin-top:7px"></div>
+</div>
 <div class="tabs">
 <button class="tab active" data-status="pending">Pending <span id="pendingCount" class="count">0</span></button>
 <button class="tab" data-status="approved">Approved <span id="approvedCount" class="count">0</span></button>
@@ -84,6 +89,15 @@ document.getElementById("send").onclick=async()=>{
  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
  if(error) message(error.message||"Unable to send login link. Try password sign-in or wait before retrying.");
  else message("Login link sent. Check your email and open the link on this device.");
+};
+document.getElementById("savePassword").onclick=async()=>{
+ const password=document.getElementById("newPassword").value;
+ const out=document.getElementById("passwordMsg");
+ if(password.length<8){out.textContent="Password must be at least 8 characters.";return}
+ out.textContent="Saving…";
+ const {error}=await sb.auth.updateUser({password});
+ out.textContent=error?(error.message||"Unable to save password."):"Password saved. You can use password sign-in next time.";
+ if(!error) document.getElementById("newPassword").value="";
 };
 logout.onclick=()=>sb.auth.signOut().then(()=>location.reload());
 sb.auth.onAuthStateChange((_event,session)=>{
