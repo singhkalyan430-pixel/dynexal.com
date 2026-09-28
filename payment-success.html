@@ -26,6 +26,14 @@
 .review-box input,.review-box textarea{width:100%;box-sizing:border-box;margin:7px 0;padding:12px;border:1px solid #315775;border-radius:10px;background:#08192c;color:#fff}
 .review-submit{margin-top:10px;padding:12px 18px;border:0;border-radius:10px;background:#119df4;color:#fff;font-weight:800;cursor:pointer}
 .review-message{margin-top:12px;font-size:13px;color:#9fd8ff}
+
+.premium-access{margin-top:30px;padding:28px;border:1px solid #315775;border-radius:20px;background:rgba(8,25,44,.94);text-align:left}
+.premium-access h2{margin:0 0 8px;font-size:28px}.premium-access .access-lead{color:#a9bfd4;line-height:1.65;margin:0 0 18px}
+.premium-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.premium-toolbar input,.premium-toolbar select{flex:1 1 220px;min-width:0;padding:11px 12px;border:1px solid #315775;border-radius:10px;background:#08192c;color:#fff}
+.premium-count{font-size:12px;color:#79caff;margin:0 0 14px;font-weight:700}.premium-list{display:grid;gap:12px}
+.premium-question{border:1px solid #294d70;border-radius:14px;background:#0b1c30;overflow:hidden}.premium-question summary{cursor:pointer;list-style:none;padding:17px 18px;font-weight:800;color:#eef7ff}.premium-question summary::-webkit-details-marker{display:none}
+.premium-question summary:before{content:'+';display:inline-grid;place-items:center;width:24px;height:24px;margin-right:9px;border:1px solid #315775;border-radius:7px;color:#72caff}.premium-question[open] summary:before{content:'−'}.premium-meta{display:flex;gap:7px;flex-wrap:wrap;padding:0 18px 12px}.premium-tag{font-size:10px;padding:5px 8px;border-radius:999px;border:1px solid #285174;color:#8ed5ff;background:#0e2943;text-transform:uppercase;letter-spacing:.7px}.premium-body{padding:0 18px 20px}.premium-block{margin-top:14px}.premium-block h4{margin:0 0 5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#62c5ff}.premium-block p{margin:0;color:#bfd0df;line-height:1.7;font-size:13.5px}.premium-cue{margin-top:16px;padding:12px 13px;border-left:3px solid #119df4;background:#091a2d;color:#dbeaf6;line-height:1.6;font-size:13px}
+@media(max-width:600px){.premium-access{padding:20px}.premium-access h2{font-size:23px}.premium-question summary{padding:15px;font-size:14px}.premium-body{padding:0 15px 17px}}
 </style>
 </head>
 <body>
@@ -36,6 +44,14 @@
 <h1>Payment Successful</h1>
 <p>Your payment for the <strong>Dynexal Interview Master — 100 Questions</strong> has been verified successfully.</p>
 <div class="payment-id" id="payment-id">Payment ID: verifying…</div>
+<section class="premium-access" id="premium-access" hidden>
+  <div class="review-kicker">DYNEXAL PREMIUM • VERIFIED ACCESS</div>
+  <h2>Your Interview Master is unlocked</h2>
+  <p class="access-lead">100 questions with definitions, interview-ready explanations, justification, practical examples and senior follow-ups. This content is loaded only after the purchase token is verified.</p>
+  <div class="premium-toolbar"><input id="premium-search" type="search" placeholder="Search questions, AL, APIs, performance…"><select id="premium-category"><option value="">All categories</option></select></div>
+  <p class="premium-count" id="premium-count">Loading your Premium Interview Master…</p>
+  <div class="premium-list" id="premium-list"></div>
+</section>
 <a class="payment-btn" href="interview-prep.html#premium">Back to Interview Master</a>
 <div class="review-box" id="review-box">
   <div class="review-kicker">PURCHASED CUSTOMER REVIEW</div>
@@ -102,6 +118,48 @@
      message.textContent=error.message||'Unable to submit review.';
    }finally{button.disabled=false;}
  });
+})();
+(function(){
+ const token=new URLSearchParams(location.search).get('review_token');
+ const access=document.getElementById('premium-access');
+ const list=document.getElementById('premium-list');
+ const count=document.getElementById('premium-count');
+ const search=document.getElementById('premium-search');
+ const category=document.getElementById('premium-category');
+ if(!token||!access)return;
+ let questions=[];
+ const esc=(value)=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+ const render=()=>{
+   const q=(search.value||'').trim().toLowerCase();
+   const cat=category.value;
+   const filtered=questions.filter(item=>{
+     const hay=[item.title,item.category,item.definition,item.answer,item.justification,item.example,item.followup].join(' ').toLowerCase();
+     return (!q||hay.includes(q))&&(!cat||item.category===cat);
+   });
+   count.textContent=filtered.length+' of '+questions.length+' questions';
+   list.innerHTML=filtered.map(item=>{
+     const tag=item.alignment==='MB-820-aligned'?'MB-820 aligned':'Dynexal senior scenario';
+     return '<details class="premium-question">'+
+       '<summary>Q'+String(item.id).padStart(3,'0')+' — '+esc(item.title)+'</summary>'+
+       '<div class="premium-meta"><span class="premium-tag">'+esc(item.category)+'</span><span class="premium-tag">'+esc(tag)+'</span></div>'+
+       '<div class="premium-body">'+
+       '<div class="premium-block"><h4>Definition / Core Concept</h4><p>'+esc(item.definition)+'</p></div>'+
+       '<div class="premium-block"><h4>Interview-Ready Answer</h4><p>'+esc(item.answer)+'</p></div>'+
+       '<div class="premium-block"><h4>Why / Justification</h4><p>'+esc(item.justification)+'</p></div>'+
+       '<div class="premium-block"><h4>Practical Example</h4><p>'+esc(item.example)+'</p></div>'+\
+       '<div class="premium-cue"><strong>Senior Follow-up:</strong> '+esc(item.followup)+'</div>'+\
+       '</div></details>';
+   }).join('')||'<p class="review-help">No matching questions found. Try another search.</p>';
+ };
+ fetch('https://dynexal-ai-assistant.vercel.app/api/premium?token='+encodeURIComponent(token),{headers:{Accept:'application/json'}})
+   .then(async response=>{const result=await response.json();if(!response.ok||!result.verified)throw new Error(result.error||'Premium access could not be verified.');return result;})
+   .then(result=>{
+     questions=Array.isArray(result.questions)?result.questions:[];
+     [...new Set(questions.map(item=>item.category))].forEach(cat=>{const option=document.createElement('option');option.value=cat;option.textContent=cat;category.appendChild(option);});
+     access.hidden=false; render();
+   })
+   .catch(error=>{count.textContent=error.message||'Premium access could not be verified.';access.hidden=false;list.innerHTML='<p class="review-help">Please return to the Interview Master and complete a fresh verified payment if this continues.</p>';});
+ search?.addEventListener('input',render); category?.addEventListener('change',render);
 })();
 (function(){
  const id=new URLSearchParams(location.search).get('payment_id');
