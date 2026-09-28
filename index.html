@@ -157,15 +157,17 @@ html[data-theme="dark"] .dynexal-insights{background:#050d18}
 .dynexal-insights .section-heading p{max-width:600px}
 .compact-intel{display:block!important;margin:0!important}
 .compact-intel .intel-panel{padding:18px 20px}
-.compact-intel .trend-list{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.compact-intel .trend-list a{padding:16px}
-@media(max-width:850px){.compact-intel .trend-list{grid-template-columns:1fr 1fr}}
+.compact-intel .intel-panel{overflow:hidden}
+.compact-intel .trend-list{display:flex!important;flex-wrap:nowrap!important;gap:12px!important;width:max-content!important;min-width:max-content!important;animation:latestUpdatesRun 32s linear infinite!important;will-change:transform}
+.compact-intel .trend-list a{flex:0 0 270px!important;width:270px!important;padding:16px!important;box-sizing:border-box!important}
+.compact-intel .trend-list:hover{animation-play-state:paused!important}
+@keyframes latestUpdatesRun{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(-50% - 6px),0,0)}}
+@media(max-width:850px){.compact-intel .trend-list a{flex-basis:250px!important;width:250px!important}}
 @media(max-width:560px){
   .dynexal-insights{padding:58px 0 64px}
   .dynexal-insights .section-heading h2{font-size:31px}
-  .compact-intel .trend-list{grid-template-columns:1fr}
-}
-</style>
+  .compact-intel .trend-list a{flex-basis:245px!important;width:245px!important}
+}</style>
   <style id="homepage-typography-polish">
     /* Professional homepage typography scale — reduce oversized headings without changing layout. */
     .hero-showcase .hero-copy h1,
@@ -361,10 +363,13 @@ html[data-theme="dark"] .dynexal-insights{background:#050d18}
     <div class="intel-panels compact-intel">
       <div class="intel-panel">
         <div class="intel-panel-title"><span>LATEST UPDATES</span><a href="articles.html">More →</a></div>
-        <div class="trend-list">
+        <div class="trend-list" aria-label="Latest updates running ticker">
           <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/configure-mcp-server" target="_blank" rel="noopener"><b>MCP</b><span>Connect AI clients with Business Central tools</span></a>
           <a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/ai-agent-sdk-overview" target="_blank" rel="noopener"><b>AI SDK</b><span>Coding agents in AL <em>Preview</em></span></a>
           <a href="https://support.microsoft.com/en-us/servicing/dynamics/business-central/update/2026/09/update-28-5-for-microsoft-dynamics-365-business-central-2026-release-wave-1" target="_blank" rel="noopener"><b>BC 28.5</b><span>Latest platform updates</span></a>
+          <a aria-hidden="true" tabindex="-1" href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/configure-mcp-server" target="_blank" rel="noopener"><b>MCP</b><span>Connect AI clients with Business Central tools</span></a>
+          <a aria-hidden="true" tabindex="-1" href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/ai/ai-agent-sdk-overview" target="_blank" rel="noopener"><b>AI SDK</b><span>Coding agents in AL <em>Preview</em></span></a>
+          <a aria-hidden="true" tabindex="-1" href="https://support.microsoft.com/en-us/servicing/dynamics/business-central/update/2026/09/update-28-5-for-microsoft-dynamics-365-business-central-2026-release-wave-1" target="_blank" rel="noopener"><b>BC 28.5</b><span>Latest platform updates</span></a>
         </div>
       </div>
     </div>
