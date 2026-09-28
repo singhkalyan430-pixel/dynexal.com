@@ -24,10 +24,13 @@
 <section id="login" class="card login">
 <div class="eyebrow">SECURE REVIEW MANAGEMENT</div>
 <h1>Review Approval</h1>
-<p>Sign in with the authorized Dynexal admin email. A secure magic link will be sent to your inbox.</p>
+<p>Use the authorized Dynexal admin account. Password sign-in is preferred; secure magic-link login remains available as a fallback.</p>
 <div class="field">Admin email</div>
 <input id="email" type="email" value="singhkalyan430@gmail.com" autocomplete="email">
-<br><br><button id="send" class="btn">Send secure login link</button>
+<div class="field">Supabase password</div>
+<input id="password" type="password" autocomplete="current-password" placeholder="Enter your password">
+<br><br><button id="passwordLogin" class="btn">Sign in with password</button>
+<button id="send" class="btn secondary" type="button">Send secure login link</button>
 <div id="loginMsg" class="msg"></div>
 </section>
 
@@ -63,13 +66,24 @@ function showDashboard(){login.style.display="none";dashboard.style.display="blo
 async function start(){
  const {data:{session}}=await sb.auth.getSession();
  if(session?.user?.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()) showDashboard();
- else if(session) { await sb.auth.signOut(); message("This account is not authorized for the Dynexal admin panel."); }
+ else if(session){await sb.auth.signOut();message("This account is not authorized for the Dynexal admin panel.");}
 }
+document.getElementById("passwordLogin").onclick=async()=>{
+ const email=document.getElementById("email").value.trim().toLowerCase();
+ const password=document.getElementById("password").value;
+ if(email!==ADMIN_EMAIL.toLowerCase()){message("Use the authorized Dynexal admin email.");return}
+ if(!password){message("Enter your Supabase password.");return}
+ message("Signing in…");
+ const {error}=await sb.auth.signInWithPassword({email,password});
+ if(error) message(error.message||"Password sign-in failed.");
+};
 document.getElementById("send").onclick=async()=>{
  const email=document.getElementById("email").value.trim().toLowerCase();
  if(email!==ADMIN_EMAIL.toLowerCase()){message("Use the authorized Dynexal admin email.");return}
+ message("Sending secure login link…");
  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
- if(error) message(error.message); else message("Login link sent. Check your email and open the link on this device.");
+ if(error) message(error.message||"Unable to send login link. Try password sign-in or wait before retrying.");
+ else message("Login link sent. Check your email and open the link on this device.");
 };
 logout.onclick=()=>sb.auth.signOut().then(()=>location.reload());
 sb.auth.onAuthStateChange((_event,session)=>{
@@ -95,23 +109,18 @@ async function loadReviews(){
    const stars="★".repeat(r.rating)+"☆".repeat(5-r.rating);
    const date=new Date(r.created_at).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});
    return '<article class="review"><div class="review-head"><div><div class="name">'+esc(r.reviewer_name)+'</div><div class="stars">'+stars+'</div></div><div style="text-align:right"><span class="status '+esc(r.status)+'">'+esc(r.status)+'</span><div class="date">'+esc(date)+'</div></div></div><div class="comment">'+esc(r.comment)+'</div><div class="actions">'+
-    (r.status!=="approved"?'<button class="btn ok" onclick="setStatus(\''+r.id+'\',\'approved\')">✓ Approve</button>':'')+
-    (r.status!=="rejected"?'<button class="btn reject" onclick="setStatus(\''+r.id+'\',\'rejected\')">Reject</button>':'')+
-    (r.status!=="pending"?'<button class="btn secondary" onclick="setStatus(\''+r.id+'\',\'pending\')">Move to Pending</button>':'')+
+    (r.status!=="approved"?'<button class="btn ok" onclick="setStatus(\''+r.id+'\',\'approved\',this)">✓ Approve</button>':'')+
+    (r.status!=="rejected"?'<button class="btn reject" onclick="setStatus(\''+r.id+'\',\'rejected\',this)">Reject</button>':'')+
+    (r.status!=="pending"?'<button class="btn secondary" onclick="setStatus(\''+r.id+'\',\'pending\',this)">Move to Pending</button>':'')+
     '</div></article>';
  }).join("");
 }
 async function setStatus(id,status,button){
-    if(button) button.disabled=true;
-    try{
-      const {error}=await supabase.from('interview_reviews').update({status,updated_at:new Date().toISOString()}).eq('id',id);
-      if(error) throw error;
-      await loadReviews();
-    }catch(error){
-      setMessage(error.message||'Unable to update review.','error');
-      if(button) button.disabled=false;
-    }
-  }
+ if(button) button.disabled=true;
+ const {error}=await sb.from("interview_reviews").update({status,updated_at:new Date().toISOString()}).eq("id",id);
+ if(error){message(error.message||"Unable to update review.");if(button)button.disabled=false;return}
+ await loadReviews();
+}
 start();
 </script>
 </body>
