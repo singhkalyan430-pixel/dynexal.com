@@ -65,7 +65,7 @@ for page in html_files:
         target = local_target(href)
         if not target:
             continue
-        target_path = (page.parent / target).resolve()
+        target_path = (ROOT / target).resolve() if href.startswith("/") else (page.parent / target).resolve()
         try:
             target_path.relative_to(ROOT.resolve())
         except ValueError:
