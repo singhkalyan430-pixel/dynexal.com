@@ -165,7 +165,34 @@ html[data-theme="dark"] .dynexal-insights{background:#050d18}
   .dynexal-insights .section-heading h2{font-size:31px}
   .compact-intel .trend-list{grid-template-columns:1fr}
 }
-</style></head>
+</style>
+  <style id="homepage-typography-polish">
+    /* Professional homepage typography scale — reduce oversized headings without changing layout. */
+    .hero-showcase .hero-copy h1,
+    .hero-copy h1{font-size:clamp(48px,4.6vw,68px)!important;line-height:1.03!important;letter-spacing:-2.8px!important;margin:18px 0 20px!important;max-width:690px!important}
+    .hero-showcase .hero-copy>p:not(.hero-badge){font-size:18px!important;line-height:1.6!important;max-width:650px!important}
+    .section-heading h2,.project-grid h2,.newsletter h2{font-size:34px!important;line-height:1.18!important;letter-spacing:-1.1px!important}
+    .dynexal-insights .section-heading h2{font-size:34px!important}
+    .insight-feature .feature-copy h3{font-size:25px!important;line-height:1.25!important;letter-spacing:-.5px!important}
+    .insight-card h3,.card h3{font-size:19px!important;line-height:1.3!important}
+    .topic h3{font-size:15px!important;line-height:1.35!important}
+    .testimonial-heading h2{font-size:36px!important;line-height:1.2!important;letter-spacing:-1px!important}
+    .review-results-heading h3{font-size:26px!important}
+    @media(max-width:900px){
+      .hero-showcase .hero-copy h1,.hero-copy h1{font-size:clamp(42px,8vw,54px)!important;letter-spacing:-2px!important;line-height:1.05!important}
+      .hero-showcase .hero-copy>p:not(.hero-badge){font-size:17px!important}
+      .section-heading h2,.project-grid h2,.newsletter h2,.dynexal-insights .section-heading h2{font-size:30px!important}
+      .testimonial-heading h2{font-size:32px!important}
+    }
+    @media(max-width:560px){
+      .hero-showcase .hero-copy h1,.hero-copy h1{font-size:40px!important;letter-spacing:-1.7px!important;line-height:1.08!important;margin:16px 0 17px!important}
+      .hero-showcase .hero-copy>p:not(.hero-badge){font-size:16px!important;line-height:1.55!important}
+      .section-heading h2,.project-grid h2,.newsletter h2,.dynexal-insights .section-heading h2{font-size:28px!important;letter-spacing:-.7px!important}
+      .insight-feature .feature-copy h3{font-size:22px!important}
+      .testimonial-heading h2{font-size:29px!important}
+    }
+  </style>
+</head>
 <body>
 <header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a class="active" href="index.html" aria-current="page">Home</a><div class="has-dropdown"><a href="tutorials.html">Tutorials</a><div class="dropdown-menu"><a href="topics/al-development.html">AL Development</a><a href="topics/rdlc-business-central.html">Reports &amp; RDLC</a><a href="articles/business-central-api-integration.html">APIs &amp; Integrations</a><a href="articles/ai-business-central-complete-guide.html">AI + Business Central</a></div></div><div class="has-dropdown"><a href="interview-prep.html">Interview Prep</a><div class="dropdown-menu"><a href="interview-prep.html#free">Free Questions</a><a href="interview-prep.html#premium">Premium Interview Master</a></div></div><div class="has-dropdown"><a href="services.html">Services</a><div class="dropdown-menu"><a href="services.html#development">Business Central Development</a><a href="services.html#integration">Integration Services</a><a href="services.html#ai">AI Solutions</a></div></div><div class="has-dropdown"><a href="portfolio.html">Portfolio</a><div class="dropdown-menu"><a href="portfolio.html">All Projects</a><a href="projects/ecommerce-integration.html">E-commerce Integration</a><a href="projects/role-center-dashboard.html">Role Center Dashboard</a><a href="projects/rdlc-reporting-toolkit.html">Reporting Toolkit</a><a href="projects/api-integration.html">API Integration</a></div></div><div class="has-dropdown"><a href="#topics">Topics</a><div class="dropdown-menu"><a href="topics/al-development.html">AL Development</a><a href="topics/business-central-api.html">Business Central API</a><a href="topics/rdlc-business-central.html">Reports &amp; RDLC</a></div></div><a href="about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main>
