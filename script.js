@@ -277,6 +277,38 @@
   `;document.head.appendChild(style);
 })();
 
+// Dynexal Analytics event tracking — GA4 business funnel
+(function(){
+  const track=(name,params={})=>{
+    if(typeof window.gtag==='function') window.gtag('event',name,params);
+  };
+  window.dynexalTrack=track;
+  document.addEventListener('click',(event)=>{
+    const target=event.target.closest('a,button');
+    if(!target)return;
+    const href=target.getAttribute('href')||'';
+    const text=(target.textContent||'').trim().replace(/\\s+/g,' ').slice(0,100);
+    if(target.matches('#dynexal-ai-launcher,[data-ai-launcher]')){
+      track('ai_assistant_opened',{page_path:location.pathname});
+    }
+    if(href.includes('#premium') || target.matches('#premium-pay,[data-pay-premium]')){
+      track('premium_cta_click',{page_path:location.pathname,cta_text:text});
+    }
+    if(href.includes('articles/') || href.includes('topics/')){
+      track('content_click',{page_path:location.pathname,destination:href,link_text:text});
+    }
+    if(/whatsapp|wa\.me/i.test(href)){
+      track('contact_click',{method:'whatsapp',page_path:location.pathname});
+    }
+  });
+  document.addEventListener('submit',(event)=>{
+    const form=event.target;
+    if(form?.id==='public-review-form' || form?.id==='review-form'){
+      track('review_submitted',{page_path:location.pathname});
+    }
+  });
+})();
+
 // Google Analytics 4
 (function(){
   const id='G-M2JGL0B9K1';window.dataLayer=window.dataLayer||[];
