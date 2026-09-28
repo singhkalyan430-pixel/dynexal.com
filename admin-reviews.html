@@ -101,12 +101,17 @@ async function loadReviews(){
     '</div></article>';
  }).join("");
 }
-async function setStatus(id,status){
- const button=event?.target;if(button)button.disabled=true;
- const {error}=await sb.from("interview_reviews").update({status,updated_at:new Date().toISOString()}).eq("id",id);
- if(error){alert(error.message);if(button)button.disabled=false;return}
- await loadReviews();
-}
+async function setStatus(id,status,button){
+    if(button) button.disabled=true;
+    try{
+      const {error}=await supabase.from('interview_reviews').update({status,updated_at:new Date().toISOString()}).eq('id',id);
+      if(error) throw error;
+      await loadReviews();
+    }catch(error){
+      setMessage(error.message||'Unable to update review.','error');
+      if(button) button.disabled=false;
+    }
+  }
 start();
 </script>
 </body>
