@@ -32,7 +32,7 @@
 .premium-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.premium-toolbar input,.premium-toolbar select{flex:1 1 220px;min-width:0;padding:11px 12px;border:1px solid #315775;border-radius:10px;background:#08192c;color:#fff}
 .premium-count{font-size:12px;color:#79caff;margin:0 0 14px;font-weight:700}.premium-list{display:grid;gap:12px}
 .premium-question{border:1px solid #294d70;border-radius:14px;background:#0b1c30;overflow:hidden}.premium-question summary{cursor:pointer;list-style:none;padding:17px 18px;font-weight:800;color:#eef7ff}.premium-question summary::-webkit-details-marker{display:none}
-.premium-question summary:before{content:'+';display:inline-grid;place-items:center;width:24px;height:24px;margin-right:9px;border:1px solid #315775;border-radius:7px;color:#72caff}.premium-question[open] summary:before{content:'−'}.premium-meta{display:flex;gap:7px;flex-wrap:wrap;padding:0 18px 12px}.premium-tag{font-size:10px;padding:5px 8px;border-radius:999px;border:1px solid #285174;color:#8ed5ff;background:#0e2943;text-transform:uppercase;letter-spacing:.7px}.premium-body{padding:0 18px 20px}.premium-block{margin-top:14px}.premium-block h4{margin:0 0 5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#62c5ff}.premium-block p{margin:0;color:#bfd0df;line-height:1.7;font-size:13.5px}.premium-cue{margin-top:16px;padding:12px 13px;border-left:3px solid #119df4;background:#091a2d;color:#dbeaf6;line-height:1.6;font-size:13px}
+.premium-question summary:before{content:'+';display:inline-grid;place-items:center;width:24px;height:24px;margin-right:9px;border:1px solid #315775;border-radius:7px;color:#72caff}.premium-question[open] summary:before{content:'−'}.premium-meta{display:flex;gap:7px;flex-wrap:wrap;padding:0 18px 12px}.premium-tag{font-size:10px;padding:5px 8px;border-radius:999px;border:1px solid #285174;color:#8ed5ff;background:#0e2943;text-transform:uppercase;letter-spacing:.7px}.premium-body{padding:0 18px 20px}.premium-block{margin-top:14px}.premium-block h4{margin:0 0 5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#62c5ff}.premium-block p{margin:0;color:#bfd0df;line-height:1.75;font-size:13.5px;text-align:justify}.premium-cue{margin-top:16px;padding:12px 13px;border-left:3px solid #119df4;background:#091a2d;color:#dbeaf6;line-height:1.6;font-size:13px}
 @media(max-width:600px){.premium-access{padding:20px}.premium-access h2{font-size:23px}.premium-question summary{padding:15px;font-size:14px}.premium-body{padding:0 15px 17px}}
 </style>
 </head>
@@ -47,7 +47,7 @@
 <section class="premium-access" id="premium-access" hidden>
   <div class="review-kicker">DYNEXAL PREMIUM • VERIFIED ACCESS</div>
   <h2>Your Interview Master is unlocked</h2>
-  <p class="access-lead">100 questions with definitions, interview-ready explanations, justification, practical examples and senior follow-ups. This content is loaded only after the purchase token is verified.</p>
+  <p class="access-lead">100 professional questions with definitions, interview-ready answers, technical justification, practical project examples, technical discussion and senior follow-ups. This Premium content is loaded only after the purchase token is verified.</p>
   <div class="premium-toolbar"><input id="premium-search" type="search" placeholder="Search questions, AL, APIs, performance…"><select id="premium-category"><option value="">All categories</option></select></div>
   <p class="premium-count" id="premium-count">Loading your Premium Interview Master…</p>
   <div class="premium-list" id="premium-list"></div>
@@ -133,7 +133,7 @@
    const q=(search.value||'').trim().toLowerCase();
    const cat=category.value;
    const filtered=questions.filter(item=>{
-     const hay=[item.title,item.category,item.definition,item.answer,item.justification,item.example,item.followup].join(' ').toLowerCase();
+     const hay=[item.title,item.category,item.definition,item.answer,item.justification,item.technicalDiscussion,item.example,item.followup].join(' ').toLowerCase();
      return (!q||hay.includes(q))&&(!cat||item.category===cat);
    });
    count.textContent=filtered.length+' of '+questions.length+' questions';
@@ -146,7 +146,8 @@
        '<div class="premium-block"><h4>Definition / Core Concept</h4><p>'+esc(item.definition)+'</p></div>'+
        '<div class="premium-block"><h4>Interview-Ready Answer</h4><p>'+esc(item.answer)+'</p></div>'+
        '<div class="premium-block"><h4>Why / Justification</h4><p>'+esc(item.justification)+'</p></div>'+
-       '<div class="premium-block"><h4>Practical Example</h4><p>'+esc(item.example)+'</p></div>'+\
+       '<div class="premium-block"><h4>Technical Discussion</h4><p>'+esc(item.technicalDiscussion||'Explain the design choice, production impact, testing approach and support considerations.')+'</p></div>'+
+       '<div class="premium-block"><h4>Practical Project Example</h4><p>'+esc(item.example)+'</p></div>'+\
        '<div class="premium-cue"><strong>Senior Follow-up:</strong> '+esc(item.followup)+'</div>'+\
        '</div></details>';
    }).join('')||'<p class="review-help">No matching questions found. Try another search.</p>';
