@@ -15,7 +15,7 @@
 @media(max-width:650px){.wrap{padding:22px 14px}.top{align-items:flex-start}.review-head{flex-direction:column}h1{font-size:27px}}
 </style>
   <link rel="stylesheet" href="/nav-plain.css?v=20260915">
-<!-- Dynexal admin review panel deployment marker 2026-09-28 -->
+<!-- Dynexal admin review panel deployment marker 2026-09-28-password-reset -->
 </head>
 <body>
 <div class="wrap">
@@ -31,6 +31,7 @@
 <input id="password" type="password" autocomplete="current-password" placeholder="Enter your password">
 <br><br><button id="passwordLogin" class="btn">Sign in with password</button>
 <button id="send" class="btn secondary" type="button">Send secure login link</button>
+<button id="forgot" class="btn secondary" type="button">Forgot password?</button>
 <div id="loginMsg" class="msg"></div>
 </section>
 
@@ -89,6 +90,14 @@ document.getElementById("send").onclick=async()=>{
  const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
  if(error) message(error.message||"Unable to send login link. Try password sign-in or wait before retrying.");
  else message("Login link sent. Check your email and open the link on this device.");
+};
+document.getElementById("forgot").onclick=async()=>{
+ const email=document.getElementById("email").value.trim().toLowerCase();
+ if(email!==ADMIN_EMAIL.toLowerCase()){message("Use the authorized Dynexal admin email.");return}
+ message("Sending password reset email…");
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+ if(error) message(error.message||"Unable to send password reset email.");
+ else message("Password reset email sent. Open it, set a new password, then return here and sign in.");
 };
 document.getElementById("savePassword").onclick=async()=>{
  const password=document.getElementById("newPassword").value;
