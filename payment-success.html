@@ -156,6 +156,7 @@
    .then(async response=>{const result=await response.json();if(!response.ok||!result.verified)throw new Error(result.error||'Premium access could not be verified.');return result;})
    .then(result=>{
      questions=Array.isArray(result.questions)?result.questions:[];
+     if(typeof window.dynexalTrack==='function') window.dynexalTrack('premium_unlocked',{question_count:questions.length,access_verified:true});
      [...new Set(questions.map(item=>item.category))].forEach(cat=>{const option=document.createElement('option');option.value=cat;option.textContent=cat;category.appendChild(option);});
      access.hidden=false; render();
    })
