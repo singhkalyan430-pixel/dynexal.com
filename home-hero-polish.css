@@ -1363,3 +1363,16 @@ html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
  .marquee-heading h2,.dynexal-insights .section-heading h2{font-size:27px!important}
  .interview-promo h2{font-size:24px!important}
 }
+
+/* Force light/white canvas for homepage sections */
+.dynexal-testimonials,.dynexal-marquee-section,.dynexal-why,.dynexal-insights,.dynexal-stack{background:#fff!important;color:#172033!important}
+.dynexal-testimonials{border-color:#e5ebf2!important}
+.dynexal-marquee-section{border-color:#e5ebf2!important}
+.why-intro h2,.marquee-heading h2,.dynexal-insights .section-heading h2{color:#172033!important}
+.why-intro p,.marquee-heading p{color:#64748b!important}
+.why-grid article,.marquee-card,.insight-card,.intel-panel{background:#fff!important;color:#172033!important;border-color:#dfe7ef!important;box-shadow:0 8px 24px rgba(23,32,51,.06)!important}
+.why-grid h3,.marquee-card h3,.insight-card h3,.intel-panel h3{color:#172033!important}
+.why-grid p,.marquee-card p,.marquee-card small,.insight-card p,.intel-panel p{color:#64748b!important}
+html[data-theme="dark"] .dynexal-testimonials,html[data-theme="dark"] .dynexal-marquee-section,html[data-theme="dark"] .dynexal-why,html[data-theme="dark"] .dynexal-insights,html[data-theme="dark"] .dynexal-stack{background:#fff!important;color:#172033!important}
+html[data-theme="dark"] .why-intro h2,html[data-theme="dark"] .marquee-heading h2,html[data-theme="dark"] .dynexal-insights .section-heading h2{color:#172033!important}
+html[data-theme="dark"] .why-grid article,html[data-theme="dark"] .marquee-card,html[data-theme="dark"] .insight-card,html[data-theme="dark"] .intel-panel{background:#fff!important;border-color:#dfe7ef!important}
