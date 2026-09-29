@@ -31,9 +31,8 @@
 .premium-access h2{margin:0 0 8px;font-size:28px}.premium-access .access-lead{color:#a9bfd4;line-height:1.65;margin:0 0 18px}
 .premium-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.premium-toolbar input,.premium-toolbar select{flex:1 1 220px;min-width:0;padding:11px 12px;border:1px solid #315775;border-radius:10px;background:#08192c;color:#fff}
 .premium-count{font-size:12px;color:#79caff;margin:0 0 14px;font-weight:700}.premium-list{display:grid;gap:12px}
-.premium-question{border:1px solid #294d70;border-radius:14px;background:#0b1c30;overflow:hidden}.premium-question summary{cursor:pointer;list-style:none;padding:17px 18px;font-weight:800;color:#eef7ff}.premium-question summary::-webkit-details-marker{display:none}
-.premium-question summary:before{content:'+';display:inline-grid;place-items:center;width:24px;height:24px;margin-right:9px;border:1px solid #315775;border-radius:7px;color:#72caff}.premium-question[open] summary:before{content:'−'}.premium-meta{display:flex;gap:7px;flex-wrap:wrap;padding:0 18px 12px}.premium-tag{font-size:10px;padding:5px 8px;border-radius:999px;border:1px solid #285174;color:#8ed5ff;background:#0e2943;text-transform:uppercase;letter-spacing:.7px}.premium-body{padding:0 18px 20px}.premium-block{margin-top:14px}.premium-block h4{margin:0 0 5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#62c5ff}.premium-block p{margin:0;color:#bfd0df;line-height:1.75;font-size:13.5px;text-align:justify}.premium-cue{margin-top:16px;padding:12px 13px;border-left:3px solid #119df4;background:#091a2d;color:#dbeaf6;line-height:1.6;font-size:13px}
-@media(max-width:600px){.premium-access{padding:20px}.premium-access h2{font-size:23px}.premium-question summary{padding:15px;font-size:14px}.premium-body{padding:0 15px 17px}}
+.premium-question{border:1px solid #294d70;border-radius:14px;background:linear-gradient(145deg,#0b1c30,#0a1728);overflow:hidden;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}.premium-question:hover{transform:translateY(-2px);border-color:#199fe8;box-shadow:0 14px 34px rgba(0,0,0,.24)}.premium-question summary{cursor:pointer;list-style:none;padding:19px 20px;font-weight:800;color:#eef7ff;display:flex;align-items:center;gap:10px}.premium-question summary::-webkit-details-marker{display:none}.premium-question summary:before{content:'↗';display:grid;place-items:center;flex:0 0 28px;width:28px;height:28px;border:1px solid #315775;border-radius:8px;color:#72caff;font-size:14px}.premium-question summary:after{content:'OPEN FULL QUESTION';margin-left:auto;font-size:9px;letter-spacing:1px;color:#61c7ff;font-weight:900}.premium-question[open] summary:before{content:'↗'}.premium-meta{display:flex;gap:7px;flex-wrap:wrap;padding:0 20px 14px}.premium-tag{font-size:10px;padding:5px 8px;border-radius:999px;border:1px solid #285174;color:#8ed5ff;background:#0e2943;text-transform:uppercase;letter-spacing:.7px}.premium-body{padding:0 20px 22px}.premium-block{margin-top:14px}.premium-block h4{margin:0 0 5px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#62c5ff}.premium-block p{margin:0;color:#bfd0df;line-height:1.75;font-size:13.5px;text-align:justify}.premium-cue{margin-top:16px;padding:12px 13px;border-left:3px solid #119df4;background:#091a2d;color:#dbeaf6;line-height:1.6;font-size:13px}
+.premium-reader{position:fixed;inset:0;z-index:99999;background:radial-gradient(circle at 50% 0%,#12395d 0,#061525 42%,#030b14 100%);color:#fff;display:none;overflow:auto}.premium-reader.active{display:block}.premium-reader-shell{min-height:100%;width:min(1050px,100%);margin:auto;padding:24px 28px 70px;box-sizing:border-box}.premium-reader-top{position:sticky;top:0;z-index:3;display:flex;align-items:center;gap:14px;padding:14px 0 18px;background:linear-gradient(#061525 75%,transparent);backdrop-filter:blur(8px)}.premium-reader-brand{font-size:11px;letter-spacing:1.6px;color:#58c8ff;font-weight:900}.premium-reader-close{margin-left:auto;border:1px solid #315775;background:#0b2035;color:#dff3ff;border-radius:10px;padding:9px 13px;font-weight:800;cursor:pointer}.premium-reader-progress{height:3px;background:#17344f;border-radius:99px;overflow:hidden;margin-bottom:30px}.premium-reader-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#118ff2,#23d1ff);transition:width .25s}.premium-reader-kicker{color:#62c5ff;font-size:12px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase}.premium-reader-title{font-size:clamp(30px,5vw,58px);line-height:1.08;margin:12px 0 18px;letter-spacing:-1.5px}.premium-reader-tags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px}.premium-reader-content{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}.premium-reader-block{padding:22px 24px;border:1px solid #234766;border-radius:16px;background:rgba(8,25,44,.72);box-shadow:0 12px 30px rgba(0,0,0,.16)}.premium-reader-block h3{margin:0 0 10px;color:#59c6ff;font-size:12px;letter-spacing:1.2px;text-transform:uppercase}.premium-reader-block p{margin:0;color:#d6e5f2;font-size:16px;line-height:1.85}.premium-reader-followup{border-color:#149ff4;background:linear-gradient(135deg,rgba(17,159,244,.14),rgba(8,25,44,.8))}.premium-reader-followup p{font-size:18px;color:#fff}.premium-reader-nav{display:flex;justify-content:space-between;gap:12px;margin-top:34px}.premium-reader-nav button{flex:1;border:1px solid #315775;background:#0b2035;color:#dff3ff;border-radius:12px;padding:14px 16px;font-weight:800;cursor:pointer}.premium-reader-nav button.primary{background:linear-gradient(90deg,#117fe8,#11b8dc);border-color:transparent;color:#fff}.premium-reader-hint{margin-top:16px;text-align:center;color:#7894ad;font-size:11px}.premium-reader-open{font-size:12px;color:#67caff;margin-left:auto;white-space:nowrap}@media(max-width:600px){.premium-access{padding:20px}.premium-access h2{font-size:23px}.premium-question summary{padding:16px;font-size:14px}.premium-question summary:after{content:'OPEN'}.premium-body{padding:0 15px 17px}.premium-reader-shell{padding:14px 16px 50px}.premium-reader-top{padding:10px 0 16px}.premium-reader-title{font-size:34px}.premium-reader-block{padding:18px}.premium-reader-block p{font-size:15px}.premium-reader-nav{position:sticky;bottom:10px}.premium-reader-nav button{padding:12px 10px}}
 </style>
 </head>
 <body>
@@ -183,8 +182,8 @@
    count.textContent=filtered.length+' of '+questions.length+' questions';
    list.innerHTML=filtered.map(item=>{
      const tag=item.alignment==='MB-820-aligned'?'MB-820 aligned':'Dynexal senior scenario';
-     return '<details class="premium-question">'+
-       '<summary>Q'+String(item.id).padStart(3,'0')+' — '+esc(item.title)+'</summary>'+
+     return '<details class="premium-question" data-question-id="'+Number(item.id)+'">'+
+       '<summary><span>Q'+String(item.id).padStart(3,'0')+' — '+esc(item.title)+'</span><span class="premium-reader-open">Read full →</span></summary>'+
        '<div class="premium-meta"><span class="premium-tag">'+esc(item.category)+'</span><span class="premium-tag">'+esc(tag)+'</span></div>'+
        '<div class="premium-body">'+
        '<div class="premium-block"><h4>Definition / Core Concept</h4><p>'+esc(item.definition)+'</p></div>'+
@@ -195,6 +194,11 @@
        '<div class="premium-cue"><strong>Senior Follow-up:</strong> '+esc(item.followup)+'</div>'+
        '</div></details>';
    }).join('')||'<p class="review-help">No matching questions found. Try another search.</p>';
+   [...list.querySelectorAll('.premium-question summary')].forEach(summary=>summary.addEventListener('click',event=>{
+     event.preventDefault();
+     const id=Number(summary.closest('.premium-question').dataset.questionId);
+     window.dynexalOpenPremiumQuestion?.(id);
+   }));
  };
  const accessUrl=token
    ? 'https://dynexal-ai-assistant.vercel.app/api/premium?token='+encodeURIComponent(token)
@@ -223,6 +227,7 @@
        questions=questions.concat(dynexalAdditions.filter(item=>!existing.has(item.id)));
      }
      questions=questions.sort((a,b)=>Number(a.id)-Number(b.id)).slice(0,100);
+     window.dynexalPremiumQuestions=questions;
      if(typeof window.dynexalTrack==='function') window.dynexalTrack('premium_unlocked',{question_count:questions.length,access_verified:true});
      [...new Set(questions.map(item=>item.category))].forEach(cat=>{const option=document.createElement('option');option.value=cat;option.textContent=cat;category.appendChild(option);});
      access.hidden=false; render();
@@ -244,6 +249,83 @@
  btn.addEventListener('click',function(event){
    event.preventDefault();
    access.scrollIntoView({behavior:'smooth',block:'start'});
+ });
+})();
+</script>
+
+<script>
+(function(){
+ const reader=document.createElement('div');
+ reader.className='premium-reader';
+ reader.id='premium-reader';
+ reader.innerHTML='<div class="premium-reader-shell">'+
+   '<div class="premium-reader-top"><div><div class="premium-reader-brand">DYNEXAL PREMIUM • INTERVIEW MASTER</div><div id="premium-reader-position" class="premium-reader-hint" style="text-align:left;margin-top:3px"></div></div><button type="button" class="premium-reader-close" id="premium-reader-close">✕ Close</button></div>'+
+   '<div class="premium-reader-progress"><span id="premium-reader-progress"></span></div>'+
+   '<div class="premium-reader-kicker" id="premium-reader-kicker"></div>'+
+   '<h1 class="premium-reader-title" id="premium-reader-title"></h1>'+
+   '<div class="premium-reader-tags" id="premium-reader-tags"></div>'+
+   '<div class="premium-reader-content" id="premium-reader-content"></div>'+
+   '<div class="premium-reader-nav"><button type="button" id="premium-reader-prev">← Previous</button><button type="button" class="primary" id="premium-reader-next">Next Question →</button></div>'+
+   '<div class="premium-reader-hint">Premium reading mode • Use ← / → to navigate • Esc to close</div>'+
+   '</div>';
+ document.body.appendChild(reader);
+ let readerQuestions=[];
+ let currentIndex=-1;
+ const esc=value=>String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+ const title=document.getElementById('premium-reader-title');
+ const kicker=document.getElementById('premium-reader-kicker');
+ const tags=document.getElementById('premium-reader-tags');
+ const content=document.getElementById('premium-reader-content');
+ const position=document.getElementById('premium-reader-position');
+ const progress=document.getElementById('premium-reader-progress');
+ const renderQuestion=()=>{
+   const item=readerQuestions[currentIndex];
+   if(!item)return;
+   const total=readerQuestions.length;
+   kicker.textContent='Q'+String(item.id).padStart(3,'0')+' • '+(item.category||'Premium');
+   title.textContent=item.title||'Interview Question';
+   tags.innerHTML='<span class="premium-tag">'+esc(item.category||'Business Central')+'</span><span class="premium-tag">'+esc(item.alignment==='MB-820-aligned'?'MB-820 aligned':'Dynexal senior scenario')+'</span><span class="premium-tag">Premium Master</span>';
+   content.innerHTML=
+     '<article class="premium-reader-block"><h3>Definition / Core Concept</h3><p>'+esc(item.definition)+'</p></article>'+
+     '<article class="premium-reader-block"><h3>Interview-Ready Answer</h3><p>'+esc(item.answer)+'</p></article>'+
+     '<article class="premium-reader-block"><h3>Why / Justification</h3><p>'+esc(item.justification)+'</p></article>'+
+     '<article class="premium-reader-block"><h3>Technical Discussion</h3><p>'+esc(item.technicalDiscussion||'Explain the design choice, production impact, testing approach and support considerations.')+'</p></article>'+
+     '<article class="premium-reader-block"><h3>Practical Project Example</h3><p>'+esc(item.example)+'</p></article>'+
+     '<article class="premium-reader-block premium-reader-followup"><h3>Senior Follow-up</h3><p>'+esc(item.followup)+'</p></article>';
+   position.textContent='Question '+(currentIndex+1)+' of '+total;
+   progress.style.width=((currentIndex+1)/total*100)+'%';
+   document.getElementById('premium-reader-prev').disabled=currentIndex<=0;
+   document.getElementById('premium-reader-next').disabled=currentIndex>=total-1;
+   document.getElementById('premium-reader-prev').style.opacity=currentIndex<=0?'.45':'1';
+   document.getElementById('premium-reader-next').style.opacity=currentIndex>=total-1?'.45':'1';
+   reader.scrollTop=0;
+   document.documentElement.style.overflow='hidden';
+ };
+ window.dynexalOpenPremiumQuestion=function(id){
+   readerQuestions=window.dynexalPremiumQuestions||[];
+   currentIndex=readerQuestions.findIndex(q=>Number(q.id)===Number(id));
+   if(currentIndex<0)return;
+   renderQuestion();
+   reader.classList.add('active');
+   history.replaceState(null,'','#premium-q-'+id);
+ };
+ const close=()=>{
+   reader.classList.remove('active');
+   document.documentElement.style.overflow='';
+   if(location.hash.startsWith('#premium-q-')) history.replaceState(null,'',location.pathname+location.search);
+ };
+ document.getElementById('premium-reader-close').addEventListener('click',close);
+ document.getElementById('premium-reader-prev').addEventListener('click',()=>{if(currentIndex>0){currentIndex--;renderQuestion();}});
+ document.getElementById('premium-reader-next').addEventListener('click',()=>{if(currentIndex<readerQuestions.length-1){currentIndex++;renderQuestion();}});
+ document.addEventListener('keydown',event=>{
+   if(!reader.classList.contains('active'))return;
+   if(event.key==='Escape')close();
+   if(event.key==='ArrowLeft'&&currentIndex>0){currentIndex--;renderQuestion();}
+   if(event.key==='ArrowRight'&&currentIndex<readerQuestions.length-1){currentIndex++;renderQuestion();}
+ });
+ window.addEventListener('hashchange',()=>{
+   const match=location.hash.match(/^#premium-q-(\d+)$/);
+   if(match&&window.dynexalPremiumQuestions)window.dynexalOpenPremiumQuestion(Number(match[1]));
  });
 })();
 </script>
