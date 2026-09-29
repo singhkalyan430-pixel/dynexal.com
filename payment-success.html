@@ -14,7 +14,7 @@
 .payment-card h1{margin:0 0 12px;font-size:clamp(32px,5vw,48px)}
 .payment-card p{color:#b9cbe0;line-height:1.7}
 .payment-id{margin:22px 0;padding:12px;border-radius:10px;background:#0d2138;color:#8fd2ff;font:12px ui-monospace,monospace;word-break:break-all}
-.payment-btn{display:inline-flex;margin-top:12px;padding:13px 20px;border-radius:10px;background:#119df4;color:#fff;font-weight:800;text-decoration:none}
+.payment-btn{display:inline-flex;position:relative;z-index:50;pointer-events:auto;margin-top:12px;padding:13px 20px;border-radius:10px;background:#119df4;color:#fff;font-weight:800;text-decoration:none}
 .payment-note{font-size:12px;color:#7f96b1;margin-top:18px}
 .review-box{margin-top:30px;padding:26px;border:1px solid #285174;border-radius:18px;background:rgba(9,31,54,.9);text-align:left}
 .review-kicker{font-size:11px;font-weight:800;letter-spacing:1.5px;color:#53c1ff}
@@ -52,7 +52,7 @@
   <p class="premium-count" id="premium-count">Loading your Premium Interview Master…</p>
   <div class="premium-list" id="premium-list"></div>
 </section>
-<a class="payment-btn" id="premium-return-btn" href="#premium-access" id="premium-return-btn">Open Premium Interview Master</a>
+<a class="payment-btn premium-open-btn" id="premium-return-btn" href="#premium-access" onclick="document.getElementById('premium-access').scrollIntoView({behavior:'smooth',block:'start'}); return false;">Open Premium Interview Master</a>
 <div class="review-box" id="review-box">
   <div class="review-kicker">PURCHASED CUSTOMER REVIEW</div>
   <h2>How was your Dynexal Interview Master experience?</h2>
@@ -197,10 +197,19 @@
    }).join('')||'<p class="review-help">No matching questions found. Try another search.</p>';
  };
  const accessUrl=token
+   ? 'https://dynexal-ai-assistant.vercel.app/api/premium?token='+encodeURIComponent(token)
+   : 'https://dynexal-ai-assistant.vercel.app/api/premium?payment_id='+encodeURIComponent(paymentId);
+ const accessFallbackUrl=token
    ? '/api/premium?token='+encodeURIComponent(token)
    : '/api/premium?payment_id='+encodeURIComponent(paymentId);
  fetch(accessUrl,{headers:{Accept:'application/json'}})
-   .then(async response=>{const result=await response.json();if(!response.ok||!result.verified)throw new Error(result.error||'Premium access could not be verified.');return result;})
+   .then(async response=>{const result=await response.json().catch(()=>({}));if(!response.ok||!result.verified)throw new Error(result.error||'Premium access could not be verified.');return result;})
+   .catch(async firstError=>{
+     const response=await fetch(accessFallbackUrl,{headers:{Accept:'application/json'}});
+     const result=await response.json().catch(()=>({}));
+     if(!response.ok||!result.verified)throw new Error(result.error||firstError.message||'Premium access could not be verified.');
+     return result;
+   })
    .then(result=>{
      if(result.reviewToken){
        try{
