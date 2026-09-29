@@ -80,7 +80,7 @@ ${selectedContext || "No specific Dynexal article matched this question."}`;
             body: JSON.stringify({
               system_instruction: { parts: [{ text: systemPrompt }] },
               contents: [...history, { role: "user", parts: [{ text: message }] }],
-              generation_config: { maxOutputTokens: 700, thinking_config: { thinking_level: "low" } }
+              generationConfig: { maxOutputTokens: 700, thinkingConfig: { thinkingLevel: "low" } }
             })
           });
           data = await response.json();
