@@ -140,6 +140,8 @@ html[data-theme="dark"] .interview-page .product-list li,
 html[data-theme="dark"] .interview-page .section-heading p,
 html[data-theme="dark"] .interview-page .question p{color:#aebdd0!important}
 html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
+
+.premium-restore-btn{display:block;margin:10px 0 0;padding:0;border:0;background:transparent;color:#1769ff;font:600 12px/1.4 inherit;cursor:pointer;text-decoration:underline}.premium-restore-btn:hover{color:#0b58d6}.premium-restore-btn:disabled{opacity:.55;cursor:wait}.premium-restore-note{min-height:16px;margin:6px 0 0;color:#64748b;font-size:11px;line-height:1.45}.premium-restore-note.error{color:#b42318}.premium-restore-note.success{color:#087f5b}html[data-theme="dark"] .premium-restore-note{color:#aebdd0}html[data-theme="dark"] .premium-restore-note.error{color:#ffb4ab}html[data-theme="dark"] .premium-restore-note.success{color:#75e0bc}
 </style>
 </head>
 <body>
@@ -153,7 +155,7 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
 </div></section>
 <div class="interview-wrap"><section class="interview-products">
 <article class="product-card free"><div class="product-label">FREE</div><h2>Interview Starter</h2><p>Start practicing with original Dynexal questions before you decide whether you need the full pack.</p><div class="price free-price">₹0</div><ul class="product-list"><li>12 practical questions</li><li>AL &amp; Business Central fundamentals</li><li>Short model answers</li><li>Senior follow-up thinking</li></ul><a class="product-cta" href="#free">Practice Free →</a></article>
-<article class="product-card premium" id="premium"><div class="product-label">DYNEXAL PREMIUM</div><h2>Interview Master — 100 Questions</h2><p>A structured, independently authored interview master built from the MB-820 topic areas in your supplied material, expanded with original Dynexal senior-level scenarios.</p><div class="price">Premium Pack</div><ul class="product-list"><li>100 questions • 69 MB-820-aligned topic areas + 31 original Dynexal senior scenarios</li><li>MB-820-aligned architecture, AL, tables, pages, reports, APIs, security, testing and upgrade topics</li><li>Definition + interview-ready answer + technical discussion + practical example + why/justification + senior follow-up for every question</li><li>Senior follow-up and real-project reasoning</li><li>Integration, telemetry, performance, DevOps and AppSource scenarios</li><li>Dynexal branded Premium Interview Master content</li></ul><button type="button" class="product-cta premium-pay-btn" id="premium-pay">Unlock Premium — ₹499 →</button></article>
+<article class="product-card premium" id="premium"><div class="product-label">DYNEXAL PREMIUM</div><h2>Interview Master — 100 Questions</h2><p>A structured, independently authored interview master built from the MB-820 topic areas in your supplied material, expanded with original Dynexal senior-level scenarios.</p><div class="price">Premium Pack</div><ul class="product-list"><li>100 questions • 69 MB-820-aligned topic areas + 31 original Dynexal senior scenarios</li><li>MB-820-aligned architecture, AL, tables, pages, reports, APIs, security, testing and upgrade topics</li><li>Definition + interview-ready answer + technical discussion + practical example + why/justification + senior follow-up for every question</li><li>Senior follow-up and real-project reasoning</li><li>Integration, telemetry, performance, DevOps and AppSource scenarios</li><li>Dynexal branded Premium Interview Master content</li></ul><button type="button" class="product-cta premium-pay-btn" id="premium-pay">Unlock Premium — ₹499 →</button><button type="button" class="premium-restore-btn" id="premium-restore">Already paid? Restore Premium access</button><p class="premium-restore-note" id="premium-restore-note" aria-live="polite"></p></article>
 </section></div>
 <section class="preview container" id="free"><div class="section-heading"><h2>Free Interview Questions</h2><p>Use these as a quick self-test. Try answering aloud before reading the model answer.</p></div>
 <div class="free-grid">
@@ -196,6 +198,38 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
       },{once:false});
     }
   }catch(e){}
+})();
+</script>
+<script>
+(function(){
+  const btn=document.getElementById('premium-restore');
+  const note=document.getElementById('premium-restore-note');
+  if(!btn)return;
+  btn.addEventListener('click',async function(){
+    if(btn.disabled)return;
+    const paymentId=window.prompt('Enter your Razorpay Payment ID from the payment confirmation (example: pay_XXXXXXXXXXXX):');
+    if(!paymentId)return;
+    const id=paymentId.trim();
+    if(!/^pay_[A-Za-z0-9]+$/.test(id)){
+      note.textContent='Please enter a valid Razorpay Payment ID starting with pay_. Example: pay_XXXXXXXXXXXX';
+      note.className='premium-restore-note error';
+      return;
+    }
+    btn.disabled=true; note.textContent='Checking your verified purchase…'; note.className='premium-restore-note';
+    try{
+      const response=await fetch('/api/premium?payment_id='+encodeURIComponent(id),{headers:{Accept:'application/json'}});
+      const result=await response.json().catch(()=>({}));
+      if(!response.ok||!result.verified||!result.reviewToken)throw new Error(result.error||'No verified Premium purchase was found for this Payment ID.');
+      localStorage.setItem('dynexal_premium_payment_id',id);
+      localStorage.setItem('dynexal_premium_review_token',result.reviewToken);
+      note.textContent='Purchase verified. Opening your Premium Interview Master…'; note.className='premium-restore-note success';
+      window.location.href='payment-success.html?payment_id='+encodeURIComponent(id)+'&review_token='+encodeURIComponent(result.reviewToken);
+    }catch(error){
+      note.textContent=error?.message||'Unable to restore Premium access. Please contact Dynexal support.';
+      note.className='premium-restore-note error';
+      btn.disabled=false;
+    }
+  });
 })();
 </script>
 <script>
