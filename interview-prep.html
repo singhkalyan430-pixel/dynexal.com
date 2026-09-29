@@ -217,7 +217,11 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
     }
     btn.disabled=true; note.textContent='Checking your verified purchase…'; note.className='premium-restore-note';
     try{
-      const response=await fetch('/api/premium?payment_id='+encodeURIComponent(id),{headers:{Accept:'application/json'}});
+      const response=await fetch('https://dynexal-ai-assistant.vercel.app/api/razorpay',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({action:'recover',payment_id:id})
+      });
       const result=await response.json().catch(()=>({}));
       if(!response.ok||!result.verified||!result.reviewToken)throw new Error(result.error||'No verified Premium purchase was found for this Payment ID.');
       localStorage.setItem('dynexal_premium_payment_id',id);
