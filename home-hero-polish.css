@@ -1300,3 +1300,14 @@ html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
   .hero-primary,.hero-secondary{padding:11px 13px!important;font-size:12px!important}
   .hero-badge{font-size:8px!important;padding:6px 9px!important}
 }
+
+/* Final site-wide heading balance: medium scale for the homepage sections. */
+.hero-showcase .hero-copy h1,.hero-copy h1{font-size:clamp(46px,4.8vw,62px)!important;line-height:1.04!important;letter-spacing:-2.4px!important}
+.why-intro h2{font-size:clamp(38px,3.8vw,48px)!important;line-height:1.08!important;letter-spacing:-1.5px!important}
+.marquee-heading h2{font-size:clamp(30px,3.2vw,42px)!important;line-height:1.12!important}
+.dynexal-insights .section-heading h2{font-size:clamp(30px,3.2vw,42px)!important}
+.feature-copy h3{font-size:clamp(25px,2.6vw,34px)!important}
+.interview-promo h2{font-size:30px!important}
+.testimonial-heading h2{font-size:32px!important}
+@media(max-width:900px){.hero-showcase .hero-copy h1,.hero-copy h1{font-size:44px!important}.why-intro h2{font-size:38px!important}.marquee-heading h2,.dynexal-insights .section-heading h2{font-size:32px!important}.feature-copy h3{font-size:27px!important}}
+@media(max-width:560px){.hero-showcase .hero-copy h1,.hero-copy h1{font-size:38px!important}.why-intro h2{font-size:32px!important}.marquee-heading h2,.dynexal-insights .section-heading h2{font-size:28px!important}.feature-copy h3{font-size:24px!important}.interview-promo h2{font-size:26px!important}.testimonial-heading h2{font-size:28px!important}}
