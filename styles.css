@@ -306,3 +306,30 @@ h3{font-size:clamp(19px,2vw,25px)}
 .section-heading h2,.project-grid h2,.newsletter h2{font-size:clamp(30px,3vw,40px)!important}
 @media(max-width:900px){h1{font-size:42px}h2{font-size:32px}h3{font-size:21px}}
 @media(max-width:560px){h1{font-size:36px}h2{font-size:28px}h3{font-size:20px}.section-heading h2,.project-grid h2,.newsletter h2{font-size:28px!important}}
+
+/* Final compact visual scale — headings, sections and cards */
+.hero-showcase{min-height:680px}
+.hero-showcase-inner{min-height:600px}
+.hero-copy{padding:28px 0 58px}
+.hero-copy h1{font-size:clamp(46px,4.2vw,58px)!important;line-height:1.02!important;letter-spacing:-2.5px!important;margin:18px 0 18px}
+.hero-copy>p{font-size:17px;line-height:1.5;max-width:640px}
+.hero-actions{gap:14px;margin:22px 0 28px}
+.hero-primary,.hero-secondary{padding:13px 21px;font-size:14px}
+.hero-feature-row{padding-top:14px}
+.hero-feature-row>div{min-height:62px;padding:0 10px}
+.feature-icon{font-size:23px}
+.section{padding:65px 0}
+.section-heading{margin-bottom:24px}
+.cards{gap:16px}
+.card{padding:20px;border-radius:12px}
+.card-icon{width:40px;height:40px;border-radius:10px;margin-bottom:16px}
+.card h3{font-size:19px;margin:9px 0}
+.card p{font-size:13px;line-height:1.55}
+.topic-grid{gap:12px}
+.topic{padding:16px;gap:12px;border-radius:11px}
+.topic-icon{width:36px;height:36px;border-radius:9px}
+.topic h3{font-size:15px}
+.topic p{font-size:11.5px;line-height:1.5}
+.project-grid{gap:55px}
+.project-item{gap:18px;padding:19px 0 19px 20px}
+.newsletter-box{padding:30px;gap:24px}
