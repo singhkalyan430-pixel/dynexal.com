@@ -164,6 +164,29 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
 <footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span>Dynexal Technologies</span></a><p>Learn. Build. Integrate.</p><span><a href="about.html">About</a> · <a href="services.html">Services</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+// Purchased-customer recovery: if this browser already has a verified Premium token,
+// do not send the customer back through the ₹499 checkout.
+(function(){
+  const btn=document.getElementById('premium-pay');
+  if(!btn)return;
+  try{
+    const token=localStorage.getItem('dynexal_premium_review_token');
+    const paymentId=localStorage.getItem('dynexal_premium_payment_id');
+    if(token||paymentId){
+      btn.textContent='Open Premium — Already Purchased →';
+      btn.dataset.purchased='true';
+      btn.addEventListener('click',function(event){
+        event.preventDefault();
+        const url=token
+          ? 'payment-success.html?review_token='+encodeURIComponent(token)+(paymentId?'&payment_id='+encodeURIComponent(paymentId):'')
+          : 'payment-success.html?payment_id='+encodeURIComponent(paymentId);
+        window.location.href=url;
+      },{once:false});
+    }
+  }catch(e){}
+})();
+</script>
+<script>
 (function(){
   const buttons=[...document.querySelectorAll('#premium-pay,[data-pay-premium]')];
   if(!buttons.length)return;
