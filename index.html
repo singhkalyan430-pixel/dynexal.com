@@ -491,7 +491,7 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
 .testimonial-track{display:flex;gap:16px;width:max-content;will-change:transform;animation:dynexalReviewRun 32s linear infinite}
 .testimonial-grid:hover .testimonial-track,.testimonial-grid:focus-within .testimonial-track{animation-play-state:paused}
 .testimonial-card{flex:0 0 330px;padding:18px;border:1px solid #254b6d;border-radius:14px;background:linear-gradient(145deg,rgba(13,37,62,.95),rgba(7,24,43,.96));box-shadow:0 12px 30px rgba(0,0,0,.14);box-sizing:border-box}
-.testimonial-stars{color:#ffc857;font-size:17px;letter-spacing:1.5px;margin-bottom:10px}
+.testimonial-rating{display:flex;align-items:center;gap:9px;margin-bottom:10px}.testimonial-stars{color:#ffc857;font-size:17px;letter-spacing:1.5px}.testimonial-rating strong{color:#dce9f6;font-size:12px;font-weight:800}
 .testimonial-comment{color:#dce9f6;font-size:14px;line-height:1.55;margin:0 0 12px}
 .testimonial-read-more{border:0;background:transparent;color:#62c7ff;padding:0;margin:7px 0 13px;font:700 12px/1.2 inherit;cursor:pointer}
 .testimonial-read-more:hover{text-decoration:underline}
@@ -558,7 +558,7 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
         const short=full.length>150?full.slice(0,150).trim()+'…':full;
         const stars='★'.repeat(rating)+'<span style="color:#50677f">'+('★'.repeat(5-rating))+'</span>';
         const more=full.length>150?'<button class="testimonial-read-more" type="button" data-full="'+esc(full)+'" aria-expanded="false">Read more</button>':'';
-        return '<article class="testimonial-card"><div class="testimonial-stars" aria-label="'+rating+' out of 5 stars">'+stars+'</div><p class="testimonial-comment" data-short="'+esc(short)+'" data-expanded="false">“'+esc(short)+'”</p>'+more+'<div class="testimonial-name">'+esc(r.reviewer_name)+'</div><span class="testimonial-date">Community review · '+date+'</span></article>';
+        return '<article class="testimonial-card"><div class="testimonial-rating"><span class="testimonial-stars" aria-label="'+rating+' out of 5 stars">'+stars+'</span><strong>'+rating+'/5</strong></div><p class="testimonial-comment" data-short="'+esc(short)+'" data-expanded="false">“'+esc(short)+'”</p>'+more+'<div class="testimonial-name">'+esc(r.reviewer_name)+'</div><span class="testimonial-date">Community review · '+date+'</span></article>';
       }).join('');
       list.innerHTML='<div class="testimonial-track">'+cardHtml+cardHtml+'</div>';
       list.querySelectorAll('.testimonial-read-more').forEach(button=>{
