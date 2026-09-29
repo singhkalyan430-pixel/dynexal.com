@@ -94,6 +94,16 @@ async function saveVerifiedPurchase({ orderId, paymentId }) {
   return rows[0] || null;
 }
 
+async function getCapturedPayment(paymentId) {
+  const response = await fetch("https://api.razorpay.com/v1/payments/" + encodeURIComponent(paymentId), { headers: { Authorization: authHeader() } });
+  const payment = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(payment?.error?.description || "Unable to find this Razorpay payment.");
+  if (payment.status !== "captured") throw new Error("This Razorpay payment is not captured yet.");
+  if (Number(payment.amount) !== PRICE_PAISE) throw new Error("This payment amount does not match the Dynexal Premium Interview Master.");
+  if (!payment.order_id) throw new Error("This Razorpay payment is missing its order reference.");
+  return payment;
+}
+
 async function verifyPayment({ orderId, paymentId, signature }) {
   const secret = process.env.RAZORPAY_KEY_SECRET;
   const expected = crypto
@@ -183,6 +193,15 @@ export default async function handler(req, res) {
         product: PRODUCT_NAME,
         reviewToken: purchase?.review_token || null
       });
+    }
+
+    if (action === "recover") {
+      const paymentId = String(body?.payment_id || "").trim();
+      if (!/^pay_[A-Za-z0-9]+$/.test(paymentId)) return res.status(400).json({ error: "Enter a valid Razorpay Payment ID starting with pay_." });
+      const payment = await getCapturedPayment(paymentId);
+      const purchase = await saveVerifiedPurchase({ orderId: payment.order_id, paymentId: payment.id });
+      if (!purchase?.review_token) throw new Error("Payment was verified, but Premium access could not be saved. Please contact Dynexal support; do not pay again.");
+      return res.status(200).json({ verified: true, paymentId: payment.id, orderId: payment.order_id, product: PRODUCT_NAME, reviewToken: purchase.review_token });
     }
 
     return res.status(400).json({ error: "Unknown payment action." });
