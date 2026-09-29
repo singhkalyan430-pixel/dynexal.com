@@ -1376,3 +1376,19 @@ html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
 html[data-theme="dark"] .dynexal-testimonials,html[data-theme="dark"] .dynexal-marquee-section,html[data-theme="dark"] .dynexal-why,html[data-theme="dark"] .dynexal-insights,html[data-theme="dark"] .dynexal-stack{background:#fff!important;color:#172033!important}
 html[data-theme="dark"] .why-intro h2,html[data-theme="dark"] .marquee-heading h2,html[data-theme="dark"] .dynexal-insights .section-heading h2{color:#172033!important}
 html[data-theme="dark"] .why-grid article,html[data-theme="dark"] .marquee-card,html[data-theme="dark"] .insight-card,html[data-theme="dark"] .intel-panel{background:#fff!important;border-color:#dfe7ef!important}
+
+/* Crisp typography after white-background conversion */
+html,body{color:#172033!important}
+body *{text-shadow:none!important}
+.hero-showcase,.hero-showcase:before{background:#fff!important}
+.hero-showcase:before{opacity:1!important}
+.hero-copy,.hero-copy h1,.hero-copy>p,.hero-badge,.hero-feature-row strong,.hero-quote,.hero-brand-badge{opacity:1!important;filter:none!important;text-shadow:none!important}
+.hero-copy h1,.hero-copy>p{color:#172033!important}
+.hero-copy h1 span{color:#1679c9!important}
+.hero-badge{color:#475569!important}
+.hero-quote{color:#52657a!important}
+.hero-brand-badge{color:#172033!important}
+.hero-slide-full:after{filter:none!important;opacity:1!important}
+.hero-slider-track{opacity:1!important}
+.nav>a,.nav>a:visited,.site-header .logo-copy strong{opacity:1!important;filter:none!important;text-shadow:none!important}
+.section,.cards,.card,.topic,.project-section,.project-grid,.newsletter-box,.footer,.dynexal-testimonials,.dynexal-marquee-section,.dynexal-why,.dynexal-insights,.dynexal-stack{opacity:1!important;filter:none!important}
