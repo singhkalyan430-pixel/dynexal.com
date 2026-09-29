@@ -14,7 +14,7 @@
 <meta property="og:description" content="Dynexal Premium 100-question Business Central Interview Master with MB-820-aligned topics, definitions, examples, justifications and senior follow-ups.">
 <meta property="og:site_name" content="Dynexal Technologies">
 <title>Business Central Interview Prep | Dynexal Technologies</title>
-<link rel="stylesheet" href="styles.css?v=20260926-interview">
+<link rel="stylesheet" href="styles.css?v=20260929-interview-contrast">
 <link rel="stylesheet" href="nav-plain.css?v=20260927-mobileqa5">
 <style>
 .interview-page{background:#f6f9fc;color:#142238;padding-bottom:90px}
@@ -128,6 +128,18 @@ html[data-theme="dark"] .payment-note{color:#91a4bb}
   .public-review-box .star-picker button{font-size:32px!important}
   .public-review-box .review-submit{width:100%!important}
 }
+
+/* Contrast hardening — keep Interview Prep readable in the light theme while preserving dark mode. */
+.interview-page .product-card>p,
+.interview-page .product-list li,
+.interview-page .section-heading p,
+.interview-page .question p{color:#475569!important}
+.interview-page .question h3{color:#13263d!important}
+html[data-theme="dark"] .interview-page .product-card>p,
+html[data-theme="dark"] .interview-page .product-list li,
+html[data-theme="dark"] .interview-page .section-heading p,
+html[data-theme="dark"] .interview-page .question p{color:#aebdd0!important}
+html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
 </style>
 </head>
 <body>
