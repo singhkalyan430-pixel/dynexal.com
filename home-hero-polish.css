@@ -1364,23 +1364,6 @@ html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
  .interview-promo h2{font-size:24px!important}
 }
 
-/* Crisp typography after white-background conversion */
-html,body{color:#172033!important}
-body *{text-shadow:none!important}
-.hero-showcase,.hero-showcase:before{background:#fff!important}
-.hero-showcase:before{opacity:1!important}
-.hero-copy,.hero-copy h1,.hero-copy>p,.hero-badge,.hero-feature-row strong,.hero-quote,.hero-brand-badge{opacity:1!important;filter:none!important;text-shadow:none!important}
-.hero-copy h1,.hero-copy>p{color:#172033!important}
-.hero-copy h1 span{color:#1679c9!important}
-.hero-badge{color:#475569!important}
-.hero-quote{color:#52657a!important}
-.hero-brand-badge{color:#172033!important}
-.hero-slide-full:after{filter:none!important;opacity:1!important}
-.hero-slider-track{opacity:1!important}
-.nav>a,.nav>a:visited,.site-header .logo-copy strong{opacity:1!important;filter:none!important;text-shadow:none!important}
-.section,.cards,.card,.topic,.project-section,.project-grid,.newsletter-box,.footer,.dynexal-testimonials,.dynexal-marquee-section,.dynexal-why,.dynexal-insights,.dynexal-stack{opacity:1!important;filter:none!important}
-
-
 /* FINAL HERO VISUAL FIX — avoid rendering hero artwork twice.
    Slides 1–3 use the ::after artwork positioned on the right; the full-slide
    background image would duplicate its embedded typography across the hero. */
