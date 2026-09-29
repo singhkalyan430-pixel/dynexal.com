@@ -298,3 +298,11 @@ a{color:inherit}
 @media(max-width:560px){
   .hero-copy h1 span{color:#fff!important}
 }
+
+/* Global medium typography scale — keep headings professional and readable site-wide. */
+h1{font-size:clamp(40px,4vw,56px)}
+h2{font-size:clamp(30px,3vw,40px)}
+h3{font-size:clamp(19px,2vw,25px)}
+.section-heading h2,.project-grid h2,.newsletter h2{font-size:clamp(30px,3vw,40px)!important}
+@media(max-width:900px){h1{font-size:42px}h2{font-size:32px}h3{font-size:21px}}
+@media(max-width:560px){h1{font-size:36px}h2{font-size:28px}h3{font-size:20px}.section-heading h2,.project-grid h2,.newsletter h2{font-size:28px!important}}
