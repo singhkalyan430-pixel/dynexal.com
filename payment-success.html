@@ -194,7 +194,7 @@
        '</div></details>';
    }).join('')||'<p class="review-help">No matching questions found. Try another search.</p>';
  };
- fetch('https://dynexal-ai-assistant.vercel.app/api/premium?token='+encodeURIComponent(token),{headers:{Accept:'application/json'}})
+ fetch('/api/premium?token='+encodeURIComponent(token),{headers:{Accept:'application/json'}})
    .then(async response=>{const result=await response.json();if(!response.ok||!result.verified)throw new Error(result.error||'Premium access could not be verified.');return result;})
    .then(result=>{
      questions=Array.isArray(result.questions)?result.questions:[];
