@@ -218,7 +218,7 @@
      [...new Set(questions.map(item=>item.category))].forEach(cat=>{const option=document.createElement('option');option.value=cat;option.textContent=cat;category.appendChild(option);});
      access.hidden=false; render();
    })
-   .catch(error=>{count.textContent=error.message||'Premium access could not be verified.';access.hidden=false;list.innerHTML='<p class="review-help">Please return to the Interview Master and complete a fresh verified payment if this continues.</p>';});
+   .catch(error=>{count.textContent=error.message||'Premium access could not be verified.';access.hidden=false;list.innerHTML='<p class="review-help">Your payment is already recorded. Please refresh this page or contact Dynexal support with your Payment ID; do not pay again.</p>';});
  search?.addEventListener('input',render); category?.addEventListener('change',render);
 })();
 (function(){
