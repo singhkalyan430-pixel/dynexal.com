@@ -120,13 +120,15 @@
  });
 })();
 (function(){
- const token=new URLSearchParams(location.search).get('review_token');
+ const params=new URLSearchParams(location.search);
+ const token=params.get('review_token');
+ const paymentId=params.get('payment_id');
  const access=document.getElementById('premium-access');
  const list=document.getElementById('premium-list');
  const count=document.getElementById('premium-count');
  const search=document.getElementById('premium-search');
  const category=document.getElementById('premium-category');
- if(!token||!access)return;
+ if((!token&&!paymentId)||!access)return;
  let questions=[];
  const dynexalAdditions=[
   {id:61,title:'Telemetry and Application Insights',category:'Observability',alignment:'MB-820-aligned',definition:'Telemetry captures structured operational signals; Application Insights can be used to analyze application behavior, failures and performance.',answer:'Use structured telemetry around important business operations, include safe correlation data, and use Application Insights to investigate trends and failures.',justification:'Observability is useful only when the signal is actionable. Avoid secrets and excessive payloads while keeping enough context to correlate a job or integration failure.',technicalDiscussion:'Define stable event names, dimensions and correlation identifiers before production rollout.',example:'Emit a trace when an order synchronization starts, retries, completes or fails, then use the correlation identifier to investigate the run.',followup:'What telemetry data would you exclude because it could expose sensitive information?'},
