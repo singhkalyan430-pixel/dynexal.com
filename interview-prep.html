@@ -244,8 +244,9 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
       btn.textContent=state?'Opening secure checkout…':'Get Premium — ₹499 →';
     });
   };
-  const startPayment=async()=>{
+  const startPayment=async(event)=>{
     if(busy)return;
+    if(event?.currentTarget?.dataset?.purchased)return;
     setBusy(true);
     try{
       const orderResponse=await fetch('https://dynexal-ai-assistant.vercel.app/api/razorpay',{
