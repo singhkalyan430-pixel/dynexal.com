@@ -44,7 +44,7 @@
 <h1>Payment Successful</h1>
 <p>Your payment for the <strong>Dynexal Interview Master — 100 Questions</strong> has been verified successfully.</p>
 <div class="payment-id" id="payment-id">Payment ID: verifying…</div>
-<section class="premium-access" id="premium-access" hidden>
+<section class="premium-access" id="premium-access">
   <div class="review-kicker">DYNEXAL PREMIUM • VERIFIED ACCESS</div>
   <h2>Your Interview Master is unlocked</h2>
   <p class="access-lead">100 professional questions with definitions, interview-ready answers, technical justification, practical project examples, technical discussion and senior follow-ups. This Premium content is loaded only after the purchase token is verified.</p>
@@ -52,7 +52,7 @@
   <p class="premium-count" id="premium-count">Loading your Premium Interview Master…</p>
   <div class="premium-list" id="premium-list"></div>
 </section>
-<a class="payment-btn" id="premium-return-btn" href="#premium-access">Open Premium Interview Master</a>
+<a class="payment-btn" id="premium-return-btn" href="#premium-access" id="premium-return-btn">Open Premium Interview Master</a>
 <div class="review-box" id="review-box">
   <div class="review-kicker">PURCHASED CUSTOMER REVIEW</div>
   <h2>How was your Dynexal Interview Master experience?</h2>
@@ -224,6 +224,18 @@
 (function(){
  const id=new URLSearchParams(location.search).get('payment_id');
  document.getElementById('payment-id').textContent=id?'Payment ID: '+id:'Payment verified';
+})();
+</script>
+
+<script>
+(function(){
+ const btn=document.getElementById('premium-return-btn');
+ const access=document.getElementById('premium-access');
+ if(!btn||!access)return;
+ btn.addEventListener('click',function(event){
+   event.preventDefault();
+   access.scrollIntoView({behavior:'smooth',block:'start'});
+ });
 })();
 </script>
 
