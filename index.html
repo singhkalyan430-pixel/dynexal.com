@@ -487,15 +487,19 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
 .review-results-heading{text-align:center;max-width:760px;margin:0 auto 28px}
 .review-results-heading h3{margin:0 0 8px;color:#f4f8ff;font-size:30px}
 .review-results-heading p{margin:0;color:#8faac5;line-height:1.6}
-.testimonial-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;max-width:1080px;margin:0 auto}
-.testimonial-card{padding:27px;border:1px solid #254b6d;border-radius:18px;background:linear-gradient(145deg,rgba(13,37,62,.95),rgba(7,24,43,.96));box-shadow:0 16px 45px rgba(0,0,0,.16);min-height:220px;box-sizing:border-box}
-.testimonial-stars{color:#ffc857;font-size:19px;letter-spacing:2px;margin-bottom:17px}
-.testimonial-comment{color:#dce9f6;font-size:15px;line-height:1.75;margin:0 0 22px}
-.testimonial-name{font-weight:800;color:#fff}.testimonial-date{display:block;margin-top:4px;color:#7692ad;font-size:11px}
-.testimonial-loading,.testimonial-empty{grid-column:1/-1;text-align:center;color:#8da7c1;padding:28px}
-.testimonial-actions{text-align:center;margin-top:30px}
-@media(max-width:850px){.testimonial-grid{grid-template-columns:1fr 1fr}}
-@media(max-width:560px){.dynexal-testimonials{padding:60px 0 66px}.public-review-box{padding:24px 20px}.testimonial-grid{grid-template-columns:1fr}.review-submit{width:100%}}
+.testimonial-grid{position:relative;overflow:hidden;max-width:1080px;margin:0 auto;padding:4px 0 10px}
+.testimonial-track{display:flex;gap:16px;width:max-content;will-change:transform;animation:dynexalReviewRun 32s linear infinite}
+.testimonial-grid:hover .testimonial-track,.testimonial-grid:focus-within .testimonial-track{animation-play-state:paused}
+.testimonial-card{flex:0 0 330px;padding:18px;border:1px solid #254b6d;border-radius:14px;background:linear-gradient(145deg,rgba(13,37,62,.95),rgba(7,24,43,.96));box-shadow:0 12px 30px rgba(0,0,0,.14);box-sizing:border-box}
+.testimonial-stars{color:#ffc857;font-size:17px;letter-spacing:1.5px;margin-bottom:10px}
+.testimonial-comment{color:#dce9f6;font-size:14px;line-height:1.55;margin:0 0 12px}
+.testimonial-read-more{border:0;background:transparent;color:#62c7ff;padding:0;margin:7px 0 13px;font:700 12px/1.2 inherit;cursor:pointer}
+.testimonial-read-more:hover{text-decoration:underline}
+.testimonial-name{font-weight:800;color:#fff;font-size:14px}.testimonial-date{display:block;margin-top:3px;color:#7692ad;font-size:10px}
+.testimonial-loading,.testimonial-empty{width:100%;text-align:center;color:#8da7c1;padding:28px}
+@keyframes dynexalReviewRun{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(max-width:850px){.testimonial-card{flex-basis:280px}.testimonial-track{animation-duration:28s}}
+@media(max-width:560px){.dynexal-testimonials{padding:60px 0 66px}.public-review-box{padding:24px 20px}.testimonial-card{flex-basis:calc(100vw - 56px);padding:16px}.testimonial-track{gap:12px;animation-duration:24s}.review-submit{width:100%}}
 </style>
 <script>
 (function(){
@@ -545,13 +549,31 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
       if(!reviews.length){summary.textContent='Be the first to share your Dynexal experience.';list.innerHTML='<div class="testimonial-empty">No approved reviews yet.</div>';return;}
       const avg=reviews.reduce((sum,r)=>sum+Number(r.rating),0)/reviews.length;
       summary.textContent='★★★★★ '+avg.toFixed(1)+'/5 · '+reviews.length+' approved review'+(reviews.length===1?'':'s');
-      list.innerHTML=reviews.slice(0,6).map(r=>{
+      const visibleReviews=reviews.slice(0,6);
+      const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+      const cardHtml=visibleReviews.map((r,index)=>{
         const rating=Math.max(1,Math.min(5,Number(r.rating)||0));
         const date=r.created_at?new Date(r.created_at).toLocaleDateString(undefined,{month:'short',year:'numeric'}):'';
+        const full=String(r.comment||'');
+        const short=full.length>150?full.slice(0,150).trim()+'…':full;
         const stars='★'.repeat(rating)+'<span style="color:#50677f">'+('★'.repeat(5-rating))+'</span>';
-        const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-        return '<article class="testimonial-card"><div class="testimonial-stars" aria-label="'+rating+' out of 5 stars">'+stars+'</div><p class="testimonial-comment">“'+esc(r.comment)+'”</p><div class="testimonial-name">'+esc(r.reviewer_name)+'</div><span class="testimonial-date">Community review · '+date+'</span></article>';
+        const more=full.length>150?'<button class="testimonial-read-more" type="button" data-full="'+esc(full)+'" aria-expanded="false">Read more</button>':'';
+        return '<article class="testimonial-card"><div class="testimonial-stars" aria-label="'+rating+' out of 5 stars">'+stars+'</div><p class="testimonial-comment" data-short="'+esc(short)+'" data-expanded="false">“'+esc(short)+'”</p>'+more+'<div class="testimonial-name">'+esc(r.reviewer_name)+'</div><span class="testimonial-date">Community review · '+date+'</span></article>';
       }).join('');
+      list.innerHTML='<div class="testimonial-track">'+cardHtml+cardHtml+'</div>';
+      list.querySelectorAll('.testimonial-read-more').forEach(button=>{
+        button.addEventListener('click',()=>{
+          const card=button.closest('.testimonial-card');
+          const comment=card.querySelector('.testimonial-comment');
+          const expanded=button.getAttribute('aria-expanded')==='true';
+          const full=button.dataset.full||'';
+          const short=comment.dataset.short||'';
+          comment.textContent='“'+(expanded?short:full)+'”';
+          button.textContent=expanded?'Read more':'Read less';
+          button.setAttribute('aria-expanded',String(!expanded));
+          comment.dataset.expanded=String(!expanded);
+        });
+      });
     }catch(error){
       summary.textContent='Feedback will appear here as approved reviews are published.';
       list.innerHTML='<div class="testimonial-empty">Reviews are temporarily unavailable.</div>';
