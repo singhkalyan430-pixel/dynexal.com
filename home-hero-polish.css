@@ -1322,3 +1322,44 @@ html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
 .testimonial-heading h2{font-size:29px!important}
 @media(max-width:900px){.hero-showcase .hero-copy h1,.hero-copy h1{font-size:40px!important}.why-intro h2{font-size:34px!important}.marquee-heading h2,.dynexal-insights .section-heading h2{font-size:29px!important}.section-heading h2,.project-grid h2,.newsletter h2{font-size:29px!important}}
 @media(max-width:560px){.hero-showcase .hero-copy h1,.hero-copy h1{font-size:34px!important}.why-intro h2{font-size:30px!important}.marquee-heading h2,.dynexal-insights .section-heading h2,.section-heading h2,.project-grid h2,.newsletter h2{font-size:26px!important}.feature-copy h3{font-size:22px!important}.interview-promo h2{font-size:24px!important}.testimonial-heading h2{font-size:26px!important}}
+
+/* Final compact homepage section scale */
+.why-intro{max-width:650px;margin-bottom:28px}
+.why-intro h2{font-size:clamp(34px,3.5vw,46px)!important;letter-spacing:-1.6px!important;margin:9px 0 12px}
+.why-intro p{font-size:16px;line-height:1.55}
+.why-grid{gap:14px}
+.why-grid article{min-height:175px;padding:22px;border-radius:14px}
+.why-grid h3{margin:14px 0 7px;font-size:19px}
+.why-grid p{font-size:13px;line-height:1.55}
+.dynexal-marquee-section{padding:55px 0 60px}
+.marquee-heading{gap:24px;margin-bottom:24px}
+.marquee-heading h2{font-size:clamp(28px,3vw,40px)!important}
+.dynexal-insights .section-heading{margin-bottom:24px}
+.dynexal-insights .section-heading h2{font-size:clamp(28px,3vw,40px)!important}
+.feature-content{gap:26px}
+.feature-copy h3{font-size:clamp(23px,2.4vw,31px)!important}
+.intel-panels{gap:16px;margin-bottom:16px}
+.intel-panel{padding:19px}
+.insight-card{padding:20px}
+.interview-promo{padding:24px!important}
+.interview-promo h2{font-size:27px!important}
+.testimonial-heading h2{font-size:30px!important}
+@media(max-width:900px){
+ .hero-showcase{min-height:auto}
+ .hero-showcase-inner{min-height:auto;padding-top:35px}
+ .hero-copy{padding:10px 0 30px}
+ .hero-copy h1{font-size:44px!important}
+ .section{padding:55px 0}
+ .why-grid article{min-height:auto}
+}
+@media(max-width:560px){
+ .hero-copy h1{font-size:37px!important;margin:14px 0}
+ .hero-copy>p{font-size:14px}
+ .hero-actions{margin:18px 0 22px}
+ .section{padding:48px 0}
+ .why-intro h2{font-size:31px!important}
+ .why-intro p{font-size:14px}
+ .why-grid article{padding:18px}
+ .marquee-heading h2,.dynexal-insights .section-heading h2{font-size:27px!important}
+ .interview-promo h2{font-size:24px!important}
+}
