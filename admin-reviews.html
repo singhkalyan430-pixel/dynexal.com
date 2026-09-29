@@ -87,7 +87,8 @@ document.getElementById("send").onclick=async()=>{
  const email=document.getElementById("email").value.trim().toLowerCase();
  if(email!==ADMIN_EMAIL.toLowerCase()){message("Use the authorized Dynexal admin email.");return}
  message("Sending secure login link…");
- const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:location.origin+location.pathname}});
+ const authRedirectUrl="https://dynexal.com/admin-reviews.html";
+ const {error}=await sb.auth.signInWithOtp({email,options:{emailRedirectTo:authRedirectUrl}});
  if(error) message(error.message||"Unable to send login link. Try password sign-in or wait before retrying.");
  else message("Login link sent. Check your email and open the link on this device.");
 };
@@ -95,7 +96,8 @@ document.getElementById("forgot").onclick=async()=>{
  const email=document.getElementById("email").value.trim().toLowerCase();
  if(email!==ADMIN_EMAIL.toLowerCase()){message("Use the authorized Dynexal admin email.");return}
  message("Sending password reset email…");
- const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+ const authRedirectUrl="https://dynexal.com/admin-reviews.html";
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:authRedirectUrl});
  if(error) message(error.message||"Unable to send password reset email.");
  else message("Password reset email sent. Open it, set a new password, then return here and sign in.");
 };
