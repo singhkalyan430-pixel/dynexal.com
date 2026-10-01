@@ -5,6 +5,24 @@ const allowedOrigins = new Set([
   "https://www.dynexal.com"
 ]);
 
+const rateState = new Map();
+const RATE_WINDOW_MS = 60_000;
+const RATE_LIMIT = 8;
+
+function clientIp(req) {
+  return String(req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown").split(",")[0].trim().slice(0, 80) || "unknown";
+}
+
+function rateLimit(req, res) {
+  const now = Date.now();
+  const key = clientIp(req);
+  const entry = rateState.get(key);
+  if (!entry || now - entry.start >= RATE_WINDOW_MS) { rateState.set(key, { start: now, count: 1 }); return true; }
+  entry.count += 1;
+  if (entry.count > RATE_LIMIT) { res.setHeader("Retry-After", "60"); return false; }
+  return true;
+}
+
 const PRICE_PAISE = 49900;
 const PRODUCT_NAME = "Dynexal Interview Master — 100 Questions";
 const IS_LIVE_KEY = String(process.env.RAZORPAY_KEY_ID || "").startsWith("rzp_live_");
@@ -135,6 +153,7 @@ export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (!rateLimit(req, res)) return res.status(429).json({ error: "Too many payment requests. Please wait a minute and try again." });
 
   const keyId = process.env.RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
