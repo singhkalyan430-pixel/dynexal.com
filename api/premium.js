@@ -23,9 +23,18 @@ const allowedOrigins = new Set([
   "https://www.dynexal.com"
 ]);
 
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (allowedOrigins.has(origin)) return true;
+  const previewOrigin = process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "";
+  return previewOrigin === origin;
+}
+
+
+
 function setCors(req, res) {
   const origin = req.headers.origin || "";
-  if (allowedOrigins.has(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  if (isAllowedOrigin(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
