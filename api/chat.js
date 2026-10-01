@@ -32,9 +32,21 @@ function securityHeaders(res) {
 
 export default async function handler(req, res) {
   securityHeaders(res);
-  const allowedOrigins = new Set(["https://dynexal.com", "https://www.dynexal.com", "https://dynexal-ai-assistant.vercel.app"]);
+  const allowedOrigins = new Set([
+  "https://dynexal.com",
+  "https://www.dynexal.com"
+]);
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (allowedOrigins.has(origin)) return true;
+  const previewOrigin = process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "";
+  return previewOrigin === origin;
+}
+
+
   const origin = req.headers.origin || "";
-  if (allowedOrigins.has(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  if (isAllowedOrigin(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
