@@ -334,3 +334,229 @@ h3{font-size:clamp(19px,2vw,25px)}
 .project-item{gap:18px;padding:19px 0 19px 20px}
 .newsletter-box{padding:30px;gap:24px}
 
+
+
+/* =========================================================
+   Global content alignment & readability polish
+   Applied site-wide without changing navigation/buttons.
+   ========================================================= */
+main p:not(.hero-badge):not(.article-meta):not(.updated),
+main li,
+.article-wrap p,
+.article-wrap li,
+.legal-wrap p,
+.legal-wrap li,
+.page-content p,
+.page-content li,
+.article-content p,
+.article-content li,
+.prose p,
+.prose li,
+.content-body p,
+.content-body li{
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+/* Keep short UI copy natural rather than stretched. */
+.hero-copy > p,
+.section-heading p,
+.card p,
+.topic p,
+.project-grid p,
+.newsletter-box p,
+.insight-card p,
+.feature-copy p,
+.feature-signal small,
+.intel-panel > p,
+.insight-live-item span,
+.insight-live-item em,
+.footer p,
+.updated{
+  text-align: left!important;
+  hyphens: none;
+}
+
+.card p,
+.topic p,
+.project-grid p,
+.newsletter-box p{
+  line-height: 1.65;
+}
+
+main > .section,
+main > .legal-page,
+main > .article-page{
+  scroll-margin-top: 90px;
+}
+
+/* Long-form article and legal content: consistent measure and spacing. */
+.article-wrap,
+.legal-wrap,
+.page-content,
+.article-content,
+.prose,
+.content-body{
+  max-width: 920px;
+}
+
+.article-wrap p,
+.article-wrap li,
+.legal-wrap p,
+.legal-wrap li,
+.article-content p,
+.article-content li,
+.page-content p,
+.page-content li,
+.prose p,
+.prose li,
+.content-body p,
+.content-body li{
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.article-wrap h2,
+.legal-wrap h2,
+.article-content h2,
+.page-content h2,
+.prose h2,
+.content-body h2{
+  margin-top: 38px;
+  margin-bottom: 14px;
+  line-height: 1.25;
+}
+
+.article-wrap h3,
+.legal-wrap h3,
+.article-content h3,
+.page-content h3,
+.prose h3,
+.content-body h3{
+  margin-top: 28px;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.article-wrap ul,
+.article-wrap ol,
+.legal-wrap ul,
+.legal-wrap ol,
+.article-content ul,
+.article-content ol,
+.page-content ul,
+.page-content ol,
+.prose ul,
+.prose ol,
+.content-body ul,
+.content-body ol{
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.article-wrap blockquote,
+.legal-wrap blockquote,
+.article-content blockquote,
+.page-content blockquote,
+.prose blockquote,
+.content-body blockquote{
+  margin: 24px 0;
+}
+
+/* Better paragraph measure inside cards and content columns. */
+.card p,
+.topic p,
+.project-grid p,
+.newsletter-box p{
+  max-width: 760px;
+}
+
+/* Legal pages get the same professional reading rhythm as articles. */
+.legal-page{
+  padding-top: 72px;
+  padding-bottom: 90px;
+}
+
+.legal-wrap p,
+.legal-wrap li{
+  font-size: 16px;
+  color:#666!important;
+}
+
+/* Preserve labels, navigation and action controls. */
+nav,
+button,
+.btn,
+a,
+.tag,
+.section-label,
+.legal-label,
+.article-kicker,
+.feature-category,
+.insight-meta,
+.intel-panel-title{
+  text-align: left;
+  hyphens: none;
+}
+
+@media(max-width:900px){
+  main p:not(.hero-badge):not(.article-meta):not(.updated),
+  main li,
+  .article-wrap p,
+  .article-wrap li,
+  .legal-wrap p,
+  .legal-wrap li,
+  .page-content p,
+  .page-content li,
+  .article-content p,
+  .article-content li,
+  .prose p,
+  .prose li,
+  .content-body p,
+  .content-body li{
+    line-height:1.7;
+  }
+
+  .article-wrap,
+  .legal-wrap,
+  .page-content,
+  .article-content,
+  .prose,
+  .content-body{
+    max-width:100%;
+  }
+}
+
+@media(max-width:560px){
+  main p:not(.hero-badge):not(.article-meta):not(.updated),
+  main li,
+  .article-wrap p,
+  .article-wrap li,
+  .legal-wrap p,
+  .legal-wrap li,
+  .page-content p,
+  .page-content li,
+  .article-content p,
+  .article-content li,
+  .prose p,
+  .prose li,
+  .content-body p,
+  .content-body li{
+    line-height:1.65;
+  }
+
+  .article-wrap p,
+  .article-wrap li,
+  .legal-wrap p,
+  .legal-wrap li{
+    font-size:15px;
+  }
+
+  .legal-page{
+    padding-top:52px;
+    padding-bottom:70px;
+  }
+}
