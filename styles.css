@@ -560,3 +560,115 @@ a,
     padding-bottom:70px;
   }
 }
+
+
+/* =========================================================
+   Final content audit — long-form justified, UI copy natural
+   ========================================================= */
+.blog-head p,
+.post p,
+.insights-page .insight-card p,
+.contact-hero p,
+.contact-card > p,
+.contact-info p,
+.contact-info li,
+.portfolio-hero p,
+.case-card > p,
+.case-card li,
+.case-result span,
+.portfolio-architecture > p,
+.process-step p,
+.service-card > p,
+.service-card li,
+.product-card > p,
+.product-list li,
+.question p,
+.premium-preview p,
+.disclaimer{
+  text-align:left!important;
+  hyphens:none;
+}
+
+.article-wrap p,
+.article-wrap li,
+.legal-wrap p,
+.legal-wrap li,
+.article-content p,
+.article-content li,
+.page-content p,
+.page-content li,
+.prose p,
+.prose li,
+.content-body p,
+.content-body li{
+  text-align:justify!important;
+  text-justify:inter-word;
+  hyphens:auto;
+}
+
+.article-wrap .callout,
+.article-wrap .source-list,
+.legal-wrap ul,
+.legal-wrap ol{
+  text-align:left;
+  hyphens:none;
+}
+
+.article-wrap .source-list li{
+  text-align:left!important;
+}
+
+.blog-head,
+.contact-hero,
+.portfolio-hero{
+  max-width:820px;
+}
+
+.blog-head p,
+.contact-hero p,
+.portfolio-hero p{
+  max-width:760px;
+}
+
+.post,
+.insight-card,
+.case-card,
+.service-card,
+.product-card,
+.question{
+  text-align:left;
+}
+
+.post h2,
+.insight-card h2,
+.case-card h2,
+.service-card h2,
+.product-card h2,
+.question h3{
+  text-align:left;
+}
+
+.footer p,
+.footer span,
+.footer a{
+  text-align:left!important;
+  hyphens:none!important;
+}
+
+@media(max-width:560px){
+  .article-wrap p,
+  .article-wrap li,
+  .legal-wrap p,
+  .legal-wrap li,
+  .article-content p,
+  .article-content li,
+  .page-content p,
+  .page-content li,
+  .prose p,
+  .prose li,
+  .content-body p,
+  .content-body li{
+    text-align:justify!important;
+    line-height:1.65;
+  }
+}
