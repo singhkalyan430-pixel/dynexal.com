@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Business Central AL transaction management guide covering COMMIT, write transactions, database locks, deadlocks, concurrency, error handling and practical performance patterns.">
+<meta name="author" content="Dynexal Technologies">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-al-transactions-commit-locks-deadlocks.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-al-transactions-commit-locks-deadlocks.html">
+<meta property="og:title" content="Business Central AL Transactions: COMMIT, Locks & Deadlocks">
+<meta property="og:description" content="A practical guide to AL transaction boundaries, COMMIT, database locking, deadlocks, concurrency and safe transaction design.">
+<meta property="og:site_name" content="Dynexal Technologies">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central AL Transactions: COMMIT, Locks & Deadlocks">
+<meta name="twitter:description" content="Understand transaction behavior, COMMIT, locking and concurrency in Business Central AL.">
+<title>Business Central AL Transactions: COMMIT, Locks & Deadlocks | Dynexal</title>
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"TechArticle",
+ "headline":"Business Central AL Transactions: COMMIT, Locks & Deadlocks",
+ "description":"A practical guide to AL transaction boundaries, COMMIT, database locking, deadlocks, concurrency and safe transaction design.",
+ "author":{"@type":"Organization","name":"Dynexal Technologies"},
+ "publisher":{"@type":"Organization","name":"Dynexal Technologies","url":"https://dynexal.com/"},
+ "mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-al-transactions-commit-locks-deadlocks.html"},
+ "url":"https://dynexal.com/articles/business-central-al-transactions-commit-locks-deadlocks.html",
+ "datePublished":"2026-10-03",
+ "dateModified":"2026-10-03",
+ "inLanguage":"en"
+}
+</script>
+<link rel="stylesheet" href="../styles.css?v=20260927-mobileqa2">
+<link rel="stylesheet" href="../nav-plain.css?v=20260927-mobileqa5">
+<style>
+.article-page{background:#f7faff;padding:60px 0 100px}.article-wrap{max-width:900px;margin:auto;background:#fff;border:1px solid #dce6f0;border-radius:22px;padding:42px;box-shadow:0 18px 45px rgba(18,43,70,.08)}.article-kicker{color:#087fe9;font-size:12px;font-weight:800;letter-spacing:.08em}.article-wrap h1{font-size:clamp(34px,5vw,52px);line-height:1.08;color:#10233d;margin:12px 0 18px}.article-meta{color:#6a7a8e;font-size:14px;margin-bottom:30px}.article-wrap h2{color:#142238;font-size:28px;margin:38px 0 14px}.article-wrap h3{color:#142238;font-size:21px;margin:28px 0 10px}.article-wrap p,.article-wrap li{color:#4e6075;line-height:1.8;font-size:16px}.article-wrap ul,.article-wrap ol{padding-left:24px}.article-wrap strong{color:#263c55}.callout{background:#eef7ff;border-left:4px solid #087fe9;padding:18px 20px;border-radius:10px;margin:24px 0;color:#31475f}.tip{background:#f6f9fc;border:1px solid #dfe8f1;padding:18px 20px;border-radius:10px;margin:24px 0;color:#31475f}.article-wrap pre{background:#0b1220;color:#dbe6f5;padding:22px;border-radius:12px;overflow:auto;margin:24px 0}.article-wrap pre code{color:#dbe6f5;font-size:14px;line-height:1.7}.source-list a,.article-nav a{color:#087fe9}.article-footer{margin-top:40px;padding-top:24px;border-top:1px solid #e2e9f1;color:#718095;font-size:13px}@media(max-width:600px){.article-page{padding:35px 0 70px}.article-wrap{padding:25px 20px;border-radius:16px}.article-wrap h2{font-size:24px}.article-wrap p,.article-wrap li{font-size:15px}.article-wrap pre{padding:17px}.article-wrap pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+
+<main class="article-page"><article class="article-wrap">
+<div class="article-kicker">DYNEXAL GUIDE • AL PERFORMANCE &amp; DATABASE</div>
+<h1>Business Central AL Transactions: COMMIT, Locks &amp; Deadlocks</h1>
+<div class="article-meta">Article #38 · Published: October 3, 2026 · AL Development · 12–15 min read</div>
+
+<p>Transaction handling is one of the most important topics for an experienced Business Central developer. A procedure can produce the correct result in a small test environment and still create blocking, inconsistent intermediate states or deadlocks when many users and background processes execute it at the same time.</p>
+
+<div class="callout"><strong>Core idea:</strong> let Business Central manage the normal transaction boundary automatically, and use explicit transaction control only when the business process genuinely requires multiple write transactions.</div>
+
+<h2>1. What is a transaction in Business Central?</h2>
+<p>A transaction is a unit of database work. During AL execution, when a write operation requires a transaction, the runtime automatically starts one. When execution completes, the transaction is normally ended and the updates are committed.</p>
+<p>Microsoft documents that <code>Database.Commit()</code> ends the current write transaction. If code needs multiple write transactions during one execution, an explicit <code>Commit()</code> separates those transaction boundaries.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/database/database-commit-method" target="_blank" rel="noopener">Microsoft Learn — Database.Commit() Method</a></p>
+
+<h2>2. Automatic transaction behavior</h2>
+<p>Consider a simple operation:</p>
+<pre><code>Customer.Get('10000');
+Customer."Credit Limit (LCY)" := 50000;
+Customer.Modify();</code></pre>
+<p>You normally do not need to call <code>Commit()</code> just to save this change. The AL runtime manages the transaction created by the write operation.</p>
+
+<div class="tip"><strong>Interview point:</strong> when asked about COMMIT, first explain the default transaction behavior. Then explain that explicit COMMIT is used to deliberately end the current write transaction and start a new transaction later in the same execution.</div>
+
+<h2>3. What does COMMIT actually do?</h2>
+<p><code>Database.Commit()</code> ends the current write transaction. This is important because everything written before the commit belongs to the transaction that is being ended, while subsequent writes can belong to another transaction.</p>
+<pre><code>InsertRecordA();
+
+Database.Commit();
+
+InsertRecordB();</code></pre>
+<p>This creates two transaction phases. The first phase is committed before the second begins.</p>
+
+<h2>4. Why unnecessary COMMIT can be dangerous</h2>
+<p>A common mistake is adding <code>Commit()</code> whenever a developer wants to “make sure the record is saved.” This can change the atomicity of the process.</p>
+<p>Imagine an operation that creates a header, creates lines and finally posts a document. If you commit halfway through and a later step fails, the earlier changes may already be permanent. Without that intermediate commit, the whole operation can remain within one transaction boundary and fail as one unit.</p>
+<pre><code>CreateHeader();
+CreateLines();
+
+// Avoid an unnecessary COMMIT here
+PostDocument();</code></pre>
+<p>The correct boundary depends on the business requirement. The question is not “Where can I put COMMIT?” but “Which changes must be permanently committed before the next independent phase starts?”</p>
+
+<h2>5. COMMIT and long-running processes</h2>
+<p>There are cases where a large process intentionally uses smaller transaction units. For example, a background process may process thousands of independent records. Keeping every update in one enormous transaction can increase the amount of work and locks held together.</p>
+<pre><code>if Item.FindSet() then
+    repeat
+        ProcessItem(Item);
+        Database.Commit();
+    until Item.Next() = 0;</code></pre>
+<p>However, this pattern changes failure semantics: records processed before a commit can remain committed even if a later record fails. It should therefore be used only when each unit can safely succeed independently.</p>
+
+<div class="callout"><strong>Design rule:</strong> transaction size is a business decision as much as a performance decision. Smaller transactions can reduce lock duration, but they can also reduce all-or-nothing behavior.</div>
+
+<h2>6. Database locks in AL</h2>
+<p>When AL updates data, the database may take locks so concurrent processes do not modify the same data in conflicting ways. Microsoft notes that locking can become a performance issue when processes wait for other processes to release resources.</p>
+<p>The practical goal is to keep the time and scope of locks as small as the business process allows.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/performance/performance-developer" target="_blank" rel="noopener">Microsoft Learn — Performance articles for developers</a></p>
+
+<h2>7. Record.LockTable()</h2>
+<p><code>Record.LockTable()</code> explicitly requests update locking for subsequent reads against the table of the record variable until the transaction is committed. This should be used deliberately, not as a general-purpose performance fix.</p>
+<pre><code>Item.LockTable();
+
+if Item.Get('1000') then begin
+    Item.Inventory := Item.Inventory + 10;
+    Item.Modify();
+end;</code></pre>
+<p>Microsoft recommends delaying explicit locking as much as practical so that only data actually within the update scope is locked.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/performance/performance-developer" target="_blank" rel="noopener">Microsoft Learn — Reducing database locking</a></p>
+
+<h2>8. How to reduce lock duration</h2>
+<ul>
+<li>Read setup and configuration information before starting a write-heavy phase.</li>
+<li>Perform validation before acquiring locks where possible.</li>
+<li>Keep business logic inside the transaction focused.</li>
+<li>Avoid slow external HTTP calls while holding database locks.</li>
+<li>Do not hold a lock while waiting for user interaction.</li>
+<li>Use appropriate keys and filters so database operations are efficient.</li>
+<li>Split independent large workloads into safe transaction units when the business process permits it.</li>
+</ul>
+<p>Microsoft's performance guidance specifically recommends limiting the time locks are held and limiting transaction size where appropriate.</p>
+
+<h2>9. The integration trap: database transaction + HTTP call</h2>
+<p>One of the most important architectural considerations is avoiding long database transactions around external calls.</p>
+<pre><code>Begin write transaction
+        ↓
+Modify Business Central data
+        ↓
+Call external API  ← network delay
+        ↓
+Wait for response
+        ↓
+Modify more data
+        ↓
+Commit</code></pre>
+<p>An external API can be slow, unavailable or rate-limited. Holding database resources while waiting for an external system can increase contention.</p>
+<p>A safer architecture often separates preparation, external communication and final database updates. The exact pattern depends on whether the operation requires strict atomicity.</p>
+
+<h2>10. What is a deadlock?</h2>
+<p>A deadlock occurs when two or more transactions block each other because each transaction holds a resource that another transaction needs. SQL Server can resolve a deadlock by terminating one of the transactions and rolling it back.</p>
+<p>For example:</p>
+<pre><code>Transaction A                  Transaction B
+------------                   ------------
+Locks Customer                 Locks Sales Header
+Needs Sales Header             Needs Customer
+       │                              │
+       └──────── waiting ─────────────┘
+                    ↓
+                DEADLOCK</code></pre>
+<p>Microsoft provides deadlock monitoring and telemetry to help identify the AL object, method and database resources involved.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/administration/monitor-database-deadlocks" target="_blank" rel="noopener">Microsoft Learn — Monitoring SQL Database Deadlocks</a></p>
+
+<h2>11. How to design to reduce deadlocks</h2>
+<h3>Use a consistent access order</h3>
+<p>If two processes need the same tables, accessing them in a consistent logical order can reduce circular waiting.</p>
+
+<h3>Keep transactions short</h3>
+<p>The longer a transaction holds resources, the greater the opportunity for another process to collide with it.</p>
+
+<h3>Avoid unnecessary LockTable calls</h3>
+<p>Explicit locking should correspond to a real concurrency requirement. It should not be added simply because a process occasionally experiences a performance problem.</p>
+
+<h3>Do not mix unrelated work in one transaction</h3>
+<p>Unrelated calculations, external calls and large loops can unnecessarily increase the lifetime of the transaction.</p>
+
+<h2>12. Error handling and transactions</h2>
+<p>Error handling must be designed together with transaction behavior. A developer should understand which changes are still part of the current transaction and which changes have already been committed.</p>
+<p>Try methods are another special case. Microsoft documents that database changes made by a try method aren't rolled back. For Business Central on-premises, database write transactions inside try methods are restricted by default and can produce a runtime error unless the server configuration allows them.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-handling-errors-using-try-methods" target="_blank" rel="noopener">Microsoft Learn — Handling errors using try methods</a></p>
+
+<div class="tip"><strong>Important:</strong> do not assume that wrapping code in a try method gives you automatic database rollback. Transaction behavior and error handling must be considered separately.</div>
+
+<h2>13. A practical transaction design pattern</h2>
+<pre><code>Validate input
+      ↓
+Read setup / configuration
+      ↓
+Prepare data
+      ↓
+Start focused write phase
+      ↓
+Update related records
+      ↓
+Finish transaction
+      ↓
+Run independent next phase</code></pre>
+<p>This structure makes transaction boundaries easier to reason about. Validation and read-only preparation can often happen before the critical write section, while the write phase can remain as small and deterministic as practical.</p>
+
+<h2>14. Troubleshooting locks and deadlocks</h2>
+<p>When users report that a page is slow or an operation occasionally fails, do not immediately add COMMIT or LockTable. First determine what is actually happening.</p>
+<ul>
+<li>Identify the AL operation and object involved.</li>
+<li>Check whether multiple sessions are processing the same records.</li>
+<li>Review database lock information when available.</li>
+<li>Use the Performance Profiler and debugging tools to find slow operations.</li>
+<li>Inspect telemetry for long-running queries and deadlock information.</li>
+<li>Look for external calls or unnecessary work inside write transactions.</li>
+</ul>
+<p>Business Central's troubleshooting guidance includes tools for investigating performance issues, database locks, events, permissions and AL debugging.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-troubleshooting-overview" target="_blank" rel="noopener">Microsoft Learn — Troubleshooting tools and guides overview</a></p>
+
+<h2>15. Interview questions you should be ready for</h2>
+<ul>
+<li><strong>What is a transaction in Business Central?</strong> Explain the unit of database work and the runtime-managed default behavior.</li>
+<li><strong>Why do we use Database.Commit()?</strong> To explicitly end the current write transaction and create a new transaction boundary for subsequent writes.</li>
+<li><strong>Why should COMMIT not be used everywhere?</strong> It can break the intended atomicity of a business operation.</li>
+<li><strong>What is Record.LockTable()?</strong> It requests update locking for subsequent reads against the table involved until the transaction is committed.</li>
+<li><strong>What is a deadlock?</strong> Two or more transactions wait on resources held by each other, creating circular blocking.</li>
+<li><strong>How do you reduce deadlocks?</strong> Keep transactions short, reduce unnecessary locks, use consistent access patterns and investigate the actual contention.</li>
+<li><strong>Should an HTTP call happen inside a write transaction?</strong> Avoid it when possible because network latency can unnecessarily extend the transaction and lock lifetime.</li>
+<li><strong>Does a TryFunction automatically roll back database changes?</strong> No. Microsoft explicitly documents that changes made by a try method aren't rolled back.</li>
+</ul>
+
+<h2>16. Practical checklist for production AL code</h2>
+<ul>
+<li>Do I really need an explicit <code>Commit()</code>?</li>
+<li>What must be atomic in this business process?</li>
+<li>Can validation happen before the write phase?</li>
+<li>Am I holding locks while doing slow work?</li>
+<li>Could an external API call be moved outside the critical transaction?</li>
+<li>Can two background jobs touch the same records concurrently?</li>
+<li>Is the transaction too large for the workload?</li>
+<li>Have I considered failure behavior after every explicit commit?</li>
+<li>Can the problem be measured with profiler or telemetry before changing the locking strategy?</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>Strong Business Central development requires more than knowing AL syntax. Understanding transactions, COMMIT, locks and deadlocks helps you build extensions that behave predictably under concurrent workloads.</p>
+<p>The key is to make transaction boundaries intentional: preserve atomic business operations where required, keep locks short, avoid unnecessary explicit locking, and separate slow external work from critical database updates whenever the architecture permits it.</p>
+
+<h2>Sources &amp; references</h2>
+<ul class="source-list">
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/database/database-commit-method" target="_blank" rel="noopener">Microsoft Learn — Database.Commit() Method</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/performance/performance-developer" target="_blank" rel="noopener">Microsoft Learn — Performance articles for developers</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/administration/monitor-database-deadlocks" target="_blank" rel="noopener">Microsoft Learn — Monitoring SQL Database Deadlocks</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-handling-errors-using-try-methods" target="_blank" rel="noopener">Microsoft Learn — Handling errors using try methods</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-troubleshooting-overview" target="_blank" rel="noopener">Microsoft Learn — Troubleshooting tools and guides overview</a></li>
+</ul>
+
+<div class="article-footer">Business Central transaction and locking behavior can depend on application/runtime version and deployment architecture. Verify the documentation and target environment before applying a concurrency pattern in production.</div>
+<div class="article-nav"><a href="../articles.html">← Back to Dynexal Insights</a></div>
+</article></main>
+
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js?v=20260927-mobileqa5"></script>
+<script id="dynexal-nav-href-fix">
+(function(){document.querySelectorAll('.dropdown-menu a').forEach(function(a){var href=a.getAttribute('href');if(!href||href[0]=='/'||href[0]=='#'||/^[a-z][a-z0-9+.-]*:/i.test(href))return;a.setAttribute('href','/'+href.replace(/^\.\//,'') );});})();
+</script>
+</body>
+</html>
