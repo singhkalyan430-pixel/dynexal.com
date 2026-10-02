@@ -274,7 +274,13 @@ BC DB  Validation  Secure API
 <footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span>© 2026 Dynexal</span></div></footer>
 <script src="../script.js?v=20260927-mobileqa5"></script>
 <script id="dynexal-nav-href-fix">
-(function(){document.querySelectorAll('.dropdown-menu a').forEach(function(a){var href=a.getAttribute('href');if(!href||href[0]=='/'||href[0]=='#'||/^[a-z][a-z0-9+.-]*:/i.test(href))return;a.setAttribute('href','/'+href.replace(/^\.\//,''));});})();
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
 </script>
 </body>
 </html>
