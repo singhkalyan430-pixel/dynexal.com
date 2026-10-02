@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Microsoft has released Business Central 2025 release wave 2 Update 27.12 for on-premises. Here are the build numbers, what developers should check, and why the update matters.">
+<meta name="author" content="Dynexal Technologies">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-update-27-12-october-2026.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-update-27-12-october-2026.html">
+<meta property="og:title" content="Business Central Update 27.12 Released: What Developers Should Check">
+<meta property="og:description" content="A practical look at Microsoft's October 2026 Business Central 2025 release wave 2 Update 27.12 for on-premises environments.">
+<meta property="og:site_name" content="Dynexal Technologies">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central Update 27.12 Released: What Developers Should Check">
+<meta name="twitter:description" content="Build numbers, hotfixes and practical checks for Business Central 27.x developers.">
+<title>Business Central Update 27.12 Released: What Developers Should Check | Dynexal</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"NewsArticle","headline":"Business Central Update 27.12 Released: What Developers Should Check","description":"A practical look at Microsoft's October 2026 Business Central 2025 release wave 2 Update 27.12 for on-premises environments.","datePublished":"2026-10-03","dateModified":"2026-10-03","author":{"@type":"Organization","name":"Dynexal Technologies"},"publisher":{"@type":"Organization","name":"Dynexal Technologies","url":"https://dynexal.com/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-update-27-12-october-2026.html"}}
+</script>
+<link rel="stylesheet" href="../styles.css?v=20260927-mobileqa2">
+<link rel="stylesheet" href="../nav-plain.css?v=20260927-mobileqa5">
+<style>
+.article-page{background:#f7faff;padding:60px 0 100px}.article-wrap{max-width:900px;margin:auto;background:#fff;border:1px solid #dce6f0;border-radius:22px;padding:42px;box-shadow:0 18px 45px rgba(18,43,70,.08)}.news-label{display:inline-block;background:#eaf4ff;color:#087fe9;border-radius:999px;padding:7px 12px;font-size:12px;font-weight:800;letter-spacing:.06em}.article-wrap h1{font-size:clamp(34px,5vw,52px);line-height:1.08;color:#10233d;margin:16px 0}.meta{color:#708198;font-size:14px;margin-bottom:28px}.article-wrap h2{color:#142238;font-size:28px;margin:38px 0 14px}.article-wrap p,.article-wrap li{color:#4e6075;line-height:1.8;font-size:16px}.article-wrap ul{padding-left:24px}.article-wrap li{margin:8px 0}.fact{background:#f4f8fc;border:1px solid #dce6f0;border-radius:14px;padding:18px 20px;margin:25px 0}.fact strong{color:#142238}.note{background:#eef7ff;border-left:4px solid #087fe9;padding:18px 20px;border-radius:10px;margin:25px 0}.article-wrap a{color:#087fe9}.source-list{padding-left:24px}.article-footer{border-top:1px solid #e2e9f1;margin-top:40px;padding-top:24px;color:#718095;font-size:13px}@media(max-width:600px){.article-wrap{padding:25px 20px;border-radius:16px}.article-page{padding:35px 0 70px}.article-wrap h2{font-size:24px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+
+<main class="article-page"><article class="article-wrap">
+<span class="news-label">LATEST BUSINESS CENTRAL NEWS</span>
+<h1>Business Central Update 27.12 Released: What Developers Should Check</h1>
+<div class="meta">October 3, 2026 · Business Central 2025 release wave 2 · On-premises</div>
+
+<p>Microsoft has published <strong>Update 27.12</strong> for Dynamics 365 Business Central 2025 release wave 2. The update is listed for October 2026 and is the latest cumulative update currently shown in Microsoft's release list for the 27.x on-premises line.</p>
+
+<div class="fact"><strong>Build details</strong><br>
+Application Build: <strong>27.12.55425</strong><br>
+Platform Build: <strong>27.0.55363</strong><br>
+Knowledge Base: <strong>5130860</strong>
+</div>
+
+<p>For teams still running Business Central 27.x on-premises, this is the update worth checking before planning another maintenance window. Microsoft describes cumulative updates as containing the hotfixes and regulatory features released in previous cumulative updates as well. citeturn1search0</p>
+
+<h2>What stands out for developers?</h2>
+
+<p>The update is not a new major version. That distinction matters. An update such as 27.12 is mainly a cumulative maintenance release, so the practical work for a developer is usually around compatibility, regression testing and making sure custom extensions and integrations continue to behave correctly.</p>
+
+<p>Microsoft's published 27.x update history includes fixes across platform, application, integration and security-related areas. Earlier 27.x updates, for example, included changes around web request security, authentication URL handling, task execution and Shopify API compatibility. citeturn1search1</p>
+
+<h2>If you are running Business Central 27.x on-premises</h2>
+
+<p>Before applying the update to a production environment, I would check these items first:</p>
+<ul>
+<li>Record the current application and platform build.</li>
+<li>Take a tested database backup and confirm the recovery procedure.</li>
+<li>Check installed extensions and their compatibility with the target build.</li>
+<li>Test custom APIs, HttpClient integrations and authentication flows.</li>
+<li>Run the important posting, report and document scenarios used by the business.</li>
+<li>Test Job Queue and scheduled background processes.</li>
+<li>Check web client, service tier and authentication configuration after the upgrade.</li>
+<li>Review third-party extensions before the production maintenance window.</li>
+</ul>
+
+<div class="note"><strong>One important point:</strong> Microsoft recommends checking compatibility with customizations and third-party products before installing updates. That matters especially for on-premises environments where the customer controls the application stack. citeturn1search4</div>
+
+<h2>What about developers working on AL extensions?</h2>
+
+<p>Do not assume that a cumulative update means “nothing to test.” A platform hotfix can affect behavior around APIs, tasks, permissions, web requests, reports or client functionality even when your own AL code has not changed.</p>
+
+<p>A sensible approach is to publish your extension to a test environment first, compile it against the target symbols, run automated tests if available, and then perform a short business-process regression test.</p>
+
+<h2>One more thing: version 28 and the 2026 wave</h2>
+
+<p>Microsoft's current update pages also show the separate Business Central 2026 release wave 1 line, with Update 28.5 listed for September 2026. At the same time, version 29.0 is shown as a preview for the 2026 release wave 2. citeturn1search2turn0search1</p>
+
+<p>So organizations should distinguish between maintaining an existing 27.x environment and planning a major-version upgrade. Those are different projects with different testing and compatibility considerations.</p>
+
+<h2>AI and Business Central are moving in parallel</h2>
+
+<p>Another current direction is Microsoft's expansion of agent capabilities in Business Central. Microsoft's roadmap lists an agent design experience for October 2026 general availability, while the enhanced MCP work is aimed at connecting AI agents to Business Central data and APIs with stronger validation, telemetry and authentication support. citeturn0search3turn0search7</p>
+
+<p>For AL developers, that makes API design, permissions, authentication, telemetry and clean business logic increasingly relevant even when the immediate task is a normal extension.</p>
+
+<h2>Bottom line for a 27.x developer</h2>
+
+<p>If your environment is on Business Central 27.x, Update 27.12 is worth putting on the maintenance checklist. The important part is not simply installing the latest build; it is verifying the applications, extensions and integrations that your environment actually depends on.</p>
+
+<p><strong>Source:</strong> Microsoft Support's released-updates page for Business Central 2025 release wave 2 lists Update 27.12, October 2026, Application Build 27.12.55425 and Platform Build 27.0.55363. citeturn1search0</p>
+
+<h2>Official references</h2>
+<ul class="source-list">
+<li><a href="https://support.microsoft.com/en-us/servicing/dynamics/business-central/released-updates-for-microsoft-dynamics-365-business-central-2025-release-wave-2" target="_blank" rel="noopener">Microsoft Support — Released Updates for Business Central 2025 release wave 2</a></li>
+<li><a href="https://support.microsoft.com/en-us/servicing/dynamics/business-central/update-history-for-microsoft-dynamics-365-business-central" target="_blank" rel="noopener">Microsoft Support — Business Central update history</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/whatsnew/overview" target="_blank" rel="noopener">Microsoft Learn — What's new or changed in Business Central</a></li>
+</ul>
+
+<div class="article-footer">This update note reflects Microsoft's published information available on October 3, 2026. Always validate the target build, localization and installed extensions before applying an on-premises update.</div>
+<p><a href="../articles.html">← Back to Dynexal Insights</a></p>
+</article></main>
+
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span>Learn. Build. Integrate.</span><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js?v=20260927-mobileqa5"></script>
+</body>
+</html>
