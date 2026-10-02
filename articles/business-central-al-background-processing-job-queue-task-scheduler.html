@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Business Central AL background processing guide covering Job Queue, Task Scheduler, StartSession and Page Background Tasks, with design patterns, errors, permissions and performance tips.">
+<meta name="author" content="Dynexal Technologies">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-al-background-processing-job-queue-task-scheduler.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-al-background-processing-job-queue-task-scheduler.html">
+<meta property="og:title" content="Business Central AL Background Processing: Job Queue & Task Scheduler">
+<meta property="og:description" content="Practical guide to asynchronous AL processing with Job Queue, Task Scheduler, StartSession and Page Background Tasks.">
+<meta property="og:site_name" content="Dynexal Technologies">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central AL Background Processing: Job Queue & Task Scheduler">
+<meta name="twitter:description" content="Learn when to use Job Queue, Task Scheduler, StartSession and Page Background Tasks in Business Central.">
+<title>Business Central AL Background Processing: Job Queue & Task Scheduler | Dynexal</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Business Central AL Background Processing: Job Queue & Task Scheduler","description":"Practical guide to asynchronous AL processing with Job Queue, Task Scheduler, StartSession and Page Background Tasks.","author":{"@type":"Organization","name":"Dynexal Technologies"},"publisher":{"@type":"Organization","name":"Dynexal Technologies","url":"https://dynexal.com/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-al-background-processing-job-queue-task-scheduler.html"},"url":"https://dynexal.com/articles/business-central-al-background-processing-job-queue-task-scheduler.html","datePublished":"2026-10-03","dateModified":"2026-10-03","inLanguage":"en"}
+</script>
+<link rel="stylesheet" href="../styles.css?v=20260927-mobileqa2">
+<link rel="stylesheet" href="../nav-plain.css?v=20260927-mobileqa5">
+<style>
+.article-page{background:#f7faff;padding:60px 0 100px}.article-wrap{max-width:900px;margin:auto;background:#fff;border:1px solid #dce6f0;border-radius:22px;padding:42px;box-shadow:0 18px 45px rgba(18,43,70,.08)}.article-kicker{color:#087fe9;font-size:12px;font-weight:800;letter-spacing:.08em}.article-wrap h1{font-size:clamp(34px,5vw,52px);line-height:1.08;color:#10233d;margin:12px 0 18px}.article-meta{color:#6a7a8e;font-size:14px;margin-bottom:30px}.article-wrap h2{color:#142238;font-size:28px;margin:38px 0 14px}.article-wrap h3{color:#142238;font-size:21px;margin:28px 0 10px}.article-wrap p,.article-wrap li{color:#4e6075;line-height:1.8;font-size:16px}.article-wrap ul,.article-wrap ol{padding-left:24px}.article-wrap strong{color:#263c55}.callout{background:#eef7ff;border-left:4px solid #087fe9;padding:18px 20px;border-radius:10px;margin:24px 0;color:#31475f}.tip{background:#f6f9fc;border:1px solid #dfe8f1;padding:18px 20px;border-radius:10px;margin:24px 0;color:#31475f}.article-wrap pre{background:#0b1220;color:#dbe6f5;padding:22px;border-radius:12px;overflow:auto;margin:24px 0}.article-wrap pre code{color:#dbe6f5;font-size:14px;line-height:1.7}.source-list a,.article-nav a{color:#087fe9}.article-footer{margin-top:40px;padding-top:24px;border-top:1px solid #e2e9f1;color:#718095;font-size:13px}@media(max-width:600px){.article-page{padding:35px 0 70px}.article-wrap{padding:25px 20px;border-radius:16px}.article-wrap h2{font-size:24px}.article-wrap p,.article-wrap li{font-size:15px}.article-wrap pre{padding:17px}.article-wrap pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+
+<main class="article-page"><article class="article-wrap">
+<div class="article-kicker">DYNEXAL GUIDE • AL ASYNC PROCESSING</div>
+<h1>Business Central AL Background Processing: Job Queue &amp; Task Scheduler</h1>
+<div class="article-meta">Article #39 · Published: October 3, 2026 · AL Development · 12–15 min read</div>
+
+<p>Business Central applications often need to process work without making the user wait. Large synchronizations, recurring integrations, scheduled calculations, notifications and maintenance tasks are good candidates for asynchronous processing.</p>
+
+<div class="callout"><strong>Architecture principle:</strong> choose the background mechanism based on the business requirement. Job Queue is designed for user-managed scheduled work, Task Scheduler gives AL code direct scheduling control, StartSession creates a background session immediately, and Page Background Tasks are designed for read-only work associated with a page.</div>
+
+<h2>1. Why background processing matters</h2>
+<p>Running a long process directly from a page action can keep the user's session busy and make the application feel slow. Microsoft recommends asynchronous patterns when work can be moved away from the UI thread, including Job Queue, Task Scheduler, StartSession and Page Background Tasks.</p>
+<p>For example, a Shopify synchronization that processes thousands of records should generally not require the user to keep a page open while every record is processed.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/performance/performance-developer" target="_blank" rel="noopener">Microsoft Learn — Performance article for developers</a></p>
+
+<h2>2. The four common async choices</h2>
+<pre><code>Need recurring user-managed work?
+        │
+        ├── Yes → Job Queue
+        │
+Need AL-controlled scheduled execution?
+        │
+        ├── Yes → Task Scheduler
+        │
+Need a background session immediately?
+        │
+        ├── Yes → StartSession
+        │
+Need read-only page computation?
+        │
+        └── Yes → Page Background Task</code></pre>
+
+<h3>Job Queue</h3>
+<p>Job Queue provides an application-level way for users to view, create and modify recurring background jobs. It is a strong choice for recurring business processes such as synchronization, imports, exports and scheduled calculations.</p>
+<p>Microsoft describes Job Queue as an abstraction built on the platform Task Scheduler.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-job-queue" target="_blank" rel="noopener">Microsoft Learn — Job Queue</a></p>
+
+<h3>Task Scheduler</h3>
+<p>Task Scheduler lets AL code schedule a codeunit to run at a specified date and time. It can also use a failure codeunit and optionally specify a company, earliest execution time and record context.</p>
+<pre><code>TaskId := TaskScheduler.CreateTask(
+    CodeUnit::"My Background Worker",
+    CodeUnit::"My Task Failure Handler",
+    true,
+    CompanyName,
+    CurrentDateTime + 60000);</code></pre>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-task-scheduler" target="_blank" rel="noopener">Microsoft Learn — Task Scheduler</a></p>
+
+<h3>StartSession</h3>
+<p><code>StartSession</code> starts code in a separate background session. It can be useful when the application needs to launch work without waiting for the called code to finish in the current user session. It is less controlled than a page background task and is not a replacement for recurring Job Queue scheduling.</p>
+
+<h3>Page Background Task</h3>
+<p>Page Background Tasks are designed for read-only computations associated with a page. They run in a child session and return results to the parent page session. They cannot write to or lock the database.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-page-background-tasks" target="_blank" rel="noopener">Microsoft Learn — Page Background Tasks</a></p>
+
+<h2>3. Job Queue architecture</h2>
+<pre><code>User / Admin
+     │
+     ▼
+Job Queue Entry
+     │
+     ▼
+Task Scheduler
+     │
+     ▼
+Background Session
+     │
+     ▼
+Processing Codeunit
+     │
+ ┌───┴────┐
+ ▼        ▼
+Success  Error / Retry
+     │
+     ▼
+Telemetry / Logs</code></pre>
+<p>The Job Queue entry contains scheduling information and identifies the object to run. The platform executes the work in a background session and the job queue lifecycle can be observed through status and telemetry.</p>
+
+<h2>4. Design a Job Queue codeunit correctly</h2>
+<p>A job queue codeunit should be focused on one background process. Avoid putting unrelated business processes into a single codeunit simply because the Job Queue can execute it.</p>
+<pre><code>codeunit 50100 "Customer Sync Job"
+{
+    trigger OnRun()
+    var
+        SyncService: Codeunit "Customer Sync Service";
+    begin
+        SyncService.Run();
+    end;
+}</code></pre>
+<p>The orchestration codeunit can delegate the actual business work to a reusable service. This keeps the same business logic available to a page action, API or test where appropriate.</p>
+
+<h2>5. Never assume a background session has UI</h2>
+<p>A scheduled task runs without a user interface. Code that works from a page can fail in a background session if it expects dialogs, confirmations or other UI interaction.</p>
+<pre><code>if GuiAllowed() then
+    Message('Synchronization completed.');</code></pre>
+<p>For background processing, prefer logging, notifications through appropriate application patterns, job queue status, telemetry or stored processing results rather than interactive messages.</p>
+<p>Microsoft specifically documents <code>GuiAllowed()</code> as useful when the same code can run in the UI, background tasks or web service calls.</p>
+
+<h2>6. Permissions in background processing</h2>
+<p>Background execution does not automatically bypass Business Central security. The task runs using the permissions associated with the user or execution context that scheduled or invoked the operation.</p>
+<p>Therefore, a job that works for an administrator can still fail for a normal operational user because the background codeunit or its related table operations require permissions that user does not have.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-task-scheduler" target="_blank" rel="noopener">Microsoft Learn — Task Scheduler: task sessions and permissions</a></p>
+
+<h2>7. Error handling and retries</h2>
+<p>Background processing needs a deliberate failure strategy. A useful design distinguishes between transient failures and permanent business errors.</p>
+<ul>
+<li><strong>Transient:</strong> temporary database/network/service failure that may succeed on retry.</li>
+<li><strong>Permanent:</strong> invalid setup, missing configuration or invalid business data that requires correction.</li>
+<li><strong>Business rejection:</strong> the external system or Business Central business rule explicitly rejects the operation.</li>
+</ul>
+<p>The Task Scheduler has retriable exception behavior, and Job Queue provides failure and retry behavior through its background processing lifecycle. Do not blindly retry an operation that is not idempotent.</p>
+
+<h2>8. Idempotency is critical</h2>
+<p>Suppose a job sends an order to an external system and the network connection fails after the external system has already accepted the order. A retry could create a duplicate unless the integration has an idempotency strategy.</p>
+<pre><code>Order
+  │
+  ▼
+Create unique external request key
+  │
+  ▼
+Send request
+  │
+  ├── Success → store external ID
+  │
+  └── Timeout → retry safely using same key</code></pre>
+<p>For integrations, store an external reference or unique request identifier where appropriate. A background job should be designed with the possibility that the previous attempt may have completed even when the local session did not receive a successful response.</p>
+
+<h2>9. Avoid overlapping jobs</h2>
+<p>A recurring job can start again while a previous execution is still processing if the schedule and workload are not designed carefully. This can create duplicate work, locking and unnecessary API traffic.</p>
+<p>For high-volume synchronization, consider a processing status, checkpoint, batch identifier or other concurrency-control mechanism that matches the business process.</p>
+
+<h2>10. Keep transactions and external calls separate</h2>
+<p>Background execution does not make transaction design irrelevant. A background job that holds database locks while waiting for an external API can still create contention.</p>
+<pre><code>Read / prepare
+      ↓
+Build request
+      ↓
+External API call
+      ↓
+Validate response
+      ↓
+Focused database update
+      ↓
+Commit</code></pre>
+<p>The exact order depends on the business requirement, but the goal is to avoid holding database resources during unnecessary network latency.</p>
+
+<h2>11. Task Scheduler example</h2>
+<p>Task Scheduler can schedule a codeunit to run after a specified point in time.</p>
+<pre><code>var
+    TaskId: Guid;
+begin
+    TaskId := TaskScheduler.CreateTask(
+        CodeUnit::"AI Analysis Worker",
+        CodeUnit::"AI Analysis Failure",
+        true,
+        CompanyName,
+        CurrentDateTime + 60000);
+end;</code></pre>
+<p>The platform documentation shows that <code>CreateTask</code> accepts the codeunit ID, optional failure codeunit, readiness flag, company, earliest execution time and optional record ID depending on the overload.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/taskscheduler/taskscheduler-createtask-integer-integer-boolean-string-datetime-recordid-method" target="_blank" rel="noopener">Microsoft Learn — TaskScheduler.CreateTask()</a></p>
+
+<h2>12. Page Background Task example</h2>
+<p>When a page needs a read-only calculation that should not block the user, a page background task can enqueue a codeunit and return results through a dictionary.</p>
+<pre><code>var
+    TaskId: Integer;
+    Parameters: Dictionary of [Text, Text];
+begin
+    Parameters.Add('CustomerNo', Rec."No.");
+
+    CurrPage.EnqueueBackgroundTask(
+        TaskId,
+        CodeUnit::"Customer Analysis Task",
+        Parameters,
+        60000,
+        PageBackgroundTaskErrorLevel::Warning);
+end;</code></pre>
+<p>The background codeunit can read data and return a result with <code>SetBackgroundTaskResult</code>. The parent page can handle the result in <code>OnPageBackgroundTaskCompleted</code>.</p>
+<p>Because page background tasks are read-only, they are not suitable for posting documents or modifying application data.</p>
+
+<h2>13. Background tasks and page lifecycle</h2>
+<p>Page background tasks are tied to the parent page and current record. Microsoft documents that the task can be canceled if the page closes or the current record changes. This makes them different from a Job Queue process, which is independent of a user's open page.</p>
+<p>For list pages, enqueueing a task from <code>OnAfterGetRecord</code> requires special care because that trigger executes for multiple records and the current record can change.</p>
+
+<h2>14. Performance considerations</h2>
+<p>Asynchronous processing is not automatically faster. It moves work away from the foreground session, but background workloads still consume database, CPU, memory and external-service capacity.</p>
+<ul>
+<li>Do not schedule polling more frequently than the business need requires.</li>
+<li>Split very large workloads into safe batches.</li>
+<li>Avoid multiple jobs processing the same records.</li>
+<li>Run heavy recurring jobs outside peak user hours when appropriate.</li>
+<li>Measure query and processing time instead of guessing.</li>
+<li>Use telemetry to understand failures and execution duration.</li>
+</ul>
+<p>Microsoft notes that frequently recurring or heavy jobs can affect Business Central performance and can contribute to locking and deadlock issues.</p>
+
+<h2>15. Monitoring and telemetry</h2>
+<p>Production background processing should be observable. Job Queue lifecycle telemetry includes events for enqueueing, starting, finishing, failures and other state changes. Task Scheduler can also be monitored through telemetry and session events.</p>
+<p>This gives operations teams evidence about whether a job actually ran, how it ended and whether failures are recurring.</p>
+<p><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/administration/telemetry-job-queue-lifecycle-trace" target="_blank" rel="noopener">Microsoft Learn — Analyzing Job Queue Lifecycle Trace Telemetry</a></p>
+
+<h2>16. AI + Business Central example</h2>
+<p>For an AI-enabled Business Central application, background processing can separate the user experience from expensive analysis.</p>
+<pre><code>User selects Customer Analysis
+          │
+          ▼
+Create analysis request
+          │
+          ▼
+Background worker
+          │
+    ┌─────┴─────┐
+    ▼           ▼
+Build context  Read BC data
+    │           │
+    └─────┬─────┘
+          ▼
+      AI service
+          │
+          ▼
+Validate response
+          │
+          ▼
+Store analysis result
+          │
+          ▼
+User reviews result</code></pre>
+<p>This pattern can be useful for non-interactive AI analysis, provided the application controls the data sent to the model, validates returned content and keeps transaction-changing actions under explicit business rules.</p>
+
+<h2>17. Job Queue vs Task Scheduler vs Page Background Task</h2>
+<table>
+<tr><th>Requirement</th><th>Typical choice</th><th>Why</th></tr>
+<tr><td>Recurring business process configurable by users</td><td>Job Queue</td><td>Designed for scheduled, user-managed jobs</td></tr>
+<tr><td>AL-controlled one-time or scheduled task</td><td>Task Scheduler</td><td>Code controls scheduling</td></tr>
+<tr><td>Immediate independent background session</td><td>StartSession</td><td>Launches background execution</td></tr>
+<tr><td>Read-only computation attached to a page</td><td>Page Background Task</td><td>Child session returns results to the page</td></tr>
+</table>
+
+<h2>18. Interview-ready answer</h2>
+<div class="callout"><strong>Sample answer:</strong> “I choose asynchronous processing based on the requirement. For recurring user-managed processes I prefer Job Queue. If AL needs to schedule a codeunit directly, I can use Task Scheduler. StartSession is useful for independent background execution, while Page Background Tasks are suited to read-only page calculations. I also design background code without UI assumptions, verify permissions, make integrations idempotent, avoid overlapping jobs, keep transactions focused and monitor failures through job status and telemetry.”</div>
+
+<h2>19. Production checklist</h2>
+<ul>
+<li>Is the work really suitable for asynchronous execution?</li>
+<li>Should users control the schedule?</li>
+<li>Can the process safely run more than once?</li>
+<li>Is it idempotent if an external call times out?</li>
+<li>Could two workers process the same records?</li>
+<li>Does the code assume a UI exists?</li>
+<li>Does the execution context have the required permissions?</li>
+<li>Are external calls separated from critical database locks?</li>
+<li>Are failures observable and actionable?</li>
+<li>Is the schedule frequent enough for the business need without creating unnecessary load?</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>Background processing is a core Business Central architecture skill. The right choice is not simply “run it in a Job Queue.” Experienced AL development means selecting the mechanism that matches scheduling, UI dependency, write requirements, concurrency, retry behavior and operational needs.</p>
+<p>For interview preparation, remember the distinction: <strong>Job Queue for scheduled business jobs, Task Scheduler for AL-controlled scheduling, StartSession for background sessions, and Page Background Tasks for read-only page-bound work.</strong></p>
+
+<h2>Sources &amp; references</h2>
+<ul class="source-list">
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-job-queue" target="_blank" rel="noopener">Microsoft Learn — Job Queue</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-task-scheduler" target="_blank" rel="noopener">Microsoft Learn — Task Scheduler</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-page-background-tasks" target="_blank" rel="noopener">Microsoft Learn — Page Background Tasks</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/performance/performance-developer" target="_blank" rel="noopener">Microsoft Learn — Performance article for developers</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/administration/telemetry-job-queue-lifecycle-trace" target="_blank" rel="noopener">Microsoft Learn — Job Queue Lifecycle Trace Telemetry</a></li>
+</ul>
+
+<div class="article-footer">Asynchronous processing capabilities and operational limits can change between Business Central releases. Verify the documentation and target runtime before applying a background-processing pattern in production.</div>
+<div class="article-nav"><a href="../articles.html">← Back to Dynexal Insights</a></div>
+</article></main>
+
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span>© 2026 Dynexal</span></div></footer>
+<script src="../script.js?v=20260927-mobileqa5"></script>
+<script id="dynexal-nav-href-fix">(function(){document.querySelectorAll('.dropdown-menu a').forEach(function(a){var href=a.getAttribute('href');if(!href||href[0]=='/'||href[0]=='#'||/^[a-z][a-z0-9+.-]*:/i.test(href))return;a.setAttribute('href','/'+href.replace(/^\.\//,''));});})();</script>
+</body>
+</html>
