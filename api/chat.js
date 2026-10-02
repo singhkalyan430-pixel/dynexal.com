@@ -1,14 +1,58 @@
 import knowledge from "./knowledge.json" with { type: "json" };
 
+const rateState = new Map();
+const RATE_WINDOW_MS = 60_000;
+const RATE_LIMIT = 12;
+
+function clientIp(req) {
+  return String(req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown").split(",")[0].trim().slice(0, 80) || "unknown";
+}
+
+function rateLimit(req, res) {
+  const now = Date.now();
+  const key = clientIp(req);
+  const entry = rateState.get(key);
+  if (!entry || now - entry.start >= RATE_WINDOW_MS) {
+    rateState.set(key, { start: now, count: 1 });
+    return true;
+  }
+  entry.count += 1;
+  if (entry.count > RATE_LIMIT) {
+    res.setHeader("Retry-After", "60");
+    return false;
+  }
+  return true;
+}
+
+function securityHeaders(res) {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Cache-Control", "no-store");
+}
+
 export default async function handler(req, res) {
-  const allowedOrigins = new Set(["https://dynexal.com", "https://www.dynexal.com", "https://dynexal-ai-assistant.vercel.app"]);
+  securityHeaders(res);
+  const allowedOrigins = new Set([
+  "https://dynexal.com",
+  "https://www.dynexal.com"
+]);
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (allowedOrigins.has(origin)) return true;
+  const previewOrigin = process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "";
+  return previewOrigin === origin;
+}
+
+
   const origin = req.headers.origin || "";
-  if (allowedOrigins.has(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  if (isAllowedOrigin(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (!rateLimit(req, res)) return res.status(429).json({ error: "Too many AI requests. Please wait a minute and try again." });
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) return res.status(500).json({ error: "AI service is not configured." });

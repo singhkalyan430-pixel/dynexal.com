@@ -5,13 +5,38 @@ const allowedOrigins = new Set([
   "https://www.dynexal.com"
 ]);
 
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (allowedOrigins.has(origin)) return true;
+  const previewOrigin = process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "";
+  return previewOrigin === origin;
+}
+
+const rateState = new Map();
+const RATE_WINDOW_MS = 60_000;
+const RATE_LIMIT = 8;
+
+function clientIp(req) {
+  return String(req.headers["x-forwarded-for"] || req.headers["x-real-ip"] || "unknown").split(",")[0].trim().slice(0, 80) || "unknown";
+}
+
+function rateLimit(req, res) {
+  const now = Date.now();
+  const key = clientIp(req);
+  const entry = rateState.get(key);
+  if (!entry || now - entry.start >= RATE_WINDOW_MS) { rateState.set(key, { start: now, count: 1 }); return true; }
+  entry.count += 1;
+  if (entry.count > RATE_LIMIT) { res.setHeader("Retry-After", "60"); return false; }
+  return true;
+}
+
 const PRICE_PAISE = 49900;
 const PRODUCT_NAME = "Dynexal Interview Master — 100 Questions";
 const IS_LIVE_KEY = String(process.env.RAZORPAY_KEY_ID || "").startsWith("rzp_live_");
 
 function setCors(req, res) {
   const origin = req.headers.origin || "";
-  if (allowedOrigins.has(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  if (isAllowedOrigin(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -95,13 +120,33 @@ async function saveVerifiedPurchase({ orderId, paymentId }) {
 }
 
 async function getCapturedPayment(paymentId) {
-  const response = await fetch("https://api.razorpay.com/v1/payments/" + encodeURIComponent(paymentId), { headers: { Authorization: authHeader() } });
+  const response = await fetch("https://api.razorpay.com/v1/payments/" + encodeURIComponent(paymentId), {
+    headers: { Authorization: authHeader() }
+  });
   const payment = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(payment?.error?.description || "Unable to find this Razorpay payment.");
   if (payment.status !== "captured") throw new Error("This Razorpay payment is not captured yet.");
   if (Number(payment.amount) !== PRICE_PAISE) throw new Error("This payment amount does not match the Dynexal Premium Interview Master.");
   if (!payment.order_id) throw new Error("This Razorpay payment is missing its order reference.");
   return payment;
+}
+
+async function getDynexalOrder(orderId) {
+  const response = await fetch("https://api.razorpay.com/v1/orders/" + encodeURIComponent(orderId), {
+    headers: { Authorization: authHeader() }
+  });
+  const order = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(order?.error?.description || "Unable to verify the Razorpay order.");
+  if (Number(order.amount) !== PRICE_PAISE || order.currency !== "INR") {
+    throw new Error("This Razorpay order does not match the Dynexal Premium Interview Master.");
+  }
+  if (String(order.receipt || "").startsWith("dynexal_") === false) {
+    throw new Error("This Razorpay order was not created by Dynexal.");
+  }
+  if (String(order.notes?.product || "") !== PRODUCT_NAME) {
+    throw new Error("This Razorpay order is not for the Dynexal Premium Interview Master.");
+  }
+  return order;
 }
 
 async function verifyPayment({ orderId, paymentId, signature }) {
@@ -135,6 +180,7 @@ export default async function handler(req, res) {
   setCors(req, res);
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
+  if (!rateLimit(req, res)) return res.status(429).json({ error: "Too many payment requests. Please wait a minute and try again." });
 
   const keyId = process.env.RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
@@ -175,11 +221,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Payment verification data is incomplete." });
       }
 
-      const payment = await verifyPayment({
-        orderId,
-        paymentId,
-        signature
-      });
+      const payment = await verifyPayment({ orderId, paymentId, signature });
 
       const purchase = await saveVerifiedPurchase({
         orderId: payment.order_id,
@@ -199,6 +241,7 @@ export default async function handler(req, res) {
       const paymentId = String(body?.payment_id || "").trim();
       if (!/^pay_[A-Za-z0-9]+$/.test(paymentId)) return res.status(400).json({ error: "Enter a valid Razorpay Payment ID starting with pay_." });
       const payment = await getCapturedPayment(paymentId);
+      await getDynexalOrder(payment.order_id);
       const purchase = await saveVerifiedPurchase({ orderId: payment.order_id, paymentId: payment.id });
       if (!purchase?.review_token) throw new Error("Payment was verified, but Premium access could not be saved. Please contact Dynexal support; do not pay again.");
       return res.status(200).json({ verified: true, paymentId: payment.id, orderId: payment.order_id, product: PRODUCT_NAME, reviewToken: purchase.review_token });

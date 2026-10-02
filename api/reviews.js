@@ -3,20 +3,26 @@ const allowedOrigins = new Set([
   "https://www.dynexal.com"
 ]);
 
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (allowedOrigins.has(origin)) return true;
+  const previewOrigin = process.env.VERCEL_URL ? "https://" + process.env.VERCEL_URL : "";
+  return previewOrigin === origin;
+}
+
+
+
 const SUPABASE_URL = String(process.env.SUPABASE_URL || "").replace(/\/$/, "");
 const SERVICE_KEY = String(process.env.SUPABASE_SERVICE_ROLE_KEY || "")
-  .trim()
-  .replace(/^["']+|["']+$/g, "");
-const ADMIN_KEY = String(process.env.ADMIN_REVIEW_KEY || "")
   .trim()
   .replace(/^["']+|["']+$/g, "");
 
 function setCors(req, res) {
   const origin = req.headers.origin || "";
-  if (allowedOrigins.has(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
+  if (isAllowedOrigin(origin)) res.setHeader("Access-Control-Allow-Origin", origin);
   res.setHeader("Vary", "Origin");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Admin-Key");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
 function dbHeaders() {
@@ -35,16 +41,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (req.method === "GET" && req.headers["x-admin-key"] === ADMIN_KEY && ADMIN_KEY) {
-      const response = await fetch(
-        SUPABASE_URL + "/rest/v1/interview_reviews?status=eq.pending&select=id,rating,reviewer_name,comment,source,status,created_at&order=created_at.desc",
-        { headers: dbHeaders() }
-      );
-      const data = await response.json();
-      if (!response.ok) throw new Error("Unable to load pending reviews.");
-      return res.status(200).json({ reviews: data });
-    }
-
     if (req.method === "GET") {
       const response = await fetch(
         SUPABASE_URL + "/rest/v1/interview_reviews?status=eq.approved&select=rating,reviewer_name,comment,created_at&order=created_at.desc",
@@ -60,28 +56,6 @@ export default async function handler(req, res) {
     }
 
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-    if (body?.action && body.action !== "submit") {
-      if (!ADMIN_KEY || req.headers["x-admin-key"] !== ADMIN_KEY) {
-        return res.status(401).json({ error: "Unauthorized." });
-      }
-      const reviewId = String(body?.review_id || "").trim();
-      if (!reviewId) return res.status(400).json({ error: "Review ID is required." });
-      const action = String(body.action).trim();
-      const status = action === "approve" ? "approved" : action === "reject" ? "rejected" : "";
-      if (!status) return res.status(400).json({ error: "Unknown review action." });
-
-      const response = await fetch(
-        SUPABASE_URL + "/rest/v1/interview_reviews?id=eq." + encodeURIComponent(reviewId),
-        {
-          method: "PATCH",
-          headers: { ...dbHeaders(), Prefer: "return=representation" },
-          body: JSON.stringify({ status })
-        }
-      );
-      const data = await response.json();
-      if (!response.ok) throw new Error("Unable to update review.");
-      return res.status(200).json({ updated: true, review: data?.[0] || null });
-    }
     const token = String(body?.review_token || "").trim();
     const reviewerName = String(body?.reviewer_name || "").trim();
     const comment = String(body?.comment || "").trim();
