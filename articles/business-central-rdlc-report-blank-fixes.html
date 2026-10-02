@@ -37,7 +37,14 @@
   <link rel="stylesheet" href="../nav-plain.css?v=20260924-theme5">
 </head>
 <body>
-<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span>Dynexal Technologies</span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="../index.html">Home</a>
+<a href="../tutorials.html">Tutorials</a>
+<a href="../services.html">Services</a>
+<a href="../portfolio.html">Portfolio</a>
+<a href="../index.html#topics">Topics</a>
+<a href="../about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu">☰</button></div></header>
 <main class="article-page"><div class="container article-wrap">
 <section class="article-head"><span class="section-label">REPORTING • TROUBLESHOOTING</span><h1>Business Central RDLC Report Blank: Causes & Fixes</h1><p class="lead">Your Business Central report runs, but the RDLC output is blank or missing expected data? Start with the dataset before changing the layout. This guide walks through the most common causes and a practical troubleshooting sequence.</p><p class="article-meta">By Dynexal · Microsoft Dynamics 365 Business Central · RDLC</p></section>
 <article class="article">
@@ -171,6 +178,15 @@ column(LineAmount; "Line Amount") { }</code></pre>
 <div class="source-links related"><h2>Microsoft Learn references</h2><ul><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-reports-troubleshooting" target="_blank" rel="noopener">Troubleshooting reports in Business Central</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-report-object" target="_blank" rel="noopener">Business Central Report object</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/ui-rdlc-report-layouts" target="_blank" rel="noopener">Working with RDLC layouts</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-howto-rdl-report-layout" target="_blank" rel="noopener">Creating an RDL layout report</a></li></ul></div>
 </article>
 </div></main>
-<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span>Dynexal Technologies</span></a><p>Learn. Build. Integrate.</p><span><a href="../about.html">About</a> · <a href="../services.html">Services</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js?v=20260924-standard1"></script>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span><a href="../about.html">About</a> · <a href="../services.html">Services</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="../script.js?v=20260924-standard1"></script>
+<script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
+</script>
 </body>
 </html>

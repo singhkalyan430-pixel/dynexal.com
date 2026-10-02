@@ -1,2 +1,11 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta http-equiv="refresh" content="0;url=/admin-reviews.html"><title>Dynexal Admin</title>  <link rel="stylesheet" href="/nav-plain.css?v=20260915">
-</head><body><p>Redirecting to the secure Dynexal admin panel…</p><script>location.replace('/admin-reviews.html');</script></body></html>
+</head><body><p>Redirecting to the secure Dynexal admin panel…</p><script>location.replace('/admin-reviews.html');</script><script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
+</script>
+</body></html>

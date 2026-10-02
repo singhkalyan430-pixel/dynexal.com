@@ -14,13 +14,29 @@
 </style>
 </head>
 <body>
-<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="tutorials.html">Tutorials</a><a href="interview-prep.html">Interview Prep</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a><a class="active" href="articles.html" aria-current="page">Insights</a><a href="about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="index.html">Home</a>
+<a href="tutorials.html">Tutorials</a>
+<a href="services.html">Services</a>
+<a href="portfolio.html">Portfolio</a>
+<a href="index.html#topics">Topics</a>
+<a href="about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main class="insights-page"><div class="container"><div class="section-heading"><div><span class="section-label">DYNEXAL INSIGHTS</span><h1>News, Research &amp; Technical Insights</h1><p>Practical articles covering Microsoft Dynamics 365 Business Central, AL development, AI, APIs and integrations.</p></div></div>
 <div class="insights-list">
 <article class="insight-card"><div class="insight-meta"><span class="insight-tag">AI + BUSINESS CENTRAL</span><span>Research</span></div><h2>AI in Business Central: What Developers Should Know</h2><p>Explore AI, Copilot-style experiences and agent-based workflows and what they mean for Business Central developers.</p><a class="insight-link" href="articles/ai-changing-business-central-development-2026.html">Read Full Article →</a></article>
 <article class="insight-card"><div class="insight-meta"><span class="insight-tag">INTEGRATION</span><span>Technical</span></div><h2>Business Central API Integration: Practical Patterns</h2><p>Learn practical patterns for REST APIs, authentication, JSON, HttpClient and Business Central integrations.</p><a class="insight-link" href="articles/business-central-api-integration.html">Read Full Article →</a></article>
 <article class="insight-card"><div class="insight-meta"><span class="insight-tag">SHOPIFY</span><span>Project Insight</span></div><h2>Shopify + Business Central Integration</h2><p>Understand a practical e-commerce integration approach connecting Shopify workflows with Business Central.</p><a class="insight-link" href="articles/shopify-business-central-integration.html">Read Full Article →</a></article>
 </div></div></main>
-<footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span>Dynexal Technologies</span></a><p>Learn. Build. Integrate.</p><span><a href="about.html">About</a> · <a href="services.html">Services</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a></span><span>© 2026 Dynexal</span></div></footer>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span><a href="about.html">About</a> · <a href="services.html">Services</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a></span><span>© 2026 Dynexal</span></div></footer>
 <script src="script.js?v=20260927-mobileqa5"></script>
+<script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
+</script>
 </body></html>

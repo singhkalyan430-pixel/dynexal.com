@@ -36,7 +36,14 @@
 </style>
 </head>
 <body>
-<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="index.html">Home</a>
+<a href="tutorials.html">Tutorials</a>
+<a href="services.html">Services</a>
+<a href="portfolio.html">Portfolio</a>
+<a href="index.html#topics">Topics</a>
+<a href="about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main class="payment-page">
 <section class="payment-card">
 <div class="payment-icon">✓</div>
@@ -331,5 +338,14 @@
 </script>
 
 <script src="script.js?v=20260929-analytics1"></script>
+<script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
+</script>
 </body>
 </html>

@@ -145,7 +145,14 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
 </style>
 </head>
 <body>
-<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="index.html">Home</a>
+<a href="tutorials.html">Tutorials</a>
+<a href="services.html">Services</a>
+<a href="portfolio.html">Portfolio</a>
+<a href="index.html#topics">Topics</a>
+<a href="about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main class="interview-page">
 <section class="interview-hero"><div class="container">
 <span class="interview-kicker">BUSINESS CENTRAL • AL • INTERVIEW PREP</span>
@@ -175,7 +182,7 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
 <div class="premium-preview" id="premium-preview"><h3>What changed in the new Premium Master?</h3><p>The earlier 60-question pack has been expanded to <strong>100 questions</strong>: <strong>69 MB-820-aligned topic areas + 31 original Dynexal senior scenarios</strong>. Each item follows the Dynexal interview format: <strong>Definition → Interview Answer → Technical Discussion → Practical Example → Why / Justification → Senior Follow-up</strong>.</p><div class="pill-row"><span class="pill">100 Questions</span><span class="pill">69 MB-820 Topics</span><span class="pill">Definitions</span><span class="pill">Examples</span><span class="pill">Justification</span><span class="pill">Senior Follow-ups</span><span class="pill">AL</span><span class="pill">APIs</span><span class="pill">RDLC</span><span class="pill">Security</span><span class="pill">Testing</span><span class="pill">Performance</span></div><a class="product-cta" href="#premium">Back to Premium Pack ↑</a></div><p class="disclaimer">Dynexal interview material is independently authored and paraphrased for learning and interview preparation. It is not official Microsoft exam material and does not reproduce an official exam question bank.
 </section>
 </main>
-<footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span>Dynexal Technologies</span></a><p>Learn. Build. Integrate.</p><span><a href="about.html">About</a> · <a href="services.html">Services</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span><a href="about.html">About</a> · <a href="services.html">Services</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
 // Purchased-customer recovery: if this browser already has a verified Premium token,
@@ -312,4 +319,13 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
 </script>
 
 <script src="script.js?v=20260929-analytics1"></script>
+<script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
+</script>
 </body></html>

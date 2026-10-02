@@ -13,7 +13,14 @@ html[data-theme="dark"] .cap-main,html[data-theme="dark"] .cap-side{background:#
 </style>
 </head>
 <body>
-<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html" aria-label="Dynexal Technologies home"><span class="logo-mark">D</span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav"></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="../index.html">Home</a>
+<a href="../tutorials.html">Tutorials</a>
+<a href="../services.html">Services</a>
+<a href="../portfolio.html">Portfolio</a>
+<a href="../index.html#topics">Topics</a>
+<a href="../about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main>
 <section class="cap-hero"><div class="container"><span class="cap-kicker">RDLC • REPORTING • DATASETS • LAYOUTS</span><h1>RDLC<br><span>Reporting</span></h1><p>Create and troubleshoot Business Central reports that turn ERP data into clear operational and management information.</p></div></section>
 <section class="cap-content"><div class="container">
@@ -22,6 +29,15 @@ html[data-theme="dark"] .cap-main,html[data-theme="dark"] .cap-side{background:#
 <div class="cap-process"><span class="section-label">APPROACH</span><h2>From requirement to working solution</h2><div class="cap-process-grid"><article><span>01</span><h3>Understand</h3><p>Clarify the business process, data, users, systems and technical constraints.</p></article><article><span>02</span><h3>Build</h3><p>Design maintainable Business Central components and integrations around the requirement.</p></article><article><span>03</span><h3>Validate</h3><p>Test the solution, document important decisions and prepare it for practical use.</p></article></div></div>
 </div></section>
 </main>
-<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-mark">D</span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><span><a href="../about.html">About</a> · <a href="../services.html">Services</a> · <a href="../portfolio.html">Portfolio</a> · <a href="../contact.html">Contact</a></span><span>© 2026 Dynexal Technologies</span></div></footer>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><span><a href="../about.html">About</a> · <a href="../services.html">Services</a> · <a href="../portfolio.html">Portfolio</a> · <a href="../contact.html">Contact</a></span><span>© 2026 Dynexal Technologies</span></div></footer>
 <script src="../script.js?v=20260925-capabilities1"></script>
+<script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
+</script>
 </body></html>

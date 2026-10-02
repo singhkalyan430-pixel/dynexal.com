@@ -34,7 +34,14 @@
 </script>
 </head>
 <body>
-<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="tutorials.html">Tutorials</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a><a href="index.html#topics">Topics</a><a href="about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="index.html">Home</a>
+<a href="tutorials.html">Tutorials</a>
+<a href="services.html">Services</a>
+<a href="portfolio.html">Portfolio</a>
+<a href="index.html#topics">Topics</a>
+<a href="about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main class="services-page"><div class="container services-wrap">
 <section class="services-hero"><span class="section-label">DYNEXAL TECHNOLOGIES SERVICES</span><h1>Business Central.<br>Integrations. AI.</h1><p>Practical technical services for Microsoft Dynamics 365 Business Central, AL development, reporting, APIs, e-commerce integrations and automation.</p></section>
 <section class="services-grid">
@@ -50,5 +57,14 @@
 </div></main>
 <footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><span><a href="about.html">About</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal Technologies</span></div></footer>
 <script src="script.js?v=20260927-mobile4"></script>
+<script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
+</script>
 </body>
 </html>

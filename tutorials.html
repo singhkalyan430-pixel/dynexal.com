@@ -19,7 +19,14 @@
 }
 </script>
 </head>
-<body><header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-mark" aria-hidden="true"></span><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="tutorials.html" aria-current="page">Tutorials</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a><a href="index.html#topics">Topics</a><a href="about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<body><header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="index.html">Home</a>
+<a href="tutorials.html">Tutorials</a>
+<a href="services.html">Services</a>
+<a href="portfolio.html">Portfolio</a>
+<a href="index.html#topics">Topics</a>
+<a href="about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main class="blog-page"><div class="container"><div class="blog-head"><span class="section-label">DYNEXAL LEARNING HUB</span><h1>Microsoft Dynamics 365 Business Central Tutorials</h1><p>Practical, step-by-step guides for AL development, reports, APIs, integrations, e-commerce projects and AI with Business Central.</p></div><div class="filters"><span class="filter active" role="button" tabindex="0" aria-pressed="true">All Tutorials</span><span class="filter" role="button" tabindex="0" aria-pressed="false">AL Development</span><span class="filter" role="button" tabindex="0" aria-pressed="false">Reports</span><span class="filter" role="button" tabindex="0" aria-pressed="false">Integrations</span><span class="filter" role="button" tabindex="0" aria-pressed="false">AI</span></div>
 <div class="post-grid">
 <article class="post new"><div class="icon">API</div><span class="tag">INTEGRATION • TROUBLESHOOTING</span><h2>Business Central API Error Handling: 400, 401, 403, 404, 409 &amp; 429 Explained</h2><p>Learn how to diagnose HTTP errors, authentication failures, permissions, conflicts, throttling, retries and production API failures.</p><a href="articles/business-central-api-error-handling.html">Read troubleshooting guide →</a></article>
@@ -62,4 +69,13 @@
 <article class="post new"><div class="icon">SEC</div><span class="tag">SECURITY • AL DEVELOPMENT</span><h2>Business Central Permission Sets &amp; Security in AL: Practical Guide</h2><p>Understand permission sets, object permissions, permission set extensions, least privilege and security testing.</p><a href="articles/business-central-permission-sets-security-al.html">Read tutorial →</a></article>
 <article class="post new"><div class="icon">EV</div><span class="tag">AL DEVELOPMENT • EVENTS</span><h2>Business Central Events &amp; Subscribers in AL: Advanced Practical Guide</h2><p>Learn event subscribers, publisher concepts, transaction awareness, debugging and maintainable event-driven design.</p><a href="articles/business-central-events-subscribers-advanced-al.html">Read tutorial →</a></article>
 <article class="post new"><div class="icon">PERF</div><span class="tag">AL DEVELOPMENT • PERFORMANCE</span><h2>Business Central AL Performance Optimization: Practical Developer Guide</h2><p>Learn practical performance patterns for database reads, loops, FlowFields, APIs and efficient AL code.</p><a href="articles/business-central-performance-optimization-al.html">Read tutorial →</a></article>
-</div></div></main><footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span>Dynexal Technologies</span></a><p>Learn Business Central. Build better solutions.</p><span><a href="about.html">About</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="script.js?v=20260927-mobile4"></script></body></html>
+</div></div></main><footer class="footer"><div class="container footer-wrap"><a class="logo" href="index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn Business Central. Build better solutions.</p><span><a href="about.html">About</a> · <a href="contact.html">Contact</a> · <a href="privacy-policy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="disclaimer.html">Disclaimer</a></span><span>© 2026 Dynexal</span></div></footer><script src="script.js?v=20260927-mobile4"></script><script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
+</script>
+</body></html>
