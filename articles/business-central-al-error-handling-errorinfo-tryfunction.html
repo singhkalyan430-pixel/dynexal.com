@@ -40,7 +40,7 @@
 <li><strong>Why did it fail?</strong> Preserve useful technical context without exposing secrets.</li>
 <li><strong>What can be done next?</strong> Where appropriate, provide a clear correction or action.</li>
 </ul>
-<p>Microsoft's AL documentation treats error handling as a distinct development area, alongside debugging and diagnostics. citeturn0search6turn0search2</p>
+<p>Microsoft's AL documentation treats error handling as a distinct development area, alongside debugging and diagnostics.</p>
 
 <h2>2. Basic Error() versus structured error information</h2>
 <p>The traditional approach is useful when the operation simply cannot continue:</p>
@@ -49,7 +49,7 @@
 <p>This is simple, but complex applications often need more context than a single message can provide.</p>
 
 <h2>3. ErrorInfo: richer error context</h2>
-<p><code>ErrorInfo</code> represents structured information about an error. It can be used to provide a message and additional information for the error experience. Microsoft also documents properties such as page navigation and custom dimensions for error-related actions and handling. citeturn0search3turn0search10</p>
+<p><code>ErrorInfo</code> represents structured information about an error. It can be used to provide a message and additional information for the error experience. Microsoft also documents properties such as page navigation and custom dimensions for error-related actions and handling.</p>
 <pre><code>var
     MyErrorInfo: ErrorInfo;
 begin
@@ -73,7 +73,7 @@ MyErrorInfo.DetailedMessage(
 <p>For integration failures, a safe HTTP status, endpoint name, correlation identifier or provider error code is generally more useful than the credential itself.</p>
 
 <h2>5. TryFunction: when you intentionally catch an error</h2>
-<p>A method marked with <code>[TryFunction]</code> can return a Boolean result. When the return value is used, an error inside the try method is caught and the call evaluates to <code>false</code>. Microsoft documents this behavior and also notes important transaction considerations. citeturn0search0</p>
+<p>A method marked with <code>[TryFunction]</code> can return a Boolean result. When the return value is used, an error inside the try method is caught and the call evaluates to <code>false</code>. Microsoft documents this behavior and also notes important transaction considerations.</p>
 <pre><code>[TryFunction]
 local procedure TryValidateCustomer(CustomerNo: Code[20])
 var
@@ -94,12 +94,12 @@ begin
 end;</code></pre>
 
 <h2>6. A critical TryFunction transaction point</h2>
-<p>Do not treat a TryFunction as a transaction rollback mechanism. Microsoft states that database changes made by a try method aren't rolled back. For on-premises environments, write transactions inside try methods are restricted by default and can produce a runtime error unless the relevant server configuration is changed. citeturn0search0</p>
+<p>Do not treat a TryFunction as a transaction rollback mechanism. Microsoft states that database changes made by a try method aren't rolled back. For on-premises environments, write transactions inside try methods are restricted by default and can produce a runtime error unless the relevant server configuration is changed.</p>
 
 <div class="warn"><strong>Interview point:</strong> “TryFunction catches an error” and “TryFunction rolls back all database changes” are not equivalent statements. Be precise about transaction behavior.</div>
 
 <h2>7. GetLastErrorText after a failed try call</h2>
-<p>When a try method fails, <code>GetLastErrorText()</code> can be used to retrieve the Business Central error text. Microsoft also documents <code>GetLastErrorObject()</code> for inspecting exception details in relevant scenarios. citeturn0search0</p>
+<p>When a try method fails, <code>GetLastErrorText()</code> can be used to retrieve the Business Central error text. Microsoft also documents <code>GetLastErrorObject()</code> for inspecting exception details in relevant scenarios.</p>
 <pre><code>if not TryCallExternalService() then begin
     ErrorMessage := GetLastErrorText();
 
@@ -120,7 +120,7 @@ if SalesHeader."Posting Date" = 0D then
 <p>Use a try pattern when you genuinely need to handle an operation that may throw an error, especially when the failure path has a meaningful alternative.</p>
 
 <h2>9. Actionable errors</h2>
-<p>A richer error experience can include an action that takes the user to the relevant setup or page. Microsoft documents <code>PageNo</code> and navigation actions on <code>ErrorInfo</code> for this type of scenario. citeturn0search3</p>
+<p>A richer error experience can include an action that takes the user to the relevant setup or page. Microsoft documents <code>PageNo</code> and navigation actions on <code>ErrorInfo</code> for this type of scenario.</p>
 <pre><code>var
     SetupError: ErrorInfo;
 begin
@@ -136,7 +136,7 @@ end;</code></pre>
 <p>This pattern turns an error from a dead end into a guided correction path.</p>
 
 <h2>10. CustomDimensions for machine-readable context</h2>
-<p><code>ErrorInfo.CustomDimensions</code> can carry additional key/value information associated with the error. Microsoft documents it as a way to transfer information between the code showing the error and code that handles collected errors or fix actions. citeturn0search10</p>
+<p><code>ErrorInfo.CustomDimensions</code> can carry additional key/value information associated with the error. Microsoft documents it as a way to transfer information between the code showing the error and code that handles collected errors or fix actions.</p>
 <pre><code>var
     Dimensions: Dictionary of [Text, Text];
 begin
@@ -167,7 +167,7 @@ end;</code></pre>
 <p>For a background integration, consider recording safe identifiers such as operation type, external document number, HTTP status and retry state. Avoid repeatedly retrying permanent failures such as invalid credentials or malformed business data.</p>
 
 <h2>14. Debugging: don't guess from the message alone</h2>
-<p>When a production error is difficult to reproduce, use the available Business Central troubleshooting tools. Microsoft recommends profiling/debugging in appropriate environments and using telemetry to investigate issues after they occur. citeturn0search9</p>
+<p>When a production error is difficult to reproduce, use the available Business Central troubleshooting tools. Microsoft recommends profiling/debugging in appropriate environments and using telemetry to investigate issues after they occur.</p>
 <ul>
 <li>Reproduce in a sandbox where possible.</li>
 <li>Set a breakpoint around the failing operation.</li>
