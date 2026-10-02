@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Business Central AL error handling guide covering ErrorInfo, TryFunction, actionable errors, collected errors, safe messages, debugging and production patterns.">
+<meta name="author" content="Dynexal Technologies">
+<link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg">
+<link rel="canonical" href="https://dynexal.com/articles/business-central-al-error-handling-errorinfo-tryfunction.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://dynexal.com/articles/business-central-al-error-handling-errorinfo-tryfunction.html">
+<meta property="og:title" content="Business Central AL Error Handling: ErrorInfo, TryFunction & Production Patterns">
+<meta property="og:description" content="A practical AL error-handling guide covering ErrorInfo, TryFunction, actionable errors, collected errors and production troubleshooting.">
+<meta property="og:site_name" content="Dynexal Technologies">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Business Central AL Error Handling: ErrorInfo, TryFunction & Production Patterns">
+<meta name="twitter:description" content="Practical error handling patterns for Business Central AL developers.">
+<title>Business Central AL Error Handling: ErrorInfo, TryFunction & Production Patterns | Dynexal</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Business Central AL Error Handling: ErrorInfo, TryFunction & Production Patterns","description":"A practical AL error-handling guide covering ErrorInfo, TryFunction, actionable errors, collected errors and production troubleshooting.","datePublished":"2026-10-03","dateModified":"2026-10-03","author":{"@type":"Organization","name":"Dynexal Technologies"},"publisher":{"@type":"Organization","name":"Dynexal Technologies","url":"https://dynexal.com/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-al-error-handling-errorinfo-tryfunction.html"}}</script>
+<link rel="stylesheet" href="../styles.css?v=20260927-mobileqa2">
+<link rel="stylesheet" href="../nav-plain.css?v=20260927-mobileqa5">
+<style>
+.article-page{background:#f7faff;padding:60px 0 100px}.article-wrap{max-width:900px;margin:auto;background:#fff;border:1px solid #dce6f0;border-radius:22px;padding:42px;box-shadow:0 18px 45px rgba(18,43,70,.08)}.kicker{color:#087fe9;font-size:12px;font-weight:800;letter-spacing:.08em}.article-wrap h1{font-size:clamp(34px,5vw,52px);line-height:1.08;color:#10233d;margin:14px 0 16px}.meta{color:#708198;font-size:14px;margin-bottom:30px}.article-wrap h2{color:#142238;font-size:28px;margin:40px 0 14px}.article-wrap h3{color:#142238;font-size:21px;margin:28px 0 10px}.article-wrap p,.article-wrap li{color:#4e6075;line-height:1.8;font-size:16px}.article-wrap ul,.article-wrap ol{padding-left:24px}.article-wrap li{margin:7px 0}.article-wrap pre{background:#0b1220;color:#dbe6f5;padding:20px;border-radius:12px;overflow:auto;margin:22px 0}.article-wrap code{font-family:Consolas,Monaco,monospace}.callout{background:#eef7ff;border-left:4px solid #087fe9;padding:18px 20px;border-radius:10px;margin:24px 0;color:#31475f}.warn{background:#fff7e8;border-left:4px solid #e39b2e;padding:18px 20px;border-radius:10px;margin:24px 0;color:#31475f}.source-list a{color:#087fe9}.footer-note{border-top:1px solid #e2e9f1;margin-top:40px;padding-top:22px;color:#718095;font-size:13px}@media(max-width:600px){.article-page{padding:35px 0 70px}.article-wrap{padding:25px 20px;border-radius:16px}.article-wrap h2{font-size:24px}.article-wrap p,.article-wrap li{font-size:15px}.article-wrap pre{padding:16px}.article-wrap pre code{font-size:12px}}
+</style>
+</head>
+<body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<main class="article-page"><article class="article-wrap">
+<span class="kicker">DYNEXAL TECHNICAL GUIDE • AL DEVELOPMENT</span>
+<h1>Business Central AL Error Handling: ErrorInfo, TryFunction &amp; Production Patterns</h1>
+<div class="meta">Article #41 · Published: October 3, 2026 · Error Handling · 12–15 min read</div>
+
+<p>Error handling is more than writing <code>Error('Something went wrong.')</code>. In a production Business Central extension, an error should help the user understand what failed, help the developer diagnose the problem, and—when appropriate—offer a safe way to continue or fix it.</p>
+
+<div class="callout"><strong>Modern AL approach:</strong> use ordinary errors for conditions that should stop an operation, <code>ErrorInfo</code> when you need richer and potentially actionable error information, and <code>TryFunction</code> when you deliberately want to catch an error and handle the failure path.</div>
+
+<h2>1. The three questions every error should answer</h2>
+<ul>
+<li><strong>What failed?</strong> Give the business user a meaningful message.</li>
+<li><strong>Why did it fail?</strong> Preserve useful technical context without exposing secrets.</li>
+<li><strong>What can be done next?</strong> Where appropriate, provide a clear correction or action.</li>
+</ul>
+<p>Microsoft's AL documentation treats error handling as a distinct development area, alongside debugging and diagnostics. citeturn0search6turn0search2</p>
+
+<h2>2. Basic Error() versus structured error information</h2>
+<p>The traditional approach is useful when the operation simply cannot continue:</p>
+<pre><code>if Customer."No." = '' then
+    Error('Customer number is required.');</code></pre>
+<p>This is simple, but complex applications often need more context than a single message can provide.</p>
+
+<h2>3. ErrorInfo: richer error context</h2>
+<p><code>ErrorInfo</code> represents structured information about an error. It can be used to provide a message and additional information for the error experience. Microsoft also documents properties such as page navigation and custom dimensions for error-related actions and handling. citeturn0search3turn0search10</p>
+<pre><code>var
+    MyErrorInfo: ErrorInfo;
+begin
+    MyErrorInfo.Message('Customer setup is incomplete.');
+    MyErrorInfo.DetailedMessage(
+        'Configure the customer posting setup before posting the document.');
+
+    Error(MyErrorInfo);
+end;</code></pre>
+<p>The exact properties available depend on the target Business Central runtime, so compile the pattern against the symbols for the version you support.</p>
+
+<h2>4. Why detailed errors should not expose secrets</h2>
+<p>Detailed diagnostics are useful, but they should never become a place to dump access tokens, passwords, authorization headers or other sensitive values.</p>
+<pre><code>// ❌ Never expose credentials
+MyErrorInfo.DetailedMessage(
+    'API failed. Token=' + AccessToken);
+
+// ✅ Safer
+MyErrorInfo.DetailedMessage(
+    'API authentication failed. Check the integration credential.');</code></pre>
+<p>For integration failures, a safe HTTP status, endpoint name, correlation identifier or provider error code is generally more useful than the credential itself.</p>
+
+<h2>5. TryFunction: when you intentionally catch an error</h2>
+<p>A method marked with <code>[TryFunction]</code> can return a Boolean result. When the return value is used, an error inside the try method is caught and the call evaluates to <code>false</code>. Microsoft documents this behavior and also notes important transaction considerations. citeturn0search0</p>
+<pre><code>[TryFunction]
+local procedure TryValidateCustomer(CustomerNo: Code[20])
+var
+    Customer: Record Customer;
+begin
+    Customer.Get(CustomerNo);
+
+    if Customer.Blocked &lt;&gt; Customer.Blocked::" " then
+        Error('Customer is blocked.');
+end;
+
+procedure ValidateCustomer(CustomerNo: Code[20])
+begin
+    if TryValidateCustomer(CustomerNo) then
+        exit;
+
+    Error('Customer validation failed.');
+end;</code></pre>
+
+<h2>6. A critical TryFunction transaction point</h2>
+<p>Do not treat a TryFunction as a transaction rollback mechanism. Microsoft states that database changes made by a try method aren't rolled back. For on-premises environments, write transactions inside try methods are restricted by default and can produce a runtime error unless the relevant server configuration is changed. citeturn0search0</p>
+
+<div class="warn"><strong>Interview point:</strong> “TryFunction catches an error” and “TryFunction rolls back all database changes” are not equivalent statements. Be precise about transaction behavior.</div>
+
+<h2>7. GetLastErrorText after a failed try call</h2>
+<p>When a try method fails, <code>GetLastErrorText()</code> can be used to retrieve the Business Central error text. Microsoft also documents <code>GetLastErrorObject()</code> for inspecting exception details in relevant scenarios. citeturn0search0</p>
+<pre><code>if not TryCallExternalService() then begin
+    ErrorMessage := GetLastErrorText();
+
+    // Log safe diagnostic context if required.
+    Error(
+        'The external service could not be reached. %1',
+        ErrorMessage);
+end;</code></pre>
+<p>Before exposing the returned text directly to users, review whether it contains implementation details or sensitive information.</p>
+
+<h2>8. TryFunction is not a replacement for validation</h2>
+<p>Do not use TryFunction for every business rule. If a condition can be checked clearly before executing the operation, explicit validation is often easier to read and maintain.</p>
+<pre><code>if SalesHeader."Sell-to Customer No." = '' then
+    Error('Sell-to Customer No. must be specified.');
+
+if SalesHeader."Posting Date" = 0D then
+    Error('Posting Date must be specified.');</code></pre>
+<p>Use a try pattern when you genuinely need to handle an operation that may throw an error, especially when the failure path has a meaningful alternative.</p>
+
+<h2>9. Actionable errors</h2>
+<p>A richer error experience can include an action that takes the user to the relevant setup or page. Microsoft documents <code>PageNo</code> and navigation actions on <code>ErrorInfo</code> for this type of scenario. citeturn0search3</p>
+<pre><code>var
+    SetupError: ErrorInfo;
+begin
+    SetupError.Message('Integration setup is incomplete.');
+    SetupError.DetailedMessage(
+        'Configure the API endpoint and credential before retrying.');
+
+    SetupError.PageNo(Page::"My Integration Setup");
+    SetupError.AddNavigationAction('Open Integration Setup');
+
+    Error(SetupError);
+end;</code></pre>
+<p>This pattern turns an error from a dead end into a guided correction path.</p>
+
+<h2>10. CustomDimensions for machine-readable context</h2>
+<p><code>ErrorInfo.CustomDimensions</code> can carry additional key/value information associated with the error. Microsoft documents it as a way to transfer information between the code showing the error and code that handles collected errors or fix actions. citeturn0search10</p>
+<pre><code>var
+    Dimensions: Dictionary of [Text, Text];
+begin
+    Dimensions.Add('Integration', 'Shopify');
+    Dimensions.Add('Operation', 'CreateOrder');
+
+    MyErrorInfo.CustomDimensions(Dimensions);
+end;</code></pre>
+<p>Keep custom dimensions safe. Do not put credentials, tokens or personal data into diagnostic fields without a clear and appropriate reason.</p>
+
+<h2>11. Multiple errors and validation scenarios</h2>
+<p>Some business processes have several independent validation problems. Instead of failing at the first problem, a design may collect multiple errors and present them together. This is especially useful for document validation where the user can fix several fields in one pass.</p>
+<p>When implementing collected-error patterns, keep each message specific and actionable. The user should be able to identify the record or field that needs attention without reading internal implementation details.</p>
+
+<h2>12. Error handling in API integrations</h2>
+<p>API integrations have more than one failure layer:</p>
+<ul>
+<li><strong>Transport:</strong> the request cannot be sent or completed.</li>
+<li><strong>HTTP:</strong> the server returns 4xx or 5xx.</li>
+<li><strong>Authentication:</strong> credentials or tokens are rejected.</li>
+<li><strong>Payload:</strong> the request or response contains invalid data.</li>
+<li><strong>Business:</strong> the remote system rejects a validly formatted request.</li>
+</ul>
+<p>Handle these cases separately. A generic “API failed” message makes production support much harder.</p>
+
+<h2>13. Background jobs need a different error mindset</h2>
+<p>A Job Queue process has no user sitting at the page waiting to read a message. Errors should therefore be diagnosable from logs/telemetry and should leave the job in a state that operations staff can investigate.</p>
+<p>For a background integration, consider recording safe identifiers such as operation type, external document number, HTTP status and retry state. Avoid repeatedly retrying permanent failures such as invalid credentials or malformed business data.</p>
+
+<h2>14. Debugging: don't guess from the message alone</h2>
+<p>When a production error is difficult to reproduce, use the available Business Central troubleshooting tools. Microsoft recommends profiling/debugging in appropriate environments and using telemetry to investigate issues after they occur. citeturn0search9</p>
+<ul>
+<li>Reproduce in a sandbox where possible.</li>
+<li>Set a breakpoint around the failing operation.</li>
+<li>Inspect the call stack.</li>
+<li>Check event subscribers that participate in the operation.</li>
+<li>Review telemetry for errors that are difficult to reproduce.</li>
+<li>Compare the failing data with a successful transaction.</li>
+</ul>
+
+<h2>15. Error messages should be written for the user</h2>
+<p>Compare these two messages:</p>
+<pre><code>// Weak
+Error('Error 500');
+
+// Better
+Error(
+    'Shopify order synchronization failed. ' +
+    'The external service returned HTTP 500. Try again later.');</code></pre>
+<p>The second message tells the user what operation failed and gives a reasonable next step without exposing internal code.</p>
+
+<h2>16. A production-ready pattern</h2>
+<pre><code>procedure SyncOrder(OrderNo: Code[20])
+begin
+    ValidateOrder(OrderNo);
+
+    if not TrySendOrder(OrderNo) then begin
+        LogSafeFailure(OrderNo, GetLastErrorText());
+        Error(
+            'Order %1 could not be synchronized. ' +
+            'Check the integration status and try again.',
+            OrderNo);
+    end;
+
+    MarkOrderAsSynchronized(OrderNo);
+end;</code></pre>
+<p>The important architectural idea is separation: validation, external operation, safe diagnostics and business-state updates should not become one large procedure.</p>
+
+<h2>17. Common mistakes</h2>
+<ul>
+<li>Using TryFunction as if it automatically rolled back database changes.</li>
+<li>Catching an error and silently ignoring it.</li>
+<li>Showing raw technical exceptions to business users.</li>
+<li>Putting tokens or passwords into detailed errors or logs.</li>
+<li>Using TryFunction where a simple validation would be clearer.</li>
+<li>Retrying permanent errors indefinitely.</li>
+<li>Giving background jobs no diagnostic context.</li>
+<li>Making every error message generic.</li>
+</ul>
+
+<h2>18. Interview-ready questions</h2>
+<ol>
+<li>What is the difference between <code>Error()</code> and <code>ErrorInfo</code>?</li>
+<li>How does <code>TryFunction</code> work in AL?</li>
+<li>Does TryFunction roll back database changes?</li>
+<li>When would you use <code>GetLastErrorText()</code>?</li>
+<li>What is an actionable error?</li>
+<li>Why would you use <code>CustomDimensions</code> with ErrorInfo?</li>
+<li>How would you handle errors in a Job Queue integration?</li>
+<li>How do you prevent secrets from appearing in error messages?</li>
+</ol>
+
+<h2>19. Practical production checklist</h2>
+<ul>
+<li>Validate predictable business conditions before expensive operations.</li>
+<li>Use ErrorInfo when structured or actionable error information adds value.</li>
+<li>Use TryFunction deliberately, not as a blanket wrapper around all code.</li>
+<li>Understand transaction behavior before placing database writes in try methods.</li>
+<li>Keep diagnostic context safe and useful.</li>
+<li>Separate transient integration failures from permanent business failures.</li>
+<li>Make background-process failures observable.</li>
+<li>Test both success and failure paths.</li>
+</ul>
+
+<h2>Conclusion</h2>
+<p>Good AL error handling is part of application design, not just defensive coding. The strongest implementations make failures understandable to users, diagnosable for developers and safe for production operations. <code>ErrorInfo</code>, actionable errors and carefully used <code>TryFunction</code> patterns give AL developers more control, while debugging and telemetry complete the operational side.</p>
+
+<h2>Official Microsoft references</h2>
+<ul class="source-list">
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-handling-errors-using-try-methods" target="_blank" rel="noopener">Microsoft Learn — Handling errors using try methods</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/errorinfo/errorinfo-data-type" target="_blank" rel="noopener">Microsoft Learn — ErrorInfo data type</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/errorinfo/errorinfo-pageno-method" target="_blank" rel="noopener">Microsoft Learn — ErrorInfo.PageNo()</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/methods-auto/errorinfo/errorinfo-customdimensions-method" target="_blank" rel="noopener">Microsoft Learn — ErrorInfo.CustomDimensions()</a></li>
+<li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-troubleshooting-overview" target="_blank" rel="noopener">Microsoft Learn — Troubleshooting tools and guides</a></li>
+</ul>
+
+<div class="footer-note">Technical behavior can vary by Business Central runtime and deployment model. Validate examples against the target version and test failure paths in a safe environment before production use.</div>
+<p><a href="../articles.html">← Back to Dynexal Insights</a></p>
+</article></main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn Business Central. Build better solutions.</p><span><a href="../about.html">About</a> · <a href="../contact.html">Contact</a> · <a href="../privacy-policy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../disclaimer.html">Disclaimer</a> · <a href="../cookie-policy.html">Cookie Policy</a></span><span>© 2026 Dynexal Technologies. All rights reserved.</span></div></footer>
+<script src="../script.js?v=20260927-mobileqa5"></script>
+</body>
+</html>
