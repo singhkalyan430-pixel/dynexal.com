@@ -6,13 +6,16 @@
   <url><loc>https://dynexal.com/ai-automation.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/al-development.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/api-integration.html</loc><lastmod>2026-10-02</lastmod></url>
-  <url><loc>https://dynexal.com/articles.html</loc><lastmod>2026-10-02</lastmod></url>
+  <url><loc>https://dynexal.com/articles.html</loc><lastmod>2026-10-03</lastmod></url>
   <url><loc>https://dynexal.com/articles/ai-business-central-complete-guide.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/ai-changing-business-central-development-2026.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/al-error-handling-business-central.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/al-event-subscribers-business-central.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/al-tables-business-central.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-al-automated-testing-test-codeunits.html</loc><lastmod>2026-10-02</lastmod></url>
+  <url><loc>https://dynexal.com/articles/business-central-al-background-processing-job-queue-task-scheduler.html</loc><lastmod>2026-10-02</lastmod></url>
+  <url><loc>https://dynexal.com/articles/business-central-al-isolatedstorage-secure-secrets.html</loc><lastmod>2026-10-02</lastmod></url>
+  <url><loc>https://dynexal.com/articles/business-central-al-transactions-commit-locks-deadlocks.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-api-authentication-entra-id.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-api-error-handling-al.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-api-error-handling.html</loc><lastmod>2026-10-02</lastmod></url>
@@ -23,14 +26,12 @@
   <url><loc>https://dynexal.com/articles/business-central-api-rate-limits-throttling.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-custom-api-page.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-events-subscribers-advanced-al.html</loc><lastmod>2026-10-02</lastmod></url>
+  <url><loc>https://dynexal.com/articles/business-central-extension-architecture-al.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-performance-optimization-al.html</loc><lastmod>2026-10-02</lastmod></url>
-  <url><loc>https://dynexal.com/articles/business-central-extension-architecture-al.html</loc><lastmod>2026-10-03</lastmod></url>
-  <url><loc>https://dynexal.com/articles/business-central-al-transactions-commit-locks-deadlocks.html</loc><lastmod>2026-10-03</lastmod></url>
-  <url><loc>https://dynexal.com/articles/business-central-al-background-processing-job-queue-task-scheduler.html</loc><lastmod>2026-10-03</lastmod></url>
-  <url><loc>https://dynexal.com/articles/business-central-al-isolatedstorage-secure-secrets.html</loc><lastmod>2026-10-03</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-permission-sets-security-al.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-queries-al-complete-guide.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-rdlc-report-blank-fixes.html</loc><lastmod>2026-10-02</lastmod></url>
+  <url><loc>https://dynexal.com/articles/business-central-update-27-12-october-2026.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/business-central-webhooks.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/codeunits-business-central.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/articles/creating-list-and-card-pages-al.html</loc><lastmod>2026-10-02</lastmod></url>
@@ -78,5 +79,4 @@
   <url><loc>https://dynexal.com/topics/business-central-api.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/topics/rdlc-business-central.html</loc><lastmod>2026-10-02</lastmod></url>
   <url><loc>https://dynexal.com/tutorials.html</loc><lastmod>2026-10-02</lastmod></url>
-  <url><loc>https://dynexal.com/articles/business-central-update-27-12-october-2026.html</loc><lastmod>2026-10-03</lastmod></url>
 </urlset>
