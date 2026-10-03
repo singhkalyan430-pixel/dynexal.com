@@ -129,3 +129,26 @@ test('Dynexal AI launcher opens and closes', async ({ page }) => {
   await page.locator('.ai-close').click();
   await expect(panel).toBeHidden();
 });
+
+
+test('certification pages render and certification API is available', async ({ page, request }) => {
+  for (const path of ['/certification.html', '/certification-exam.html', '/verify.html']) {
+    const response = await request.get(BASE + path);
+    expect(response.status(), 'HTTP status for ' + path).toBe(200);
+  }
+  const api = await request.get(BASE + '/api/certifications');
+  expect(api.status()).toBe(200);
+  const data = await api.json();
+  expect(Array.isArray(data.certifications)).toBeTruthy();
+  expect(data.certifications.length).toBeGreaterThan(0);
+
+  await page.goto(BASE + '/certification.html', { waitUntil: 'networkidle' });
+  await expect(page).toHaveTitle(/Certification \| Dynexal Technologies/i);
+  await expect(page.locator('h1')).toContainText('Business Central Developer');
+  await expect(page.getByText('Start Certification Exam')).toBeVisible();
+});
+
+test('certificate verification rejects an invalid certificate safely', async ({ request }) => {
+  const response = await request.get(BASE + '/api/certificate-verify?id=DYN-BCFD-2026-XXXXXX');
+  expect([404, 429]).toContain(response.status());
+});
