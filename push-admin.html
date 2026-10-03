@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#061329">
+  <title>Dynexal Push Notifications</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;background:#061329;color:#eef6ff;font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+    .wrap{max-width:760px;margin:0 auto;padding:52px 20px}
+    .brand{font-size:11px;font-weight:900;letter-spacing:.18em;color:#62e3d2}
+    h1{font-size:38px;line-height:1.1;margin:10px 0 10px}
+    .lead{color:#9db2c6;line-height:1.7;margin:0 0 30px}
+    .card{background:linear-gradient(145deg,#0c2034,#081624);border:1px solid #23445f;border-radius:20px;padding:24px;margin:16px 0;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+    label{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;color:#91a9bd;margin:0 0 8px;text-transform:uppercase}
+    input,textarea{width:100%;border:1px solid #294b65;background:#071625;color:#f4f8ff;border-radius:12px;padding:13px 14px;font:inherit;outline:none}
+    input:focus,textarea:focus{border-color:#62e3d2}
+    textarea{min-height:120px;resize:vertical}
+    .field{margin-bottom:17px}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    button{border:0;border-radius:12px;padding:13px 18px;background:#62e3d2;color:#061329;font-weight:900;cursor:pointer}
+    button.secondary{background:#17334b;color:#dcecff}
+    button:disabled{opacity:.55;cursor:wait}
+    .stats{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .count{font-size:32px;font-weight:900}
+    .muted{font-size:12px;color:#7f98ac}
+    .status{margin-top:16px;padding:12px;border-radius:10px;background:#071625;color:#9fb5c8;min-height:20px;white-space:pre-wrap}
+    .note{font-size:12px;color:#728ba0;line-height:1.6;margin-top:18px}
+    @media(max-width:620px){.wrap{padding:34px 14px}h1{font-size:31px}.row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="brand">DYNEXAL • PRIVATE ADMIN</div>
+    <h1>Web Push Notifications</h1>
+    <p class="lead">Send an opt-in notification to visitors who subscribed to Dynexal updates. Only users who granted browser notification permission are included.</p>
+
+    <section class="card">
+      <div class="field">
+        <label>Admin token</label>
+        <input id="token" type="password" autocomplete="off" placeholder="Enter PUSH_ADMIN_TOKEN">
+      </div>
+      <div class="stats">
+        <div><div class="count" id="count">—</div><div class="muted">active subscribers</div></div>
+        <button type="button" class="secondary" id="refresh">Refresh count</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="field">
+        <label>Notification title</label>
+        <input id="title" value="Dynexal Technologies">
+      </div>
+      <div class="field">
+        <label>Message</label>
+        <textarea id="body">New Business Central interview resources are available on Dynexal.</textarea>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label>Open URL</label>
+          <input id="url" value="https://dynexal.com/interview-prep.html#premium">
+        </div>
+        <div class="field">
+          <label>Tag</label>
+          <input id="tag" value="dynexal-update">
+        </div>
+      </div>
+      <button type="button" id="send">Send notification</button>
+      <div class="status" id="status"></div>
+      <div class="note">Use notifications sparingly and only for useful updates. Visitors can revoke notification permission from their browser settings.</div>
+    </section>
+  </main>
+
+<script>
+const $ = id => document.getElementById(id);
+const getToken = () => $("token").value.trim();
+
+async function call(action, extra = {}) {
+  const token = getToken();
+  if (!token) throw new Error("Enter the admin token first.");
+  const response = await fetch("/api/push-send", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token
+    },
+    body: JSON.stringify({ action, ...extra })
+  });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || "Request failed.");
+  return data;
+}
+
+async function refreshCount() {
+  $("status").textContent = "Loading subscriber count…";
+  try {
+    const data = await call("stats");
+    $("count").textContent = String(data.active ?? 0);
+    $("status").textContent = "Subscriber count updated.";
+  } catch (error) {
+    $("status").textContent = error.message;
+  }
+}
+
+$("refresh").addEventListener("click", refreshCount);
+
+$("send").addEventListener("click", async () => {
+  const button = $("send");
+  button.disabled = true;
+  $("status").textContent = "Sending…";
+  try {
+    const data = await call("send", {
+      title: $("title").value,
+      body: $("body").value,
+      url: $("url").value,
+      tag: $("tag").value
+    });
+    $("status").textContent =
+      "Sent: " + data.sent +
+      "\nAttempted: " + data.attempted +
+      "\nExpired/removed: " + data.removed +
+      "\nFailed: " + data.failed;
+    $("count").textContent = String(Math.max(0, Number(data.attempted || 0) - Number(data.removed || 0)));
+  } catch (error) {
+    $("status").textContent = error.message;
+  } finally {
+    button.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
