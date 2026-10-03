@@ -1,0 +1,77 @@
+name: Notify visitors about new content
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  notify-new-content:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Find newly added published pages
+        id: content
+        shell: bash
+        run: |
+          set -euo pipefail
+          added_files="$(git diff --diff-filter=A --name-only HEAD^ HEAD || true)"
+          candidates="$(printf '%s\n' "$added_files" | grep -E '^(articles|topics)/.*\.html$' || true)"
+          if [ -z "$candidates" ]; then echo "has_content=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "New content files:"; printf '%s\n' "$candidates"
+          { echo 'files<<EOF'; printf '%s\n' "$candidates"; echo 'EOF'; } >> "$GITHUB_OUTPUT"
+          echo "has_content=true" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for Vercel deployment
+        if: steps.content.outputs.has_content == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            url="https://dynexal.com/${file}"
+            live=false
+            for attempt in 1 2 3 4 5 6 7 8 9 10; do
+              status="$(curl -L -s -o /dev/null -w '%{http_code}' --max-time 15 "$url" || true)"
+              if [ "$status" = "200" ]; then live=true; break; fi
+              echo "Attempt $attempt: HTTP $status. Waiting 15 seconds..."
+              sleep 15
+            done
+            if [ "$live" != "true" ]; then echo "Page was not live: $url"; exit 1; fi
+          done <<< "${{ steps.content.outputs.files }}"
+
+      - name: Send new-content notifications
+        if: steps.content.outputs.has_content == 'true'
+        shell: bash
+        env:
+          PUSH_ADMIN_TOKEN: ${{ secrets.PUSH_ADMIN_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "$PUSH_ADMIN_TOKEN" ]; then echo "PUSH_ADMIN_TOKEN GitHub secret is not configured."; exit 1; fi
+          while IFS= read -r file; do
+            [ -z "$file" ] && continue
+            url="https://dynexal.com/${file}"
+            title="$(python - "$file" <<'PY'
+import re, sys
+from pathlib import Path
+text = Path(sys.argv[1]).read_text(encoding='utf-8', errors='ignore')
+m = re.search(r'<title[^>]*>(.*?)</title>', text, flags=re.I|re.S) or re.search(r'<h1[^>]*>(.*?)</h1>', text, flags=re.I|re.S)
+value = re.sub(r'<[^>]+>', ' ', m.group(1) if m else Path(sys.argv[1]).stem)
+value = re.sub(r'\s+', ' ', value).strip()
+print(value[:120] or 'New Dynexal content')
+PY
+)"
+            python - "$url" "$title" <<'PY' > /tmp/push.json
+import json, sys
+print(json.dumps({"title":"🚀 New on Dynexal","body":f"New Dynexal content is now available: {sys.argv[2]}","url":sys.argv[1],"tag":"new-content"}))
+PY
+            curl --fail-with-body -sS -X POST "https://dynexal.com/api/push-send" -H "Authorization: Bearer ${PUSH_ADMIN_TOKEN}" -H "Content-Type: application/json" --data-binary @/tmp/push.json
+            echo
+          done <<< "${{ steps.content.outputs.files }}"
