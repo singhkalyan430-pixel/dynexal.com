@@ -331,6 +331,108 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
 })();
 </script>
 
+
+<style id="dynexal-exit-pro-style">
+.dynexal-exit-overlay{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,10,20,.72);backdrop-filter:blur(7px)}
+.dynexal-exit-overlay.active{display:flex;animation:dynexalFadeIn .2s ease}
+.dynexal-exit-card{position:relative;width:min(560px,100%);overflow:hidden;border:1px solid #2a587c;border-radius:24px;background:linear-gradient(145deg,#071a2d,#0b2945 58%,#061525);box-shadow:0 30px 90px rgba(0,0,0,.48);padding:34px;color:#fff}
+.dynexal-exit-card:before{content:"PRO INTERVIEW";position:absolute;right:-42px;top:18px;transform:rotate(35deg);padding:7px 48px;background:#119df4;color:#fff;font-size:9px;font-weight:900;letter-spacing:1.3px}
+.dynexal-exit-kicker{font-size:11px;font-weight:900;letter-spacing:1.7px;color:#5ec9ff;text-transform:uppercase}
+.dynexal-exit-card h2{font-size:clamp(28px,5vw,42px);line-height:1.08;margin:10px 0 12px;letter-spacing:-1px}
+.dynexal-exit-card p{color:#b8ccdf;line-height:1.7;margin:0 0 18px}
+.dynexal-exit-points{display:grid;gap:8px;margin:18px 0 24px;padding:0;list-style:none}
+.dynexal-exit-points li{color:#e3f2ff;font-size:13px}
+.dynexal-exit-points li:before{content:"✓";color:#58c8ff;font-weight:900;margin-right:9px}
+.dynexal-exit-actions{display:flex;gap:10px;flex-wrap:wrap}
+.dynexal-exit-primary,.dynexal-exit-secondary{border-radius:11px;padding:13px 18px;font-weight:900;cursor:pointer;text-decoration:none}
+.dynexal-exit-primary{border:0;background:linear-gradient(90deg,#118ff2,#11b8dc);color:#fff}
+.dynexal-exit-secondary{border:1px solid #315775;background:#0b2035;color:#cfe7f7}
+.dynexal-exit-close{position:absolute;top:14px;left:14px;width:34px;height:34px;border:1px solid #315775;border-radius:50%;background:#081a2c;color:#dff3ff;cursor:pointer;font-size:17px}
+.dynexal-exit-note{font-size:11px!important;color:#7894ad!important;margin:14px 0 0!important}
+@keyframes dynexalFadeIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}
+@media(max-width:600px){
+  .dynexal-exit-card{padding:30px 20px 22px;border-radius:20px}
+  .dynexal-exit-card h2{font-size:29px;padding-right:28px}
+  .dynexal-exit-actions{display:grid;grid-template-columns:1fr}
+  .dynexal-exit-primary,.dynexal-exit-secondary{text-align:center;width:100%;box-sizing:border-box}
+}
+</style>
+<div class="dynexal-exit-overlay" id="dynexal-exit-overlay" aria-hidden="true">
+  <section class="dynexal-exit-card" role="dialog" aria-modal="true" aria-labelledby="dynexal-exit-title">
+    <button type="button" class="dynexal-exit-close" id="dynexal-exit-close" aria-label="Close">×</button>
+    <div class="dynexal-exit-kicker">DYNEXAL • PRO INTERVIEW PREP</div>
+    <h2 id="dynexal-exit-title">Before you go — prepare like a Pro.</h2>
+    <p>Don't leave your Business Central interview preparation unfinished. Get the <strong>Premium Interview Master</strong> with practical, senior-level questions designed around real AL development and project discussions.</p>
+    <ul class="dynexal-exit-points">
+      <li>100 professional Business Central interview questions</li>
+      <li>Definition, interview-ready answer & technical justification</li>
+      <li>Practical project examples + senior follow-up questions</li>
+      <li>One-time access for <strong>₹499</strong></li>
+    </ul>
+    <div class="dynexal-exit-actions">
+      <a class="dynexal-exit-primary" href="#premium" id="dynexal-exit-cta">Continue to Premium — ₹499 →</a>
+      <button class="dynexal-exit-secondary" type="button" id="dynexal-exit-later">Maybe later</button>
+    </div>
+    <p class="dynexal-exit-note">You can close this message anytime. No payment is taken until you choose the Premium checkout.</p>
+  </section>
+</div>
+<script id="dynexal-exit-pro-script">
+(function(){
+  const overlay=document.getElementById('dynexal-exit-overlay');
+  const closeBtn=document.getElementById('dynexal-exit-close');
+  const laterBtn=document.getElementById('dynexal-exit-later');
+  const cta=document.getElementById('dynexal-exit-cta');
+  if(!overlay)return;
+
+  const STORAGE_KEY='dynexal_exit_pro_seen_v1';
+  const hasPremium=()=>{
+    try{return !!(localStorage.getItem('dynexal_premium_review_token')||localStorage.getItem('dynexal_premium_payment_id'));}catch(e){return false;}
+  };
+  let shown=false;
+  const close=()=>{
+    overlay.classList.remove('active');
+    overlay.setAttribute('aria-hidden','true');
+    document.documentElement.style.overflow='';
+  };
+  const show=()=>{
+    if(shown||hasPremium())return;
+    try{
+      const last=Number(localStorage.getItem(STORAGE_KEY)||0);
+      if(last && Date.now()-last < 7*24*60*60*1000)return;
+      localStorage.setItem(STORAGE_KEY,String(Date.now()));
+    }catch(e){}
+    shown=true;
+    overlay.classList.add('active');
+    overlay.setAttribute('aria-hidden','false');
+    document.documentElement.style.overflow='hidden';
+    if(typeof window.dynexalTrack==='function')window.dynexalTrack('premium_exit_offer_shown',{page_path:location.pathname});
+  };
+
+  closeBtn?.addEventListener('click',close);
+  laterBtn?.addEventListener('click',()=>{
+    if(typeof window.dynexalTrack==='function')window.dynexalTrack('premium_exit_offer_dismissed',{page_path:location.pathname});
+    close();
+  });
+  cta?.addEventListener('click',()=>{
+    if(typeof window.dynexalTrack==='function')window.dynexalTrack('premium_exit_offer_clicked',{page_path:location.pathname});
+    close();
+  });
+  overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&shown)close();});
+
+  // Desktop: show when the pointer is about to leave the page.
+  document.addEventListener('mouseout',e=>{
+    if(window.innerWidth<=700)return;
+    if(e.clientY<=5 && e.relatedTarget===null)show();
+  });
+
+  // Mobile: use a short engagement threshold rather than relying on mouse exit.
+  if(window.innerWidth<=700){
+    setTimeout(()=>{ if(document.visibilityState==='visible') show(); },45000);
+  }
+})();
+</script>
+
 <script src="script.js?v=20260929-analytics1"></script>
 <script id="dynexal-nav-href-fix">
 (function(){
