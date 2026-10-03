@@ -478,3 +478,158 @@
   update();
   restart();
 })();
+
+/* Dynexal Web Push opt-in — visitors can subscribe to useful updates. */
+(function(){
+  if(window.__dynexalPushInitialized)return;
+  window.__dynexalPushInitialized=true;
+
+  const supports = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+  if(!supports || !window.isSecureContext)return;
+
+  const SNOOZE_KEY = "dynexal_push_prompt_snooze_v1";
+  const SNOOZE_MS = 7 * 24 * 60 * 60 * 1000;
+  let vapidPublicKey = "";
+
+  const escapeHtml = value => String(value ?? "").replace(/[&<>"]/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"
+  }[ch]));
+
+  function snoozed(){
+    try{return Number(localStorage.getItem(SNOOZE_KEY)||0) > Date.now();}catch(_){return false;}
+  }
+
+  function snooze(){
+    try{localStorage.setItem(SNOOZE_KEY,String(Date.now()+SNOOZE_MS));}catch(_){}
+  }
+
+  function injectStyles(){
+    if(document.getElementById("dynexal-push-style"))return;
+    const style=document.createElement("style");
+    style.id="dynexal-push-style";
+    style.textContent=
+      ".dynexal-push-card{position:fixed;right:22px;bottom:22px;z-index:99998;width:min(390px,calc(100vw - 28px));padding:18px 18px 16px;border:1px solid rgba(98,227,210,.35);border-radius:18px;background:linear-gradient(145deg,#0b2135,#071522);box-shadow:0 24px 60px rgba(0,0,0,.34);color:#eef7ff;font-family:inherit;animation:dynexalPushIn .35s ease}.dynexal-push-card .kicker{font-size:9px;font-weight:900;letter-spacing:.15em;color:#62e3d2}.dynexal-push-card h3{margin:7px 0 7px;font-size:18px;line-height:1.25}.dynexal-push-card p{margin:0;color:#9eb3c6;font-size:12px;line-height:1.6}.dynexal-push-actions{display:flex;gap:9px;margin-top:14px}.dynexal-push-actions button{border:0;border-radius:10px;padding:10px 13px;font:inherit;font-size:12px;font-weight:900;cursor:pointer}.dynexal-push-allow{background:#62e3d2;color:#061329}.dynexal-push-later{background:#17344d;color:#dcecff}.dynexal-push-card .fine{margin-top:10px;font-size:9px;color:#647f94}.dynexal-push-success{display:flex;align-items:center;gap:10px}.dynexal-push-success strong{font-size:13px}.dynexal-push-success span{display:block;font-size:11px;color:#8fa8bc;margin-top:2px}@keyframes dynexalPushIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}@media(max-width:560px){.dynexal-push-card{right:12px;bottom:12px;width:calc(100vw - 24px)}}";
+    document.head.appendChild(style);
+  }
+
+  function urlBase64ToUint8Array(base64String){
+    const padding="=".repeat((4-base64String.length%4)%4);
+    const base64=(base64String+padding).replace(/-/g,"+").replace(/_/g,"/");
+    const raw=window.atob(base64);
+    const output=new Uint8Array(raw.length);
+    for(let i=0;i<raw.length;i++)output[i]=raw.charCodeAt(i);
+    return output;
+  }
+
+  async function loadConfig(){
+    const response=await fetch("/api/push-config",{headers:{Accept:"application/json"}});
+    if(!response.ok)throw new Error("Push service is not configured.");
+    const data=await response.json();
+    vapidPublicKey=String(data.publicKey||"");
+    if(!vapidPublicKey)throw new Error("Missing VAPID public key.");
+  }
+
+  async function saveSubscription(subscription){
+    const response=await fetch("/api/push-subscribe",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Accept":"application/json"},
+      body:JSON.stringify({subscription})
+    });
+    if(!response.ok)throw new Error("Unable to save notification subscription.");
+    try{localStorage.setItem("dynexal_push_subscribed_v1","1");}catch(_){}
+  }
+
+  async function ensureSubscription(){
+    const registration=await navigator.serviceWorker.register("/push-sw.js",{scope:"/"});
+    await loadConfig();
+
+    let subscription=await registration.pushManager.getSubscription();
+    if(!subscription){
+      const permission=await Notification.requestPermission();
+      if(permission!=="granted")return null;
+      subscription=await registration.pushManager.subscribe({
+        userVisibleOnly:true,
+        applicationServerKey:urlBase64ToUint8Array(vapidPublicKey)
+      });
+    }
+    await saveSubscription(subscription);
+    return subscription;
+  }
+
+  function removeCard(card){
+    if(card&&card.parentNode)card.remove();
+  }
+
+  function showPrompt(){
+    if(Notification.permission==="denied" || snoozed())return;
+    injectStyles();
+
+    const card=document.createElement("div");
+    card.className="dynexal-push-card";
+    card.setAttribute("role","dialog");
+    card.setAttribute("aria-label","Dynexal notification subscription");
+    card.innerHTML=
+      '<div class="kicker">DYNEXAL • STAY UPDATED</div>'+
+      '<h3>Get useful Dynexal updates 🔔</h3>'+
+      '<p>Receive occasional Business Central tips, interview resources and important new-content updates even after you leave the website.</p>'+
+      '<div class="dynexal-push-actions">'+
+        '<button type="button" class="dynexal-push-allow">Allow updates</button>'+
+        '<button type="button" class="dynexal-push-later">Maybe later</button>'+
+      '</div>'+
+      '<div class="fine">You can turn notifications off anytime in your browser settings.</div>';
+
+    document.body.appendChild(card);
+
+    card.querySelector(".dynexal-push-later").addEventListener("click",()=>{
+      snooze();
+      removeCard(card);
+      if(typeof window.dynexalTrack==="function")window.dynexalTrack("push_prompt_dismissed");
+    });
+
+    card.querySelector(".dynexal-push-allow").addEventListener("click",async()=>{
+      const button=card.querySelector(".dynexal-push-allow");
+      button.disabled=true;
+      button.textContent="Enabling…";
+      try{
+        const subscription=await ensureSubscription();
+        if(!subscription){
+          button.disabled=false;
+          button.textContent="Allow updates";
+          return;
+        }
+        card.innerHTML='<div class="dynexal-push-success"><div>✓</div><div><strong>Notifications enabled</strong><span>We’ll only send useful Dynexal updates.</span></div></div>';
+        if(typeof window.dynexalTrack==="function")window.dynexalTrack("push_subscribed");
+        setTimeout(()=>removeCard(card),3000);
+      }catch(error){
+        console.error("Dynexal push subscription error:",error);
+        button.disabled=false;
+        button.textContent="Try again";
+        if(typeof window.dynexalTrack==="function")window.dynexalTrack("push_subscribe_error");
+      }
+    });
+  }
+
+  async function init(){
+    try{
+      const registration=await navigator.serviceWorker.register("/push-sw.js",{scope:"/"});
+      await loadConfig();
+
+      const existing=await registration.pushManager.getSubscription();
+      if(existing){
+        await saveSubscription(existing);
+        return;
+      }
+
+      if(Notification.permission==="denied" || snoozed())return;
+
+      setTimeout(()=>{
+        if(Notification.permission==="default" && !document.hidden)showPrompt();
+      },18000);
+    }catch(error){
+      console.debug("Dynexal Web Push unavailable:",error?.message||error);
+    }
+  }
+
+  init();
+})();
+
