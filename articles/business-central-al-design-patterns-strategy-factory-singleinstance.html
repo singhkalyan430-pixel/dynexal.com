@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Business Central AL design patterns explained with practical Strategy, Factory, SingleInstance and event-driven examples for maintainable and scalable extensions."><meta name="author" content="Dynexal Technologies"><link rel="icon" type="image/svg+xml" href="../assets/dynexal-mark.svg"><link rel="canonical" href="https://dynexal.com/articles/business-central-al-design-patterns-strategy-factory-singleinstance.html"><meta property="og:type" content="article"><meta property="og:url" content="https://dynexal.com/articles/business-central-al-design-patterns-strategy-factory-singleinstance.html"><meta property="og:title" content="Business Central AL Design Patterns: Strategy, Factory & SingleInstance"><meta property="og:description" content="Practical AL design patterns for Business Central developers, including Strategy, Factory-style selection, SingleInstance and event-driven patterns."><meta property="og:site_name" content="Dynexal Technologies"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Business Central AL Design Patterns: Strategy, Factory & SingleInstance"><meta name="twitter:description" content="Learn practical AL design patterns that help Business Central extensions remain maintainable, testable and scalable."><title>Business Central AL Design Patterns: Strategy, Factory & SingleInstance | Dynexal</title><script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Business Central AL Design Patterns: Strategy, Factory & SingleInstance","description":"Practical AL design patterns for Business Central developers, including Strategy, Factory-style selection, SingleInstance and event-driven patterns.","author":{"@type":"Organization","name":"Dynexal Technologies"},"publisher":{"@type":"Organization","name":"Dynexal Technologies","url":"https://dynexal.com/"},"mainEntityOfPage":{"@type":"WebPage","@id":"https://dynexal.com/articles/business-central-al-design-patterns-strategy-factory-singleinstance.html"},"url":"https://dynexal.com/articles/business-central-al-design-patterns-strategy-factory-singleinstance.html","datePublished":"2026-10-04","dateModified":"2026-10-04","inLanguage":"en"}</script><link rel="stylesheet" href="../styles.css?v=20260927-mobileqa2"><link rel="stylesheet" href="../nav-plain.css?v=20260927-mobileqa5"><style>.article-page{background:#f7faff;padding:60px 0 100px}.article-wrap{max-width:900px;margin:auto;background:#fff;border:1px solid #dce6f0;border-radius:22px;padding:42px;box-shadow:0 18px 45px rgba(18,43,70,.08)}.article-kicker{color:#087fe9;font-size:12px;font-weight:800;letter-spacing:.08em}.article-wrap h1{font-size:clamp(34px,5vw,52px);line-height:1.08;color:#10233d;margin:12px 0 18px}.article-meta{color:#6a7a8e;font-size:14px;margin-bottom:30px}.article-wrap h2{color:#142238;font-size:28px;margin:38px 0 14px}.article-wrap h3{color:#142238;font-size:21px;margin:28px 0 10px}.article-wrap p,.article-wrap li{color:#4e6075;line-height:1.8;font-size:16px}.article-wrap ul,.article-wrap ol{padding-left:24px}.article-wrap strong{color:#263c55}.callout{background:#eef7ff;border-left:4px solid #087fe9;padding:18px 20px;border-radius:10px;margin:24px 0;color:#31475f}.tip{background:#f6f9fc;border:1px solid #dfe8f1;padding:18px 20px;border-radius:10px;margin:24px 0;color:#31475f}.article-wrap pre{background:#0b1220;color:#dbe6f5;padding:22px;border-radius:12px;overflow:auto;margin:24px 0}.article-wrap pre code{color:#dbe6f5;font-size:14px;line-height:1.7}.source-list a,.article-nav a{color:#087fe9}@media(max-width:600px){.article-page{padding:35px 0 70px}.article-wrap{padding:25px 20px;border-radius:16px}.article-wrap h2{font-size:24px}.article-wrap p,.article-wrap li{font-size:15px}.article-wrap pre{padding:17px}.article-wrap pre code{font-size:12px}}</style></head><body>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="../index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="../index.html">Home</a><a href="../tutorials.html">Tutorials</a><a href="../services.html">Services</a><a href="../portfolio.html">Portfolio</a><a href="../index.html#topics">Topics</a><a href="../about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<main class="article-page"><article class="article-wrap"><div class="article-kicker">DYNEXAL GUIDE • AL DESIGN PATTERNS</div><h1>Business Central AL Design Patterns: Strategy, Factory &amp; SingleInstance</h1><div class="article-meta">Published: October 4, 2026 · AL Development · 12–15 min read</div>
+<p>As a Business Central extension grows, the difficult part is no longer writing an AL procedure. The difficult part is deciding where that procedure belongs, how implementations can change, and how to avoid creating a codeunit that knows everything about the application.</p><div class="callout"><strong>Core idea:</strong> a design pattern is not extra complexity. It is a repeatable way to solve a recurring design problem. Use a pattern when it makes dependencies clearer—not simply because the pattern exists.</div>
+<h2>1. What is a design pattern in AL?</h2><p>A design pattern is a reusable approach to structuring code around a common problem. In Business Central, patterns are usually implemented with familiar AL building blocks such as codeunits, interfaces, enums, events, records and background processing.</p><p>Microsoft documents interfaces as contracts that allow different implementations while reducing dependency on implementation details. Events similarly provide extension points that separate custom behavior from application logic. These capabilities make several classic design ideas practical in AL.</p>
+<h2>2. Strategy Pattern: choose behavior without changing the caller</h2><p>The Strategy pattern is useful when the same business operation can be performed in multiple ways. Instead of writing a large <code>case</code> statement containing every implementation, define a common interface and let separate codeunits implement it.</p>
+<pre><code>interface "Shipping Strategy"
+{
+    procedure CalculateCost(OrderNo: Code[20]): Decimal;
+}
+
+codeunit "Standard Shipping" implements "Shipping Strategy"
+{
+    procedure CalculateCost(OrderNo: Code[20]): Decimal
+    begin
+        exit(100);
+    end;
+}
+
+codeunit "Express Shipping" implements "Shipping Strategy"
+{
+    procedure CalculateCost(OrderNo: Code[20]): Decimal
+    begin
+        exit(250);
+    end;
+}</code></pre>
+<p>The consumer can work with the interface rather than knowing the internal calculation of every shipping method.</p>
+<h3>When Strategy is useful</h3><ul><li>Multiple payment or shipping calculation methods.</li><li>Different tax or pricing rules.</li><li>Multiple AI providers.</li><li>Different external integration implementations.</li><li>Customer-specific or country-specific business behavior.</li></ul>
+<div class="tip"><strong>Interview answer:</strong> “I use Strategy when the business operation stays the same but the implementation can vary. The interface defines the contract and each codeunit implements one strategy.”</div>
+<h2>3. Selecting a Strategy in AL</h2><p>The strategy itself is only half of the design. Something still has to select the correct implementation. An enum or setup record can hold the business choice, while a small resolver codeunit maps that choice to an interface implementation.</p>
+<pre><code>enum 50100 "Shipping Method"
+{
+    Extensible = true;
+
+    value(0; Standard) { Caption = 'Standard'; }
+    value(1; Express) { Caption = 'Express'; }
+}</code></pre>
+<pre><code>codeunit "Shipping Strategy Resolver"
+{
+    procedure GetStrategy(Method: Enum "Shipping Method"): Interface "Shipping Strategy"
+    begin
+        case Method of
+            Method::Standard:
+                exit(StandardStrategy);
+            Method::Express:
+                exit(ExpressStrategy);
+        end;
+    end;
+
+    var
+        StandardStrategy: Codeunit "Standard Shipping";
+        ExpressStrategy: Codeunit "Express Shipping";
+}</code></pre>
+<p>The exact implementation may differ depending on the solution. The architectural goal is to keep selection logic in one place and keep the business process independent of concrete implementations.</p>
+<h2>4. Factory-style pattern: centralize object creation and selection</h2><p>A Factory-style pattern is useful when creating or selecting an implementation requires more than one simple assignment. The factory becomes the place where the application decides which service should be used.</p>
+<pre><code>codeunit "AI Provider Factory"
+{
+    procedure GetProvider(ProviderType: Enum "AI Provider Type"): Interface "AI Provider"
+    begin
+        case ProviderType of
+            ProviderType::ProviderA:
+                exit(ProviderA);
+            ProviderType::ProviderB:
+                exit(ProviderB);
+        end;
+    end;
+
+    var
+        ProviderA: Codeunit "AI Provider A";
+        ProviderB: Codeunit "AI Provider B";
+}</code></pre>
+<p>This can be valuable in an AI + Business Central project because the application service should not need to know authentication, endpoint or provider-specific implementation details.</p>
+<h2>5. Strategy vs Factory</h2><table style="width:100%;border-collapse:collapse;margin:24px 0"><tr><th style="text-align:left;padding:12px;border-bottom:1px solid #dce6f0">Pattern</th><th style="text-align:left;padding:12px;border-bottom:1px solid #dce6f0">Main purpose</th><th style="text-align:left;padding:12px;border-bottom:1px solid #dce6f0">Typical AL use</th></tr><tr><td style="padding:12px;border-bottom:1px solid #e8eef4">Strategy</td><td style="padding:12px;border-bottom:1px solid #e8eef4">Swap business behavior</td><td style="padding:12px;border-bottom:1px solid #e8eef4">Pricing, shipping, tax, AI provider</td></tr><tr><td style="padding:12px;border-bottom:1px solid #e8eef4">Factory-style resolver</td><td style="padding:12px;border-bottom:1px solid #e8eef4">Centralize implementation selection</td><td style="padding:12px;border-bottom:1px solid #e8eef4">Choose service/provider from setup or enum</td></tr></table><p>They can be used together. The factory selects a strategy; the strategy performs the operation.</p>
+<h2>6. SingleInstance codeunits: useful, but easy to misuse</h2><p>Business Central supports the <code>SingleInstance</code> property on codeunits. When it is true, codeunit variables using that codeunit share the same instance and internal variables for the same client session. Microsoft notes that the instance remains instantiated until the company is closed.</p>
+<pre><code>codeunit 50101 "Session Context"
+{
+    SingleInstance = true;
+
+    var
+        CurrentRequestId: Guid;
+
+    procedure SetRequestId(NewRequestId: Guid)
+    begin
+        CurrentRequestId := NewRequestId;
+    end;
+
+    procedure GetRequestId(): Guid
+    begin
+        exit(CurrentRequestId);
+    end;
+}</code></pre>
+<p>This can be useful for session-level state that genuinely belongs to the same logical client session. It should not be treated as a general-purpose database or permanent cache.</p>
+<h3>Good use cases</h3><ul><li>Small session-scoped context.</li><li>State shared between codeunit calls during the same client session.</li><li>Specific subscriber/event scenarios where a single instance is intentionally part of the design.</li></ul>
+<h3>Common mistakes</h3><ul><li>Using SingleInstance to store persistent business data.</li><li>Assuming the state is shared across all users or sessions.</li><li>Keeping large amounts of data in internal variables.</li><li>Relying on state when a table or explicit parameter would make the design clearer.</li></ul>
+<p>Microsoft's SingleInstance documentation states that the shared instance behavior applies to codeunit variables on the same client and that the instance remains until the company is closed. Always design around the actual lifetime you need.</p>
+<h2>7. Event-driven pattern: extend without tightly coupling code</h2><p>Events are another important AL design pattern. A publisher raises an event at a meaningful extension point, and subscribers add behavior without changing the publisher's main implementation.</p>
+<pre><code>[IntegrationEvent(false, false)]
+local procedure OnAfterCustomerAnalysis(CustomerNo: Code[20])
+begin
+end;</code></pre>
+<pre><code>[EventSubscriber(ObjectType::Codeunit,
+    Codeunit::"Customer Analysis",
+    'OnAfterCustomerAnalysis',
+    '', false, false)]
+local procedure HandleAnalysis(CustomerNo: Code[20])
+begin
+    // Extension-specific processing
+end;</code></pre>
+<p>Microsoft describes events as a way to separate custom functionality from application business logic. That separation can reduce the cost of code modifications and upgrades.</p>
+<h2>8. Combining patterns in a real integration</h2><p>Consider a Business Central order synchronization feature that supports two external systems. A clean design can combine the patterns:</p>
+<pre><code>Sales Order
+    │
+    ▼
+Sync Application Service
+    │
+    ▼
+Integration Factory
+    │
+ ┌──┴─────────┐
+ ▼            ▼
+Shopify      ERP API
+Strategy     Strategy
+ │            │
+ ▼            ▼
+HTTP/JSON    HTTP/JSON
+    │
+    ▼
+Response Validation
+    │
+    ▼
+Business Event</code></pre>
+<p>The application service coordinates the workflow. The factory selects the implementation. Each strategy handles one integration. Events provide optional extension points for logging, notifications or follow-up processing.</p>
+<h2>9. Don't turn patterns into over-engineering</h2><p>A common mistake among developers learning architecture is adding interfaces, factories and abstractions everywhere. If a process has exactly one stable implementation and no realistic variation, a simple codeunit may be clearer.</p><p>Use a pattern when there is a real design pressure:</p><ul><li>There are multiple implementations.</li><li>A requirement is expected to vary by setup or business context.</li><li>External providers may change.</li><li>Testing benefits from replacing an implementation.</li><li>Different extensions need controlled extension points.</li></ul><div class="callout"><strong>Practical rule:</strong> start with the simplest design that keeps responsibilities clear. Introduce an abstraction when the change in requirements justifies it.</div>
+<h2>10. Performance considerations</h2><p>Good architecture does not automatically make code fast. The implementation still needs efficient data access, controlled database work and appropriate asynchronous processing.</p><p>Microsoft's performance guidance recommends patterns such as set-based operations, partial records, asynchronous execution and limiting unnecessary work. It also notes that event subscriptions and subscriber code can affect performance, so subscribers should remain focused and appropriately sized.</p><p>Do not put expensive database processing into a frequently executed page trigger merely because an event or pattern makes it convenient. Move work to a suitable service or background process when the user does not need the result synchronously.</p>
+<h2>11. Testing pattern-based AL code</h2><p>Pattern-based code is especially valuable when the boundaries are testable. A test can exercise the business process with a selected strategy and separately test each implementation.</p>
+<pre><code>Test: Standard shipping
+    ↓
+Resolver → Standard Strategy
+    ↓
+Expected cost
+
+Test: Express shipping
+    ↓
+Resolver → Express Strategy
+    ↓
+Expected cost
+
+Test: Invalid configuration
+    ↓
+Resolver
+    ↓
+Expected validation/error</code></pre>
+<p>This reduces the need for every test to exercise the complete external integration stack. External calls should be isolated behind suitable boundaries so business rules can be tested independently.</p>
+<h2>12. AI + Business Central architecture example</h2><p>For an AI-enabled extension, the same principles can keep the AI layer controlled:</p>
+<pre><code>Business Central Page
+       │
+       ▼
+AI Application Service
+       │
+       ▼
+AI Provider Interface
+       │
+ ┌─────┴──────┐
+ ▼            ▼
+Provider A   Provider B
+       │
+       ▼
+Response Validation
+       │
+       ▼
+Human Approval / Business Rule
+       │
+       ▼
+Controlled BC Action</code></pre>
+<p>The AI response should not automatically become a trusted database command. The application should validate the response, enforce permissions and business rules, and require human review where the process calls for it.</p>
+<h2>13. Interview questions you should prepare</h2><ol><li>What is the Strategy pattern and how would you implement it in AL?</li><li>Why would you use an interface instead of a large CASE statement?</li><li>What is a Factory-style resolver?</li><li>Can Strategy and Factory be used together?</li><li>What does <code>SingleInstance = true</code> do?</li><li>Is a SingleInstance codeunit shared between all users?</li><li>When should you avoid SingleInstance?</li><li>How do events reduce coupling in Business Central?</li><li>How would you design an AL integration that supports multiple providers?</li><li>How would you test different Strategy implementations?</li><li>When is an abstraction over-engineering?</li><li>How would you combine interfaces, events and background processing in a production extension?</li></ol>
+<h2>14. Interview-ready answer</h2><div class="callout"><strong>Sample answer:</strong> “In AL, I use design patterns when they solve a real dependency or variation problem. For example, Strategy with an interface lets me support multiple implementations without changing the business process. A Factory-style resolver can centralize implementation selection. I use SingleInstance codeunits only when session-level shared state is intentional. For extensibility, I use events so additional behavior can subscribe without tightly coupling it to the main process. I also keep the design testable and avoid adding abstractions where a simple codeunit is enough.”</div>
+<h2>Conclusion</h2><p>Business Central provides enough language and extensibility features to build clean application architectures without forcing a traditional object-oriented framework onto AL. Interfaces, codeunits, enums, events and background processing can be combined into practical patterns that solve real Business Central problems.</p><p>The strongest AL architecture is usually the one that makes responsibilities obvious, dependencies controlled and future changes manageable.</p>
+<h2>Sources &amp; references</h2><ul class="source-list"><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/devenv-interfaces-in-al" target="_blank" rel="noopener">Microsoft Learn — Interfaces in AL</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/properties/devenv-singleinstance-property" target="_blank" rel="noopener">Microsoft Learn — SingleInstance property</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/developer/types-of-events-for-extensibility" target="_blank" rel="noopener">Microsoft Learn — Types of events for extensibility</a></li><li><a href="https://learn.microsoft.com/en-us/dynamics365/business-central/dev-itpro/performance/performance-developer" target="_blank" rel="noopener">Microsoft Learn — Performance articles for developers</a></li></ul>
+<div class="article-footer">Business Central capabilities and AL syntax can change between releases. Verify the documentation and runtime version for your target environment before using a pattern in production.</div><div class="article-nav"><a href="../articles.html">← Back to Dynexal Insights</a></div></article></main>
+<footer class="footer"><div class="container footer-wrap"><a class="logo" href="../index.html"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><p>Learn. Build. Integrate.</p><span>© 2026 Dynexal</span></div></footer><script src="../script.js?v=20260927-mobileqa5"></script><script id="dynexal-nav-href-fix">(function(){document.querySelectorAll('.dropdown-menu a').forEach(function(a){var href=a.getAttribute('href');if(!href||href[0]=='/'||href[0]=='#'||/^[a-z][a-z0-9+.-]*:/i.test(href))return;a.setAttribute('href','/'+href.replace(/^\.\//,''));});})();</script></body></html>
