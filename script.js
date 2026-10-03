@@ -59,7 +59,7 @@
       ['Reports & RDLC',root+'topics/rdlc-business-central.html']
     ]},
     {label:'About',href:root+'about.html',key:'about'},
-    {label:'Interview Prep',href:root+'interview-prep.html',key:'interview',menu:[
+    {label:'Pro Interview',href:root+'interview-prep.html',key:'interview',menu:[
       ['Free Questions',root+'interview-prep.html#free'],
       ['Premium Interview Master',root+'interview-prep.html#premium']
     ]}
