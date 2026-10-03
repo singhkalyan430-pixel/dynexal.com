@@ -293,6 +293,19 @@ html[data-theme="dark"] .interview-page .question h3{color:#f2f7ff!important}
             const result=await verifyResponse.json();
             if(!verifyResponse.ok||!result.verified)throw new Error(result.error||'Payment verification failed.');
             if(typeof window.dynexalTrack==='function') window.dynexalTrack('payment_success',{transaction_id:result.paymentId,value:499,currency:'INR',item_name:'Dynexal Interview Master — 100 Questions'});
+            if(typeof window.gtag==='function'){
+              window.gtag('event','purchase',{
+                transaction_id:result.paymentId,
+                value:499,
+                currency:'INR',
+                items:[{
+                  item_id:'dynexal-interview-master-100',
+                  item_name:'Dynexal Interview Master — 100 Questions',
+                  price:499,
+                  quantity:1
+                }]
+              });
+            }
             const successUrl='/payment-success.html?payment_id='+encodeURIComponent(result.paymentId)+(result.reviewToken?'&review_token='+encodeURIComponent(result.reviewToken):'');
             window.location.href=successUrl;
           }catch(error){
