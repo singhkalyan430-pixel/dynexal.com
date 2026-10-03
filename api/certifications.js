@@ -1,0 +1,7 @@
+const rateState=new Map();
+const WINDOW=60000,LIMIT=30;
+function ip(req){return String(req.headers["x-forwarded-for"]||"unknown").split(",")[0].trim();}
+function ok(req,res){const now=Date.now(),k=ip(req),e=rateState.get(k);if(!e||now-e.t>=WINDOW){rateState.set(k,{t:now,n:1});return true}e.n++;if(e.n>LIMIT){res.setHeader("Retry-After","60");return false}return true}
+function cors(req,res){const o=req.headers.origin||"";if(["https://dynexal.com","https://www.dynexal.com"].includes(o)||(process.env.VERCEL_URL&&o==="https://"+process.env.VERCEL_URL))res.setHeader("Access-Control-Allow-Origin",o);res.setHeader("Vary","Origin");}
+async function db(path){const u=process.env.SUPABASE_URL+"/rest/v1/"+path;const r=await fetch(u,{headers:{apikey:process.env.SUPABASE_SERVICE_ROLE_KEY,Authorization:"Bearer "+process.env.SUPABASE_SERVICE_ROLE_KEY}});if(!r.ok)throw new Error("Database request failed");return r.json()}
+export default async function handler(req,res){cors(req,res);if(req.method==="OPTIONS")return res.status(204).end();if(req.method!=="GET")return res.status(405).json({error:"Method not allowed"});if(!ok(req,res))return res.status(429).json({error:"Too many requests"});try{const rows=await db("certifications?active=eq.true&select=id,code,name,description,duration_minutes,question_count,passing_percentage&order=name");return res.status(200).json({certifications:rows})}catch(e){console.error(e);return res.status(500).json({error:"Unable to load certifications"})}}
