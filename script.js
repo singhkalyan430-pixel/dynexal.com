@@ -112,6 +112,17 @@
     @media(min-width:901px){
       .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"]{
         color:#67d7ff!important;
+        animation:dynexalProInterviewPulse 1.35s ease-in-out infinite;
+        position:relative;
+      }
+      @keyframes dynexalProInterviewPulse{
+        0%,100%{opacity:1;transform:translateY(0);text-shadow:0 0 8px rgba(56,189,248,.12)}
+        50%{opacity:.62;transform:translateY(-1px);text-shadow:0 0 18px rgba(56,189,248,.5)}
+      }
+      @media(prefers-reduced-motion:reduce){
+        .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"]{animation:none!important}
+      }
+      .site-header .nav>.has-dropdown:last-of-type>a[href*="interview-prep.html"]{
         font-weight:700!important;
         letter-spacing:.1px!important;
         text-shadow:0 0 14px rgba(56,189,248,.18)!important;
