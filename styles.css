@@ -700,3 +700,54 @@ a,
     margin:0!important;
   }
 }
+
+/* Mobile Projects section — contained professional card with extra inner spacing. */
+@media(max-width:560px){
+  .project-section{
+    padding:58px 0 64px!important;
+    background:#080d14!important;
+  }
+  .project-section .container{
+    width:92%!important;
+  }
+  .project-section .project-grid{
+    display:block!important;
+    margin:0!important;
+    padding:28px 18px 18px!important;
+    border:1px solid #303b49!important;
+    border-radius:22px!important;
+    background:linear-gradient(145deg,#101722,#0b1119)!important;
+    box-shadow:0 18px 45px rgba(0,0,0,.28)!important;
+    box-sizing:border-box!important;
+  }
+  .project-section .project-grid>div:first-child{
+    padding:4px 10px 26px!important;
+  }
+  .project-section .project-grid h2{
+    margin:10px 0 16px!important;
+    font-size:32px!important;
+    line-height:1.15!important;
+  }
+  .project-section .project-grid p{
+    margin:0 0 20px!important;
+    font-size:15px!important;
+    line-height:1.7!important;
+  }
+  .project-section .project-grid .btn{
+    margin-top:2px!important;
+  }
+  .project-section .project-list{
+    border-left:0!important;
+    border-top:1px solid #303b49!important;
+    margin:0!important;
+    padding:0 0 2px!important;
+  }
+  .project-section .project-item{
+    gap:18px!important;
+    padding:24px 10px!important;
+    border-bottom:1px solid #293442!important;
+  }
+  .project-section .project-item:last-child{
+    border-bottom:0!important;
+  }
+}
