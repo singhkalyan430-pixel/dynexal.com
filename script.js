@@ -59,6 +59,7 @@
       ['Reports & RDLC',root+'topics/rdlc-business-central.html']
     ]},
     {label:'About',href:root+'about.html',key:'about'},
+    {label:'Certification',href:root+'certification.html',key:'certification'},
     {label:'Pro Interview',href:root+'interview-prep.html',key:'interview',menu:[
       ['Free Questions',root+'interview-prep.html#free'],
       ['Premium Interview Master',root+'interview-prep.html#premium']
@@ -66,7 +67,9 @@
   ];
   const path=window.location.pathname.toLowerCase();
   let current='home';
-  if(path.endsWith('/interview-prep.html'))current='interview';
+  if(path.endsWith('/certification.html')||path.endsWith('/certification-exam.html'))current='certification';
+  else if(path.endsWith('/verify.html')||path.endsWith('/certificate.html'))current='certification';
+  else if(path.endsWith('/interview-prep.html'))current='interview';
   else if(path.includes('/articles/')||path.endsWith('/tutorials.html'))current='tutorials';
   else if(path.includes('/topics/'))current='topics';
   else if(path.includes('/projects/')||path.endsWith('/portfolio.html'))current='portfolio';
