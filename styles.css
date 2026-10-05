@@ -672,3 +672,31 @@ a,
     line-height:1.65;
   }
 }
+
+/* Mobile Dynexal Insights heading clearance — prevent the section title from touching/clipping against the container edge. */
+@media(max-width:560px){
+  .dynexal-insights .section-heading{
+    display:block!important;
+    width:100%!important;
+    box-sizing:border-box!important;
+    padding:0 7px!important;
+    margin-bottom:28px!important;
+    overflow:visible!important;
+  }
+  .dynexal-insights .section-heading>div{
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+  }
+  .dynexal-insights .section-heading h2{
+    margin:10px 0 12px!important;
+    padding:0!important;
+    line-height:1.18!important;
+    overflow:visible!important;
+    overflow-wrap:normal!important;
+    word-break:normal!important;
+  }
+  .dynexal-insights .section-heading p{
+    margin:0!important;
+  }
+}
