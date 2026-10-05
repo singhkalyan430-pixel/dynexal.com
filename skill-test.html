@@ -14,9 +14,17 @@
 html[data-theme="dark"] .skill-page{background:#07111f}.dark-fix{color:#10233a}
 html[data-theme="dark"] .test-card{background:#0d1a2b;border-color:#203550}.test-card,.test-card *{ }html[data-theme="dark"] .progress,html[data-theme="dark"] .result p{color:#aebdd0}html[data-theme="dark"] .question,html[data-theme="dark"] .result h2{color:#f2f7ff}html[data-theme="dark"] .option{background:#101f32;border-color:#29415b;color:#dbe7f3}html[data-theme="dark"] .option:hover,html[data-theme="dark"] .option.selected{background:#112d47;border-color:#219cf0}html[data-theme="dark"] .breakdown div{background:#101f32;border-color:#29415b}html[data-theme="dark"] .breakdown strong{color:#f2f7ff}
 </style>
+<link rel="stylesheet" href="/nav-plain.css?v=20260915-global2">
 </head>
 <body>
-<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="tutorials.html">Tutorials</a><a href="services.html">Services</a><a href="portfolio.html">Portfolio</a><a href="index.html#topics">Topics</a><a href="about.html">About</a></nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
+<header class="site-header"><div class="container nav-wrap"><a class="logo" href="index.html" aria-label="Dynexal Technologies home"><span class="logo-copy"><strong>Dynexal Technologies</strong><small>Learn | Build | Integrate | Grow</small></span></a><nav class="nav" aria-label="Main navigation">
+<a href="index.html">Home</a>
+<a href="tutorials.html">Tutorials</a>
+<a href="services.html">Services</a>
+<a href="portfolio.html">Portfolio</a>
+<a href="index.html#topics">Topics</a>
+<a href="about.html">About</a>
+</nav><button class="menu-btn" aria-label="Open menu" aria-expanded="false">☰</button></div></header>
 <main class="skill-page">
 <section class="skill-hero"><div class="skill-container"><span class="kicker">DYNEXAL • BUSINESS CENTRAL • FOUNDATION</span><h1>Business Central Skill Test</h1><p>15 practical questions covering AL, tables, pages, events, reports, integrations, security, performance and real-world development scenarios.</p></div></section>
 <section class="skill-container test-card" id="test">
@@ -52,5 +60,15 @@ function formatTime(){const m=Math.floor(remaining/60),s=remaining%60;$("timer")
 function submit(){clearInterval(timerId);let correct=0;const topicStats={};questions.forEach((q,i)=>{const t=topicStats[q.topic]||(topicStats[q.topic]={correct:0,total:0});t.total++;if(answers[i]===q.answer){correct++;t.correct++}});const pct=Math.round(correct/questions.length*100),pass=pct>=70;$("quiz").style.display="none";$("result").classList.add("show");$("score").textContent=correct+"/"+questions.length+" • "+pct+"%";$("status").className="status "+(pass?"pass":"fail");$("status").textContent=pass?"✓ PASSED":"✕ NEEDS IMPROVEMENT";$("result-title").textContent=pass?"Strong work — keep building interview depth.":"Good attempt — review the weak areas and try again.";$("result-text").textContent=pass?"You reached the Dynexal Foundation passing level.":"You need at least 11 correct answers to pass the Foundation test.";$("breakdown").innerHTML=Object.entries(topicStats).map(([k,v])=>"<div><strong>"+k+"</strong><span>"+v.correct+" / "+v.total+" correct</span></div>").join("")}
 function start(){remaining=20*60;current=0;answers.fill(null);$("quiz").style.display="block";$("result").classList.remove("show");formatTime();render();clearInterval(timerId);timerId=setInterval(()=>{remaining--;formatTime();if(remaining<=0)submit()},1000)}
 $("prev").onclick=()=>{if(current>0){current--;render()}};$("next").onclick=()=>{if(answers[current]===null){alert("Please select an answer before continuing.");return}if(current===questions.length-1)submit();else{current++;render()}};$("restart").onclick=start;start();
+</script>
+<script src="script.js?v=20260915-navfix"></script>
+<script id="dynexal-nav-href-fix">
+(function(){
+  document.querySelectorAll('.dropdown-menu a').forEach(function(a){
+    var href = a.getAttribute('href');
+    if (!href || href[0] == '/' || href[0] == '#' || /^[a-z][a-z0-9+.-]*:/i.test(href)) return;
+    a.setAttribute('href', '/' + href.replace(/^\.\//, ''));
+  });
+})();
 </script>
 </body></html>
