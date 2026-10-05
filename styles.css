@@ -751,3 +751,18 @@ a,
     border-bottom:0!important;
   }
 }
+
+/* Final responsive QA guardrails — prevent accidental horizontal overflow and improve text wrapping. */
+html,body{max-width:100%;overflow-x:hidden}
+img,svg,video,canvas{max-width:100%;height:auto}
+button,input,textarea,select{max-width:100%;box-sizing:border-box}
+@media(max-width:900px){
+  .container{width:min(94%,1320px)}
+  .section-heading p,.why-intro p,.project-grid p,.dynexal-insights p{text-align:left}
+  h1,h2,h3{overflow-wrap:normal;word-break:normal}
+}
+@media(max-width:560px){
+  .container{width:92%}
+  .dynexal-insights .section-heading,.dynexal-why .why-intro,.project-section .project-grid>div:first-child{max-width:100%;box-sizing:border-box}
+  .dynexal-insights .section-heading h2,.why-intro h2,.project-grid h2{ text-wrap:balance }
+}
