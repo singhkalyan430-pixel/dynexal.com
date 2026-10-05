@@ -32,6 +32,8 @@ function rateLimit(req, res) {
 
 const PRICE_PAISE = 49900;
 const PRODUCT_NAME = "Dynexal Interview Master — 100 Questions";
+const SKILL_PRICE_PAISE = 100;
+const SKILL_PRODUCT_NAME = "Dynexal Business Central Skill Test — Foundation";
 const IS_LIVE_KEY = String(process.env.RAZORPAY_KEY_ID || "").startsWith("rzp_live_");
 
 function setCors(req, res) {
@@ -117,6 +119,35 @@ async function saveVerifiedPurchase({ orderId, paymentId }) {
   }
   const rows = await insertResponse.json();
   return rows[0] || null;
+}
+
+async function saveSkillTestPurchase({ orderId, paymentId }) {
+  const baseUrl=process.env.SUPABASE_URL, serviceKey=process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if(!baseUrl||!serviceKey)return null;
+  const headers={apikey:serviceKey,Authorization:"Bearer "+serviceKey,"Content-Type":"application/json",Prefer:"return=representation"};
+  const existingResponse=await fetch(baseUrl+"/rest/v1/skill_test_purchases?razorpay_payment_id=eq."+encodeURIComponent(paymentId)+"&select=id,access_token",{headers});
+  if(existingResponse.ok){const existing=await existingResponse.json();if(existing[0]?.access_token)return existing[0];}
+  const accessToken=crypto.randomBytes(32).toString("hex");
+  const insertResponse=await fetch(baseUrl+"/rest/v1/skill_test_purchases",{method:"POST",headers,body:JSON.stringify({razorpay_payment_id:paymentId,razorpay_order_id:orderId,product:SKILL_PRODUCT_NAME,amount_paise:SKILL_PRICE_PAISE,access_token:accessToken})});
+  if(!insertResponse.ok){console.error("Supabase skill test storage error:",await insertResponse.text());return null;}
+  const rows=await insertResponse.json();return rows[0]||null;
+}
+async function createSkillTestOrder(){
+  const receipt="dynexal_skill_"+Date.now().toString(36);
+  const response=await fetch("https://api.razorpay.com/v1/orders",{method:"POST",headers:{"Content-Type":"application/json",Authorization:authHeader()},body:JSON.stringify({amount:SKILL_PRICE_PAISE,currency:"INR",receipt,notes:{product:SKILL_PRODUCT_NAME}})});
+  const data=await response.json();if(!response.ok)throw new Error(data?.error?.description||"Unable to create Skill Test payment order.");return data;
+}
+async function verifySkillTestPayment({orderId,paymentId,signature}){
+  const secret=process.env.RAZORPAY_KEY_SECRET,expected=crypto.createHmac("sha256",secret).update(orderId+"|"+paymentId).digest("hex");
+  if(!/^[a-f0-9]{64}$/i.test(signature)||!crypto.timingSafeEqual(Buffer.from(expected,"utf8"),Buffer.from(signature,"utf8")))throw new Error("Invalid payment signature.");
+  const response=await fetch("https://api.razorpay.com/v1/payments/"+encodeURIComponent(paymentId),{headers:{Authorization:authHeader()}});
+  const payment=await response.json().catch(()=>({}));if(!response.ok)throw new Error("Unable to verify Skill Test payment status.");
+  if(payment.order_id!==orderId)throw new Error("Payment/order mismatch.");if(Number(payment.amount)!==SKILL_PRICE_PAISE)throw new Error("Skill Test payment amount mismatch.");if(payment.status!=="captured")throw new Error("Payment is not captured yet.");return payment;
+}
+async function getCapturedPaymentByAmount(paymentId,expectedAmount){
+  const response=await fetch("https://api.razorpay.com/v1/payments/"+encodeURIComponent(paymentId),{headers:{Authorization:authHeader()}});
+  const payment=await response.json().catch(()=>({}));if(!response.ok)throw new Error(payment?.error?.description||"Unable to find this Razorpay payment.");
+  if(payment.status!=="captured")throw new Error("This Razorpay payment is not captured yet.");if(Number(payment.amount)!==expectedAmount)throw new Error("This payment does not match the Dynexal Skill Test.");if(!payment.order_id)throw new Error("This payment is missing its order reference.");return payment;
 }
 
 async function getCapturedPayment(paymentId) {
@@ -212,6 +243,17 @@ export default async function handler(req, res) {
       });
     }
 
+    if (action === "create_skill_test") {
+      const order=await createSkillTestOrder();
+      return res.status(200).json({keyId,orderId:order.id,amount:order.amount,currency:order.currency,name:SKILL_PRODUCT_NAME,mode:"live"});
+    }
+    if (action === "verify_skill_test") {
+      const orderId=String(body?.razorpay_order_id||"").trim(),paymentId=String(body?.razorpay_payment_id||"").trim(),signature=String(body?.razorpay_signature||"").trim();
+      if(!orderId||!paymentId||!signature)return res.status(400).json({error:"Skill Test payment verification data is incomplete."});
+      const payment=await verifySkillTestPayment({orderId,paymentId,signature}),purchase=await saveSkillTestPurchase({orderId:payment.order_id,paymentId:payment.id});
+      if(!purchase?.access_token)throw new Error("Payment verified, but Skill Test access could not be saved. Please contact Dynexal support; do not pay again.");
+      return res.status(200).json({verified:true,paymentId:payment.id,orderId:payment.order_id,product:SKILL_PRODUCT_NAME,accessToken:purchase.access_token});
+    }
     if (action === "verify") {
       const orderId = String(body?.razorpay_order_id || "").trim();
       const paymentId = String(body?.razorpay_payment_id || "").trim();
@@ -237,6 +279,12 @@ export default async function handler(req, res) {
       });
     }
 
+    if (action === "recover_skill_test") {
+      const paymentId=String(body?.payment_id||"").trim();if(!/^pay_[A-Za-z0-9]+$/.test(paymentId))return res.status(400).json({error:"Enter a valid Razorpay Payment ID."});
+      const payment=await getCapturedPaymentByAmount(paymentId,SKILL_PRICE_PAISE),purchase=await saveSkillTestPurchase({orderId:payment.order_id,paymentId:payment.id});
+      if(!purchase?.access_token)throw new Error("Payment verified, but Skill Test access could not be restored.");
+      return res.status(200).json({verified:true,paymentId:payment.id,orderId:payment.order_id,product:SKILL_PRODUCT_NAME,accessToken:purchase.access_token});
+    }
     if (action === "recover") {
       const paymentId = String(body?.payment_id || "").trim();
       if (!/^pay_[A-Za-z0-9]+$/.test(paymentId)) return res.status(400).json({ error: "Enter a valid Razorpay Payment ID starting with pay_." });
