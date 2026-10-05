@@ -1501,3 +1501,13 @@ html[data-theme="dark"] .marquee-card em{color:#6fc6ff}
   .dynexal-insights{padding-top:66px!important}
   .dynexal-insights .section-heading{margin-top:8px!important}
 }
+
+/* Prevent the Insights section from sitting underneath the hero bottom strip. */
+.dynexal-insights{
+  position:relative!important;
+  z-index:3!important;
+  clear:both!important;
+  margin-top:18px!important;
+}
+@media(max-width:900px){.dynexal-insights{margin-top:14px!important}}
+@media(max-width:560px){.dynexal-insights{margin-top:12px!important}}
