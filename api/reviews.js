@@ -58,11 +58,19 @@ export default async function handler(req, res) {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
     const token = String(body?.review_token || "").trim();
     const reviewerName = String(body?.reviewer_name || "").trim();
+    const reviewerCountry = String(body?.reviewer_country || "").trim();
+    const reviewerContact = String(body?.reviewer_contact || "").trim();
     const comment = String(body?.comment || "").trim();
     const rating = Number(body?.rating);
 
-    if (!reviewerName || !comment || !Number.isInteger(rating)) {
-      return res.status(400).json({ error: "Rating, name and comment are required." });
+    if (!reviewerName || !reviewerCountry || !comment || !Number.isInteger(rating)) {
+      return res.status(400).json({ error: "Rating, name, country and comment are required." });
+    }
+    if (reviewerCountry.length < 2 || reviewerCountry.length > 80) {
+      return res.status(400).json({ error: "Country must be between 2 and 80 characters." });
+    }
+    if (reviewerContact.length > 160) {
+      return res.status(400).json({ error: "Contact must be 160 characters or fewer." });
     }
     if (rating < 1 || rating > 5) return res.status(400).json({ error: "Rating must be between 1 and 5." });
     if (reviewerName.length < 2 || reviewerName.length > 80) return res.status(400).json({ error: "Name must be between 2 and 80 characters." });
@@ -90,6 +98,8 @@ export default async function handler(req, res) {
         purchase_id: purchaseId,
         rating,
         reviewer_name: reviewerName,
+        reviewer_country: reviewerCountry,
+        reviewer_contact: reviewerContact || null,
         comment,
         source,
         status: "pending"
