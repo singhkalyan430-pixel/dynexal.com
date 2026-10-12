@@ -445,16 +445,16 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
 @media(max-width:850px){.interview-promo{flex-direction:column;align-items:flex-start}.interview-promo h2{font-size:29px}}
 </style>
 
-<section class="dynexal-testimonials" id="dynexal-testimonials" aria-labelledby="dynexal-feedback-title">
+<section class="dynexal-testimonials" id="dynexal-testimonials">
   <div class="container">
     <div class="testimonial-heading">
       <span class="testimonial-kicker">COMMUNITY FEEDBACK</span>
-      <h2 id="dynexal-feedback-title">Rate Your Dynexal Experience</h2>
-      <p>Have Dynexal tutorials, interview preparation or technical resources helped you? Share your feedback to help us improve.</p>
+      <h2>Rate Your Dynexal Experience</h2>
+      <p>Share your experience with Dynexal. Tell us how our interview preparation, tutorials and technical resources have helped you.</p>
     </div>
     <div class="public-review-box">
       <form id="public-review-form">
-        <div class="star-picker" role="radiogroup" aria-label="Choose your rating">
+        <div class="star-picker" role="radiogroup" aria-label="Rating">
           <button type="button" data-rating="1" aria-label="1 star">★</button>
           <button type="button" data-rating="2" aria-label="2 stars">★</button>
           <button type="button" data-rating="3" aria-label="3 stars">★</button>
@@ -462,18 +462,18 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
           <button type="button" data-rating="5" aria-label="5 stars">★</button>
         </div>
         <input type="hidden" id="public-review-rating" value="">
-        <input type="text" id="public-review-name" maxlength="80" placeholder="Your name" autocomplete="name" required>
-        <textarea id="public-review-comment" maxlength="1000" minlength="10" rows="5" placeholder="Share your experience or suggestions..." required></textarea>
-        <button class="review-submit" type="submit">Submit Feedback</button>
+        <input type="text" id="public-review-name" maxlength="80" placeholder="Your name" required>
+        <textarea id="public-review-comment" maxlength="1000" minlength="10" rows="5" placeholder="Write your feedback..." required></textarea>
+        <button class="review-submit" type="submit">Submit Review</button>
         <div class="review-message" id="public-review-message" aria-live="polite"></div>
       </form>
     </div>
     <div class="review-results-heading">
-      <h3>Community Feedback</h3>
-      <p id="review-summary">Loading approved community feedback…</p>
+      <h3>What People Say</h3>
+      <p id="review-summary">Approved community feedback will appear here.</p>
     </div>
     <div class="testimonial-grid" id="dynexal-review-list">
-      <div class="testimonial-loading">Loading approved feedback…</div>
+      <div class="testimonial-loading">Loading approved reviews…</div>
     </div>
   </div>
 </section>
@@ -482,7 +482,7 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
 .testimonial-heading{text-align:center;max-width:680px;margin:0 auto 18px}
 .testimonial-kicker{display:inline-block;padding:4px 10px;border:1px solid rgba(20,159,244,.3);border-radius:999px;background:rgba(20,159,244,.08);color:#75c8ff;font-size:9px;font-weight:900;letter-spacing:1.3px}
 .testimonial-heading h2{margin:8px 0 7px;font-size:clamp(25px,3.2vw,36px);letter-spacing:-1px;color:#f4f8ff}
-.testimonial-heading p{margin:0;color:#9eb8d2;font-size:13px;line-height:1.55}
+.testimonial-heading p{margin:0;color:#9eb8d2;font-size:13px;line-height:1.45}
 .public-review-box{max-width:680px;margin:0 auto 24px;padding:18px 22px;border:1px solid #254766;border-radius:15px;background:linear-gradient(135deg,#0b1c30,#0d243d);box-shadow:0 10px 28px rgba(0,0,0,.16);box-sizing:border-box}
 .public-review-box form{width:100%}
 .public-review-box .star-picker{display:flex;align-items:center;justify-content:center;gap:5px;margin:0 0 12px}
@@ -491,7 +491,7 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
 .public-review-box input,.public-review-box textarea{display:block;width:100%;box-sizing:border-box;margin:0 0 9px;padding:10px 12px;border:1px solid #315775;border-radius:11px;background:#08192c;color:#f4f8fc;font:inherit;outline:none}
 .public-review-box textarea{min-height:95px;resize:vertical}
 .public-review-box input::placeholder,.public-review-box textarea::placeholder{color:#7895b0}
-.review-submit{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;padding:10px 18px;background:#119df4;color:#fff;font:800 14px/1.3 inherit;cursor:pointer;box-shadow:0 10px 25px rgba(0,139,240,.2)}
+.review-submit{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:9px;padding:10px 18px;background:#119df4;color:#fff;font:800 15px/1 inherit;cursor:pointer;box-shadow:0 10px 25px rgba(0,139,240,.2)}
 .review-submit:disabled{opacity:.65;cursor:wait}
 .review-message{margin-top:13px;min-height:20px;color:#82caff;font-size:13px}
 .review-results-heading{text-align:center;max-width:680px;margin:0 auto 16px}
@@ -502,8 +502,9 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
 .testimonial-grid:hover .testimonial-track,.testimonial-grid:focus-within .testimonial-track{animation-play-state:paused}
 .testimonial-card{flex:0 0 330px;padding:18px;border:1px solid #254b6d;border-radius:14px;background:linear-gradient(145deg,rgba(13,37,62,.95),rgba(7,24,43,.96));box-shadow:0 12px 30px rgba(0,0,0,.14);box-sizing:border-box}
 .testimonial-rating{display:flex;align-items:center;gap:9px;margin-bottom:10px}.testimonial-stars{color:#ffc857;font-size:17px;letter-spacing:1.5px}.testimonial-rating strong{color:#dce9f6;font-size:12px;font-weight:800}
-.testimonial-comment{color:#dce9f6;font-size:14px;line-height:1.55;margin:0 0 12px;overflow-wrap:anywhere}
+.testimonial-comment{color:#dce9f6;font-size:14px;line-height:1.55;margin:0 0 12px}
 .testimonial-read-more{border:0;background:transparent;color:#62c7ff;padding:0;margin:7px 0 13px;font:700 12px/1.2 inherit;cursor:pointer}
+.testimonial-read-more:hover{text-decoration:underline}
 .testimonial-name{font-weight:800;color:#fff;font-size:14px}.testimonial-date{display:block;margin-top:3px;color:#7692ad;font-size:10px}
 .testimonial-loading,.testimonial-empty{width:100%;text-align:center;color:#8da7c1;padding:28px}
 @keyframes dynexalReviewRun{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -520,21 +521,18 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
   stars.forEach(star=>star.addEventListener('click',()=>{
     const value=Number(star.dataset.rating);
     ratingInput.value=value;
-    stars.forEach(s=>{
-      const active=Number(s.dataset.rating)<=value;
-      s.classList.toggle('active',active);
-      s.setAttribute('aria-pressed',String(active));
-    });
+    stars.forEach(s=>s.classList.toggle('active',Number(s.dataset.rating)<=value));
   }));
   form.addEventListener('submit',async e=>{
     e.preventDefault();
-    if(!ratingInput.value){message.textContent='Please select a star rating.';return;}
+    if(!ratingInput.value){message.textContent='Please select a rating.';return;}
     const button=form.querySelector('.review-submit');
     button.disabled=true;
-    message.textContent='Submitting your feedback…';
+    message.textContent='Submitting your review…';
     try{
       const response=await fetch('https://dynexal-ai-assistant.vercel.app/api/reviews',{
-        method:'POST',headers:{'Content-Type':'application/json'},
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           rating:Number(ratingInput.value),
           reviewer_name:document.getElementById('public-review-name').value.trim(),
@@ -542,44 +540,54 @@ html[data-theme="dark"] .interview-promo p{color:#aebdd0}
         })
       });
       const result=await response.json();
-      if(!response.ok)throw new Error(result.error||'Unable to submit feedback.');
-      form.reset();ratingInput.value='';
-      stars.forEach(s=>{s.classList.remove('active');s.setAttribute('aria-pressed','false');});
-      message.textContent='Thank you! Your feedback has been submitted for approval.';
+      if(!response.ok)throw new Error(result.error||'Unable to submit review.');
+      form.reset();
+      stars.forEach(s=>s.classList.remove('active'));
+      message.textContent='Thank you! Your review has been submitted for approval.';
       loadReviews();
-    }catch(error){message.textContent=error.message||'Unable to submit feedback.';}
+    }catch(error){message.textContent=error.message||'Unable to submit review.';}
     finally{button.disabled=false;}
   });
+
   async function loadReviews(){
     const list=document.getElementById('dynexal-review-list');
     const summary=document.getElementById('review-summary');
     try{
       const response=await fetch('https://dynexal-ai-assistant.vercel.app/api/reviews');
-      if(!response.ok)throw new Error('Could not load feedback.');
       const result=await response.json();
       const reviews=Array.isArray(result.reviews)?result.reviews:[];
-      if(!reviews.length){summary.textContent='Be the first to share your Dynexal experience.';list.innerHTML='<div class="testimonial-empty">No approved feedback yet. Your review can help us improve.</div>';return;}
-      const avg=reviews.reduce((sum,r)=>sum+Number(r.rating||0),0)/reviews.length;
+      if(!reviews.length){summary.textContent='Be the first to share your Dynexal experience.';list.innerHTML='<div class="testimonial-empty">No approved reviews yet.</div>';return;}
+      const avg=reviews.reduce((sum,r)=>sum+Number(r.rating),0)/reviews.length;
       summary.textContent='★★★★★ '+avg.toFixed(1)+'/5 · '+reviews.length+' approved review'+(reviews.length===1?'':'s');
+      const visibleReviews=reviews.slice(0,6);
       const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-      const cards=reviews.slice(0,6).map(r=>{
+      const cardHtml=visibleReviews.map((r,index)=>{
         const rating=Math.max(1,Math.min(5,Number(r.rating)||0));
+        const date=r.created_at?new Date(r.created_at).toLocaleDateString(undefined,{month:'short',year:'numeric'}):'';
         const full=String(r.comment||'');
         const short=full.length>150?full.slice(0,150).trim()+'…':full;
-        const date=r.created_at?new Date(r.created_at).toLocaleDateString(undefined,{month:'short',year:'numeric'}):'';
-        const starsText='★'.repeat(rating)+'<span style="color:#50677f">'+('★'.repeat(5-rating))+'</span>';
+        const stars='★'.repeat(rating)+'<span style="color:#50677f">'+('★'.repeat(5-rating))+'</span>';
         const more=full.length>150?'<button class="testimonial-read-more" type="button" data-full="'+esc(full)+'" aria-expanded="false">Read more</button>':'';
-        return '<article class="testimonial-card"><div class="testimonial-rating"><span class="testimonial-stars" aria-label="'+rating+' out of 5 stars">'+starsText+'</span><strong>'+rating+'/5</strong></div><p class="testimonial-comment" data-short="'+esc(short)+'">“'+esc(short)+'”</p>'+more+'<div class="testimonial-name">'+esc(r.reviewer_name)+'</div><span class="testimonial-date">Community feedback · '+date+'</span></article>';
+        return '<article class="testimonial-card"><div class="testimonial-rating"><span class="testimonial-stars" aria-label="'+rating+' out of 5 stars">'+stars+'</span><strong>'+rating+'/5</strong></div><p class="testimonial-comment" data-short="'+esc(short)+'" data-expanded="false">“'+esc(short)+'”</p>'+more+'<div class="testimonial-name">'+esc(r.reviewer_name)+'</div><span class="testimonial-date">Community review · '+date+'</span></article>';
       }).join('');
-      list.innerHTML='<div class="testimonial-track">'+cards+cards+'</div>';
-      list.querySelectorAll('.testimonial-read-more').forEach(button=>button.addEventListener('click',()=>{
-        const comment=button.closest('.testimonial-card').querySelector('.testimonial-comment');
-        const expanded=button.getAttribute('aria-expanded')==='true';
-        comment.textContent='“'+(expanded?(comment.dataset.short||''):(button.dataset.full||''))+'”';
-        button.textContent=expanded?'Read more':'Read less';
-        button.setAttribute('aria-expanded',String(!expanded));
-      }));
-    }catch(error){summary.textContent='Approved feedback is temporarily unavailable.';list.innerHTML='<div class="testimonial-empty">Please check back soon.</div>';}
+      list.innerHTML='<div class="testimonial-track">'+cardHtml+cardHtml+'</div>';
+      list.querySelectorAll('.testimonial-read-more').forEach(button=>{
+        button.addEventListener('click',()=>{
+          const card=button.closest('.testimonial-card');
+          const comment=card.querySelector('.testimonial-comment');
+          const expanded=button.getAttribute('aria-expanded')==='true';
+          const full=button.dataset.full||'';
+          const short=comment.dataset.short||'';
+          comment.textContent='“'+(expanded?short:full)+'”';
+          button.textContent=expanded?'Read more':'Read less';
+          button.setAttribute('aria-expanded',String(!expanded));
+          comment.dataset.expanded=String(!expanded);
+        });
+      });
+    }catch(error){
+      summary.textContent='Feedback will appear here as approved reviews are published.';
+      list.innerHTML='<div class="testimonial-empty">Reviews are temporarily unavailable.</div>';
+    }
   }
   loadReviews();
 })();
