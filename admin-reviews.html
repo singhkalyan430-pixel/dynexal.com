@@ -122,7 +122,7 @@ document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
 
 async function loadReviews(){
  reviews.innerHTML='<div class="empty">Loading reviews…</div>';
- const {data,error}=await sb.from("interview_reviews").select("id,rating,reviewer_name,comment,status,created_at,source").order("created_at",{ascending:false});
+ const {data,error}=await sb.from("interview_reviews").select("id,rating,reviewer_name,reviewer_country,reviewer_contact,comment,status,created_at,source").order("created_at",{ascending:false});
  if(error){reviews.innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
  const counts={pending:0,approved:0,rejected:0};(data||[]).forEach(r=>counts[r.status]=(counts[r.status]||0)+1);
  document.getElementById("pendingCount").textContent=counts.pending||0;
@@ -133,7 +133,7 @@ async function loadReviews(){
  reviews.innerHTML=rows.map(r=>{
    const stars="★".repeat(r.rating)+"☆".repeat(5-r.rating);
    const date=new Date(r.created_at).toLocaleString("en-IN",{dateStyle:"medium",timeStyle:"short"});
-   return '<article class="review"><div class="review-head"><div><div class="name">'+esc(r.reviewer_name)+'</div><div class="stars">'+stars+'</div></div><div style="text-align:right"><span class="status '+esc(r.status)+'">'+esc(r.status)+'</span><div class="date">'+esc(date)+'</div></div></div><div class="comment">'+esc(r.comment)+'</div><div class="actions">'+
+   return '<article class="review"><div class="review-head"><div><div class="name">'+esc(r.reviewer_name)+'</div><div class="stars">'+stars+'</div></div><div style="text-align:right"><span class="status '+esc(r.status)+'">'+esc(r.status)+'</span><div class="date">'+esc(date)+'</div></div></div><div class="comment">'+esc(r.comment)+'</div><div class="date" style="margin:8px 0 12px">Country: <strong>'+esc(r.reviewer_country||"Not provided")+'</strong> · Contact: <strong>'+esc(r.reviewer_contact||"Not provided")+'</strong></div><div class="actions">'+
     (r.status!=="approved"?'<button class="btn ok" onclick="setStatus(\''+r.id+'\',\'approved\',this)">✓ Approve</button>':'')+
     (r.status!=="rejected"?'<button class="btn reject" onclick="setStatus(\''+r.id+'\',\'rejected\',this)">Reject</button>':'')+
     (r.status!=="pending"?'<button class="btn secondary" onclick="setStatus(\''+r.id+'\',\'pending\',this)">Move to Pending</button>':'')+
